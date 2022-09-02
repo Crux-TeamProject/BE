@@ -1,4 +1,8 @@
 package com.project.crux.repository;
 
-public interface ReviewPhotoRepository {
+
+import com.project.crux.domain.ReviewPhoto;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ReviewPhotoRepository extends JpaRepository<ReviewPhoto, Long> {
 }
