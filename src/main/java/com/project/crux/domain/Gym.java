@@ -24,4 +24,10 @@ public class Gym {
 
     @Column
     private String imgUrl;
+
+    @Column
+    private String phone;
+
+    @Column
+    private double avgScore;
 }
