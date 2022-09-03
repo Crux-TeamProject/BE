@@ -69,7 +69,11 @@ public class SecurityConfig {
 
         http.csrf().disable()
 
+                //h2-console 허용
+                .headers().frameOptions().disable()
+
                 // 시큐리티 예외 처리
+                .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPointException)
 
@@ -87,6 +91,7 @@ public class SecurityConfig {
                 // 회원가입 관련 filter 통과
                 .antMatchers("/members/login").permitAll()
                 .antMatchers("/members/signup").permitAll()
+                .antMatchers("/h2-console/**").permitAll()
                 .anyRequest().authenticated()
 
                 .and()

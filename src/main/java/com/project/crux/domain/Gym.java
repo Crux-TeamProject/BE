@@ -22,7 +22,7 @@ public class Gym {
     @Column(nullable = false)
     private String location;
 
-    @Column
+    @Column(length = 500)
     private String imgUrl;
 
     @Column
@@ -30,4 +30,20 @@ public class Gym {
 
     @Column
     private double avgScore;
+
+    public Gym(String place_name, String address_name, String phone) {
+        this.name = place_name;
+        this.location = address_name;
+        this.phone = phone;
+    }
+
+    public void update(String place_name, String address_name, String phone) {
+        this.name = place_name;
+        this.location = address_name;
+        this.phone = phone;
+    }
+
+    public void updateImg(String image_url) {
+        this.imgUrl = image_url;
+    }
 }
