@@ -1,21 +1,25 @@
 package com.project.crux.domain;
 
-import lombok.AllArgsConstructor;
+import com.project.crux.exception.ErrorCode;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.Assert;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class Crew {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
     @Column(nullable = false)
     private String name;
 
@@ -26,12 +30,13 @@ public class Crew {
     private String imgUrl;
 
     @OneToMany(mappedBy = "crew", cascade = CascadeType.REMOVE)
-    private List<MemberCrew> memberCrewList;
+    private List<MemberCrew> memberCrewList = new ArrayList<>();
 
-
-
-
-
-
-
+    @Builder
+    public Crew(String name, String content, String imgUrl) {
+        Assert.hasText(name, ErrorCode.INVALID_CREW_NAME.getErrorMessage());
+        this.name = name;
+        this.content = content;
+        this.imgUrl = imgUrl;
+    }
 }
