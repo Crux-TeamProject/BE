@@ -13,6 +13,8 @@ public enum ErrorCode {
 
     DUPLICATE_NICKNAME(HttpStatus.BAD_REQUEST, "중복된 닉네임이 존재합니다"),
 
+    INVALID_AVGSCORE(HttpStatus.BAD_REQUEST, "평균 평점은 0에서 5사이여야 합니다"),
+
     /*
     401 UNAUTHORIZED : 인증되지 않은 사용자
     */

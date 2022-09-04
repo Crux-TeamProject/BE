@@ -2,7 +2,8 @@ package com.project.crux.service;
 
 import com.project.crux.domain.Gym;
 import com.project.crux.domain.response.GymResponseDto;
-import com.project.crux.domain.response.ResponseDto;
+import com.project.crux.exception.CustomException;
+import com.project.crux.exception.ErrorCode;
 import com.project.crux.repository.GymRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,15 +22,16 @@ public class GymService {
     private final GymRepository gymRepository;
 
     @Transactional
-    public ResponseDto<?> getPopularGyms(double lastGymScore, int size) {
+    public List<GymResponseDto> getPopularGyms(double lastAvgScore, int size) {
 
+        if (lastAvgScore < 0 || 5 < lastAvgScore) {
+            throw new CustomException(ErrorCode.INVALID_AVGSCORE);
+        }
         PageRequest pageRequest = PageRequest.of(0, size, Sort.by("avgScore").descending());
 
-        Page<Gym> gyms = gymRepository.findByAvgScoreLessThan(lastGymScore,pageRequest);
+        Page<Gym> gyms = gymRepository.findByAvgScoreLessThan(lastAvgScore,pageRequest);
 
-        List<GymResponseDto> gymResponseDtos = pageToDtoList(gyms);
-
-        return ResponseDto.success(gymResponseDtos);
+        return pageToDtoList(gyms);
     }
 
 
@@ -39,7 +41,7 @@ public class GymService {
 
 
 
-    public List<GymResponseDto> pageToDtoList(Page<Gym> gyms) {
+    private List<GymResponseDto> pageToDtoList(Page<Gym> gyms) {
 
         List<GymResponseDto> gymResponseDtos = new ArrayList<>();
 

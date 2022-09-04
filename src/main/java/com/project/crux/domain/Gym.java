@@ -37,6 +37,13 @@ public class Gym {
         this.phone = phone;
     }
 
+    public Gym(String place_name, String address_name, String phone, double avgScore) {
+        this.name = place_name;
+        this.location = address_name;
+        this.phone = phone;
+        this.avgScore = avgScore;
+    }
+
     public void update(String place_name, String address_name, String phone) {
         this.name = place_name;
         this.location = address_name;

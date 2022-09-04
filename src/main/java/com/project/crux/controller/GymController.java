@@ -15,7 +15,7 @@ public class GymController {
 
     //api 인기 클라이밍짐 조회
     @GetMapping("/gyms/popular")
-    public ResponseDto<?> getPopularGyms(@RequestParam double lastGymScore, @RequestParam int size) {
-        return gymService.getPopularGyms(lastGymScore, size);
+    public ResponseDto<?> getPopularGyms(@RequestParam double lastAvgScore, @RequestParam int size) {
+        return ResponseDto.success(gymService.getPopularGyms(lastAvgScore, size));
     }
 }

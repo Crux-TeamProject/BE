@@ -1,5 +1,6 @@
 package com.project.crux.infrastructure.kakao;
 
+import com.project.crux.domain.Gym;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
