@@ -112,6 +112,7 @@ class GymControllerTest {
     }
 
     @Test
+    @DisplayName("클라이밍짐 상세 조회 성공")
     void getGym() throws Exception {
 
         //given
@@ -136,4 +137,6 @@ class GymControllerTest {
         assertThat(response.getData().getPhone()).isEqualTo("전화번호");
         assertThat(response.getData().getAvgScore()).isEqualTo(gymId-1);
     }
+
+
 }
