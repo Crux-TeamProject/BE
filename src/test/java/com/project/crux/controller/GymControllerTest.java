@@ -1,6 +1,7 @@
 package com.project.crux.controller;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.project.crux.domain.Gym;
 import com.project.crux.domain.response.GymResponseDto;
 import com.project.crux.domain.response.ResponseDto;
@@ -19,7 +20,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.filter.CharacterEncodingFilter;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +46,9 @@ class GymControllerTest {
 
     @BeforeEach
     public void init() {
-        mockMvc = MockMvcBuilders.standaloneSetup(gymController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(gymController)
+                .addFilters(new CharacterEncodingFilter("UTF-8", true))
+                .build();
 
         gymResponseDtoList = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
@@ -104,5 +109,31 @@ class GymControllerTest {
         ResponseDto<List<GymResponseDto>> response = new Gson().fromJson(mvcResult.getResponse().getContentAsString(), ResponseDto.class);
         List<GymResponseDto> gymList = response.getData();
         assertThat(gymList.size()).isEqualTo(gymResponseDtoList.size());
+    }
+
+    @Test
+    void getGym() throws Exception {
+
+        //given
+        Long gymId = 3L;
+        when(gymService.getGym(gymId)).thenReturn(gymResponseDtoList.get((int) (gymId-1)));
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get("/gyms/"+gymId)
+        );
+        //then
+        MvcResult mvcResult = resultActions.andExpect(status().isOk()).andReturn();
+
+        Type ResponseDto = new TypeToken<ResponseDto<GymResponseDto>>() {
+        }.getType();
+
+        ResponseDto<GymResponseDto> response = new Gson().fromJson(mvcResult.getResponse().getContentAsString(), ResponseDto);
+
+
+        assertThat(response.getData().getName()).isEqualTo("클라이밍짐");
+        assertThat(response.getData().getLocation()).isEqualTo("주소");
+        assertThat(response.getData().getPhone()).isEqualTo("전화번호");
+        assertThat(response.getData().getAvgScore()).isEqualTo(gymId-1);
     }
 }

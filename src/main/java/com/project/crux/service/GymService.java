@@ -29,7 +29,7 @@ public class GymService {
         }
         PageRequest pageRequest = PageRequest.of(0, size, Sort.by("avgScore").descending());
 
-        Page<Gym> gyms = gymRepository.findByAvgScoreLessThan(lastAvgScore,pageRequest);
+        Page<Gym> gyms = gymRepository.findByAvgScoreLessThan(lastAvgScore, pageRequest);
 
         return pageToDtoList(gyms);
     }
@@ -38,8 +38,8 @@ public class GymService {
 
         if (lastArticleId < 0 || Integer.MAX_VALUE < lastArticleId) {
             throw new CustomException(ErrorCode.INVALID_ARTICLEID);
-        }
 
+        }
         PageRequest pageRequest = PageRequest.of(0, size, Sort.by("id").descending());
 
         Page<Gym> gyms = gymRepository.findByIdLessThanAndNameContains(lastArticleId, query, pageRequest);
@@ -48,8 +48,12 @@ public class GymService {
     }
 
 
+    public GymResponseDto getGym(Long gymId) {
 
+        Gym gym = gymRepository.findById(gymId).orElseThrow(() -> new CustomException(ErrorCode.GYM_NOT_FOUND));
 
+        return new GymResponseDto(gym);
+    }
 
 
     private List<GymResponseDto> pageToDtoList(Page<Gym> gyms) {
@@ -60,5 +64,4 @@ public class GymService {
 
         return gymResponseDtos;
     }
-
 }
