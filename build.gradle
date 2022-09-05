@@ -29,6 +29,9 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 
+	//assertj
+	testImplementation group: 'org.assertj', name:'assertj-core', version: '3.21.0'
+
 	// spring - security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	//     JWT

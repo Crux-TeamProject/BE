@@ -91,6 +91,7 @@ public class SecurityConfig {
                 // 회원가입 관련 filter 통과
                 .antMatchers("/members/login").permitAll()
                 .antMatchers("/members/signup").permitAll()
+                .antMatchers("/gyms/**").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
                 .anyRequest().authenticated()
 
