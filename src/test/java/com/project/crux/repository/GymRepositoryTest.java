@@ -1,9 +1,7 @@
 package com.project.crux.repository;
 
 import com.project.crux.domain.Gym;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -34,6 +32,7 @@ class GymRepositoryTest {
             gyms.add(gym);
         }
     }
+
 
     @Test
     @DisplayName("클라이밍짐 - 이름으로 조회 성공")
@@ -70,4 +69,22 @@ class GymRepositoryTest {
         //then
         assertThat(gymPage.getContent().stream().allMatch(gym -> gym.getAvgScore() < lastAvgScore)).isEqualTo(true);
     }
+
+    @Test
+    @DisplayName("클라이밍짐 - ID미만 검색 조회 성공")
+    void findByIdLessThanAndNameContains() {
+
+        //given
+        long lastArticleId = 20L;
+        String query = "클라이밍";
+        PageRequest pageRequest = PageRequest.of(0, 5, Sort.by("id").descending());
+        gymRepository.saveAll(gyms);
+
+        //when
+        Page<Gym> gymPage = gymRepository.findByIdLessThanAndNameContains(lastArticleId, query, pageRequest);
+
+        //then
+        assertThat(gymPage.getContent().stream().allMatch(gym -> gym.getId() < lastArticleId)).isEqualTo(true);
+    }
+
 }

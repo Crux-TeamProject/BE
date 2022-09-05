@@ -10,6 +10,6 @@ import java.util.Optional;
 public interface GymRepository extends JpaRepository<Gym, Long> {
     Optional<Gym> findByName(String place_name);
     Page<Gym> findByAvgScoreLessThan(double lastGymScore, PageRequest pageRequest);
-    Page<Gym> findByIdLessThanAndNameContains(Long lastArticleIdId ,String name, PageRequest pageRequest);
+    Page<Gym> findByIdLessThanAndNameContains(Long lastArticleId ,String name, PageRequest pageRequest);
 
 }

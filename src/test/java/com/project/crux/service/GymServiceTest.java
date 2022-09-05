@@ -73,5 +73,35 @@ class GymServiceTest {
     }
 
 
+    @Test
+    @DisplayName("클라이밍짐 - 검색 조회 성공")
+    void getSearchGyms() {
+        //given
+        long lastArticleId = 400L;
+        String query = "클라이밍";
+        PageRequest pageRequest = PageRequest.of(0, 5, Sort.by("id").descending());
+        when(gymRepository.findByIdLessThanAndNameContains(lastArticleId, query, pageRequest)).thenReturn(gymPage);
 
+        //when
+        final List<GymResponseDto> gymResponseDtos = gymService.getSearchGyms(query, lastArticleId, 5);
+
+        //then
+        assertThat(gymResponseDtos.size()).isEqualTo(5);
+    }
+
+    @Test
+    @DisplayName("클라이밍짐 - Id 범위 밖으로 설정")
+    void getSearchGyms_failed() {
+
+        //given
+        long lastArticleId = -3L;
+        String query = "클라이밍";
+
+        //when
+        CustomException exception = Assertions.assertThrows(CustomException.class,
+                () -> gymService.getSearchGyms(query, lastArticleId, 5));
+
+        //then
+        assertThat("ID 값이 올바르지 않습니다").isEqualTo(exception.getErrorCode().getErrorMessage());
+    }
 }
