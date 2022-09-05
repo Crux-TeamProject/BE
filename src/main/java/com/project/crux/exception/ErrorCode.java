@@ -15,6 +15,8 @@ public enum ErrorCode {
 
     INVALID_AVGSCORE(HttpStatus.BAD_REQUEST, "평균 평점은 0에서 5사이여야 합니다"),
 
+    INVALID_ARTICLEID(HttpStatus.BAD_REQUEST, "ID 값이 올바르지 않습니다"),
+
     /*
     401 UNAUTHORIZED : 인증되지 않은 사용자
     */

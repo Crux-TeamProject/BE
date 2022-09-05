@@ -78,4 +78,31 @@ class GymControllerTest {
         List<GymResponseDto> gymList = response.getData();
         assertThat(gymList.size()).isEqualTo(gymResponseDtoList.size());
     }
+
+    @Test
+    @DisplayName("클라이밍짐 - 검색 조회 성공")
+    void getSearchGyms() throws Exception {
+
+        //given
+        Long lastArticleId = 400L;
+        int size = 5;
+        when(gymService.getSearchGyms("클라이밍", lastArticleId, size)).thenReturn(gymResponseDtoList);
+
+        MultiValueMap<String, String> info = new LinkedMultiValueMap<>();
+        info.add("query","클라이밍");
+        info.add("lastArticleId", String.valueOf(lastArticleId));
+        info.add("size", String.valueOf(size));
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get("/gyms/search")
+                        .params(info)
+        );
+
+        //then
+        MvcResult mvcResult = resultActions.andExpect(status().isOk()).andReturn();
+        ResponseDto<List<GymResponseDto>> response = new Gson().fromJson(mvcResult.getResponse().getContentAsString(), ResponseDto.class);
+        List<GymResponseDto> gymList = response.getData();
+        assertThat(gymList.size()).isEqualTo(gymResponseDtoList.size());
+    }
 }
