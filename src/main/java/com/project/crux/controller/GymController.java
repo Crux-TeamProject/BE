@@ -18,4 +18,10 @@ public class GymController {
     public ResponseDto<?> getPopularGyms(@RequestParam double lastAvgScore, @RequestParam int size) {
         return ResponseDto.success(gymService.getPopularGyms(lastAvgScore, size));
     }
+
+    //api 클라이밍짐 검색 조회
+    @GetMapping("/gyms/search")
+    public ResponseDto<?> getSearchGyms(@RequestParam String query, @RequestParam Long lastArticleId, @RequestParam int size) {
+        return ResponseDto.success(gymService.getSearchGyms(query,lastArticleId,size));
+    }
 }

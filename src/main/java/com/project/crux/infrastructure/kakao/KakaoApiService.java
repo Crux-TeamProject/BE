@@ -21,7 +21,6 @@ import java.util.Optional;
 public class KakaoApiService {
     private final GymRepository gymRepository;
 
-//    private final String key = "781f2f8ad22606f69760c104e007278e";
     private final String key = "1d7bd93e2ce7f01247d51b1be511048b";
 
 

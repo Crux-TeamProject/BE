@@ -34,7 +34,18 @@ public class GymService {
         return pageToDtoList(gyms);
     }
 
+    public List<GymResponseDto> getSearchGyms(String query, Long lastArticleId, int size) {
 
+        if (lastArticleId < 0 || Integer.MAX_VALUE < lastArticleId) {
+            throw new CustomException(ErrorCode.INVALID_ARTICLEID);
+        }
+
+        PageRequest pageRequest = PageRequest.of(0, size, Sort.by("id").descending());
+
+        Page<Gym> gyms = gymRepository.findByIdLessThanAndNameContains(lastArticleId, query, pageRequest);
+
+        return pageToDtoList(gyms);
+    }
 
 
 
@@ -49,4 +60,5 @@ public class GymService {
 
         return gymResponseDtos;
     }
+
 }
