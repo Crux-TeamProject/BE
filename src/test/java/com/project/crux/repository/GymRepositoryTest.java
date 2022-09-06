@@ -18,6 +18,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest
 @ExtendWith(SpringExtension.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class GymRepositoryTest {
 
     @Autowired
@@ -43,10 +44,10 @@ class GymRepositoryTest {
         gymRepository.saveAll(gyms);
 
         //when
-        Optional<Gym> optionalGym = gymRepository.findByName("클라이밍짐"+i);
+        Optional<Gym> optionalGym = gymRepository.findByName("클라이밍짐" + i);
 
         //then
-        optionalGym.ifPresent(gym->{
+        optionalGym.ifPresent(gym -> {
             assertThat(gym.getName()).isEqualTo("클라이밍짐" + i);
             assertThat(gym.getLocation()).isEqualTo("주소" + i);
             assertThat(gym.getPhone()).isEqualTo("전화번호" + i);
@@ -71,6 +72,7 @@ class GymRepositoryTest {
     }
 
     @Test
+    @Order(2)
     @DisplayName("클라이밍짐 - ID미만 검색 조회 성공")
     void findByIdLessThanAndNameContains() {
 
@@ -87,4 +89,21 @@ class GymRepositoryTest {
         assertThat(gymPage.getContent().stream().allMatch(gym -> gym.getId() < lastArticleId)).isEqualTo(true);
     }
 
+    @Test
+    @Order(1)
+    @DisplayName("클라이밍짐 - ID 상세 조회 성공")
+    void findById() {
+
+        //given
+        Long gymId = 3L;
+        gymRepository.saveAll(gyms);
+        //when
+        Optional<Gym> gym = gymRepository.findById(gymId);
+
+        //then
+        assertThat(gym.get().getName()).isEqualTo("클라이밍짐"+0.25 * (gymId-1));
+        assertThat(gym.get().getLocation()).isEqualTo("주소"+0.25 * (gymId-1));
+        assertThat(gym.get().getPhone()).isEqualTo("전화번호"+0.25 * (gymId-1));
+        assertThat(gym.get().getAvgScore()).isEqualTo(0.25 * (gymId-1));
+    }
 }

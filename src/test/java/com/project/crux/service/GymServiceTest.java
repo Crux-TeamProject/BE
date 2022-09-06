@@ -15,10 +15,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
-
 
 @ExtendWith(MockitoExtension.class)
 class GymServiceTest {
@@ -103,5 +103,37 @@ class GymServiceTest {
 
         //then
         assertThat("ID 값이 올바르지 않습니다").isEqualTo(exception.getErrorCode().getErrorMessage());
+    }
+
+    @Test
+    @DisplayName("클라이밍짐 - 상세 조회 성공")
+    void getGym() {
+
+        //given
+        Long gymId = 3L;
+        when(gymRepository.findById(gymId)).thenReturn(Optional.of(new Gym("클라이밍짐", "주소", "전화번호",3)));
+
+        //when
+        final  GymResponseDto gymResponseDto = gymService.getGym(gymId);
+
+        //then
+        assertThat(gymResponseDto.getName()).isEqualTo("클라이밍짐");
+        assertThat(gymResponseDto.getLocation()).isEqualTo("주소");
+        assertThat(gymResponseDto.getPhone()).isEqualTo("전화번호");
+        assertThat(gymResponseDto.getAvgScore()).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("클라이밍짐 - 상세 조회 실패")
+    void getGym_failed() {
+
+        //given
+        Long gymId = -3L;
+
+        //when
+        CustomException exception = Assertions.assertThrows(CustomException.class,
+                () -> gymService.getGym(gymId));
+        //then
+        assertThat("해당 클라이밍짐 정보를 찾을 수 없습니다").isEqualTo(exception.getErrorCode().getErrorMessage());
     }
 }
