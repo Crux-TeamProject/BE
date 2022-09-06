@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -16,7 +17,7 @@ public class ReviewResponseDto {
     private Long id;
     private int score;
     private String content;
-    private List<ReviewPhoto> reviewPhotoList;
+    private List<ReviewPhotoResponseDto> reviewPhotoList = new ArrayList<>();
 
     public ReviewResponseDto(Review review) {
         this.id = review.getId();

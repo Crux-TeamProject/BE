@@ -26,7 +26,7 @@ class GymRepositoryTest {
     @BeforeAll
     static void initData() {
         for (double i = 0; i < 5; i += 0.25) {
-            Gym gym = new Gym("클라이밍짐" + i, "주소" + i, "전화번호" + i, i);
+            Gym gym = new Gym("클라이밍짐", "주소", "전화번호", i);
             gyms.add(gym);
         }
     }
@@ -91,15 +91,16 @@ class GymRepositoryTest {
     void findById() {
 
         //given
-        Long gymId = 3L;
+        long gymId = 3L;
         gymRepository.saveAll(gyms);
         //when
         Optional<Gym> gym = gymRepository.findById(gymId);
 
         //then
-        assertThat(gym.get().getName()).isEqualTo("클라이밍짐"+0.25 * (gymId-1));
-        assertThat(gym.get().getLocation()).isEqualTo("주소"+0.25 * (gymId-1));
-        assertThat(gym.get().getPhone()).isEqualTo("전화번호"+0.25 * (gymId-1));
-        assertThat(gym.get().getAvgScore()).isEqualTo(0.25 * (gymId-1));
+        assertThat(gym.get().getId()).isEqualTo(3L);
+        assertThat(gym.get().getName()).isEqualTo("클라이밍짐");
+        assertThat(gym.get().getLocation()).isEqualTo("주소");
+        assertThat(gym.get().getPhone()).isEqualTo("전화번호");
+
     }
 }

@@ -4,6 +4,7 @@ import com.project.crux.domain.Gym;
 import com.project.crux.domain.Member;
 import com.project.crux.domain.Review;
 import com.project.crux.domain.request.ReviewRequestDto;
+import com.project.crux.domain.response.ReviewPhotoResponseDto;
 import com.project.crux.domain.response.ReviewResponseDto;
 import com.project.crux.exception.CustomException;
 import com.project.crux.exception.ErrorCode;
@@ -48,7 +49,7 @@ public class ReviewService {
     public ReviewResponseDto updateReview(ReviewRequestDto requestDto, Long gymId, Long reviewId,
                                           UserDetailsImpl userDetails) {
         Member member = userDetails.getMember();
-        Gym gym = gymRepository.findById(gymId).orElseThrow(() -> new CustomException(ErrorCode.GYM_NOT_FOUND));
+        gymRepository.findById(gymId).orElseThrow(() -> new CustomException(ErrorCode.GYM_NOT_FOUND));
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
 
         if (!review.getMember().equals(member)) {
@@ -64,12 +65,11 @@ public class ReviewService {
         return reviewResponseDto;
     }
 
-    @Transactional
     public void imgSave(ReviewRequestDto requestDto, ReviewResponseDto reviewResponseDto, Review review) {
         requestDto.getReviewPhotoList().forEach(reviewPhoto -> {
             reviewPhoto.setReview(review);
             reviewPhotoRepository.save(reviewPhoto);
-            reviewResponseDto.getReviewPhotoList().add(reviewPhoto);
+            reviewResponseDto.getReviewPhotoList().add(new ReviewPhotoResponseDto(reviewPhoto.getImgUrl()));
         });
     }
 }
