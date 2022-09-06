@@ -6,9 +6,7 @@ import com.project.crux.domain.Gym;
 import com.project.crux.domain.response.GymResponseDto;
 import com.project.crux.domain.response.ResponseDto;
 import com.project.crux.service.GymService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -30,7 +28,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(MockitoExtension.class)
 class GymControllerTest {
 
@@ -112,6 +110,7 @@ class GymControllerTest {
     }
 
     @Test
+    @Order(1)
     @DisplayName("클라이밍짐 상세 조회 성공")
     void getGym() throws Exception {
 
@@ -130,7 +129,6 @@ class GymControllerTest {
         }.getType();
 
         ResponseDto<GymResponseDto> response = new Gson().fromJson(mvcResult.getResponse().getContentAsString(), ResponseDto);
-
 
         assertThat(response.getData().getName()).isEqualTo("클라이밍짐");
         assertThat(response.getData().getLocation()).isEqualTo("주소");
