@@ -20,13 +20,14 @@ public enum ErrorCode {
     401 UNAUTHORIZED : 인증되지 않은 사용자
     */
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "비밀번호가 틀렸습니다"),
-
+    INVALID_REVIEW_UPDATE(HttpStatus.UNAUTHORIZED,"리뷰 수정 권한이 없습니다"),
 
     /*
     404 Not Found
      */
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 유저 정보를 찾을 수 없습니다"),
-    GYM_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 클라이밍짐 정보를 찾을 수 없습니다");
+    GYM_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 클라이밍짐 정보를 찾을 수 없습니다"),
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 리뷰 정보를 찾을 수 없습니다" );
 
 
 

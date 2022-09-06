@@ -26,7 +26,7 @@ public class GymService {
     private final GymRepository gymRepository;
     private final LikeGymRepository likeGymRepository;
 
-    @Transactional
+
     public List<GymResponseDto> getPopularGyms(double lastAvgScore, int size) {
 
         if (lastAvgScore < 0 || 5 < lastAvgScore) {
@@ -61,7 +61,7 @@ public class GymService {
         return new GymResponseDto(gym);
     }
 
-
+    @Transactional
     public String likeGym(UserDetailsImpl userDetails, Long gymId) {
 
         Member member = userDetails.getMember();
