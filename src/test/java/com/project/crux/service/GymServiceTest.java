@@ -1,13 +1,14 @@
 package com.project.crux.service;
 
 import com.project.crux.domain.Gym;
+import com.project.crux.domain.LikeGym;
+import com.project.crux.domain.Member;
 import com.project.crux.domain.response.GymResponseDto;
 import com.project.crux.exception.CustomException;
 import com.project.crux.repository.GymRepository;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.project.crux.repository.LikeGymRepository;
+import com.project.crux.security.jwt.UserDetailsImpl;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -28,6 +29,8 @@ class GymServiceTest {
 
     @Mock
     private GymRepository gymRepository;
+    @Mock
+    private LikeGymRepository likeGymRepository;
 
     static Page<Gym> gymPage;
 
@@ -41,99 +44,179 @@ class GymServiceTest {
         gymPage = new PageImpl<>(gyms);
     }
 
-    @Test
-    @DisplayName("인기클라이밍짐 - 조회 성공")
-    void getPopularGyms() {
+    @Nested
+    @DisplayName("인기클라이밍짐")
+    class PopularGymsTest {
 
-        //given
-        double lastAvgScore = 5;
-        PageRequest pageRequest = PageRequest.of(0, 5, Sort.by("avgScore").descending());
-        when(gymRepository.findByAvgScoreLessThan(lastAvgScore, pageRequest)).thenReturn(gymPage);
+        @Test
+        @DisplayName("조회 성공")
+        void getPopularGyms() {
 
-        //when
-        final List<GymResponseDto> gymResponseDtos = gymService.getPopularGyms(lastAvgScore, 5);
+            //given
+            double lastAvgScore = 5;
+            PageRequest pageRequest = PageRequest.of(0, 5, Sort.by("avgScore").descending());
+            when(gymRepository.findByAvgScoreLessThan(lastAvgScore, pageRequest)).thenReturn(gymPage);
 
-        //then
-        assertThat(gymResponseDtos.size()).isEqualTo(5);
+            //when
+            final List<GymResponseDto> gymResponseDtos = gymService.getPopularGyms(lastAvgScore, 5);
+
+            //then
+            assertThat(gymResponseDtos.size()).isEqualTo(5);
+        }
+
+        @Test
+        @DisplayName("평점 범위 밖으로 설정")
+        void getPopularGyms_failed() {
+
+            //given
+            double lastAvgScore = 7;
+
+            //when
+            CustomException exception = Assertions.assertThrows(CustomException.class,
+                    () -> gymService.getPopularGyms(lastAvgScore, 5));
+
+            //then
+            assertThat("평균 평점은 0에서 5사이여야 합니다").isEqualTo(exception.getErrorCode().getErrorMessage());
+        }
     }
 
-    @Test
-    @DisplayName("인기클라이밍짐 - 평점 범위 밖으로 설정")
-    void getPopularGyms_failed() {
+    @Nested
+    @DisplayName("클라이밍짐 검색")
+    class SearchGymsTest {
 
-        //given
-        double lastAvgScore = 7;
+        @Test
+        @DisplayName("조회 성공")
+        void getSearchGyms() {
+            //given
+            long lastArticleId = 400L;
+            String query = "클라이밍";
+            PageRequest pageRequest = PageRequest.of(0, 5, Sort.by("id").descending());
+            when(gymRepository.findByIdLessThanAndNameContains(lastArticleId, query, pageRequest)).thenReturn(gymPage);
 
-        //when
-        CustomException exception = Assertions.assertThrows(CustomException.class,
-                () -> gymService.getPopularGyms(lastAvgScore, 5));
+            //when
+            final List<GymResponseDto> gymResponseDtos = gymService.getSearchGyms(query, lastArticleId, 5);
 
-        //then
-        assertThat("평균 평점은 0에서 5사이여야 합니다").isEqualTo(exception.getErrorCode().getErrorMessage());
+            //then
+            assertThat(gymResponseDtos.size()).isEqualTo(5);
+        }
+
+        @Test
+        @DisplayName("Id 범위 밖으로 설정")
+        void getSearchGyms_failed() {
+
+            //given
+            long lastArticleId = -3L;
+            String query = "클라이밍";
+
+            //when
+            CustomException exception = Assertions.assertThrows(CustomException.class,
+                    () -> gymService.getSearchGyms(query, lastArticleId, 5));
+
+            //then
+            assertThat("ID 값이 올바르지 않습니다").isEqualTo(exception.getErrorCode().getErrorMessage());
+        }
     }
 
+    @Nested
+    @DisplayName("클라이밍짐 상세")
+    class GymTest {
 
-    @Test
-    @DisplayName("클라이밍짐 - 검색 조회 성공")
-    void getSearchGyms() {
-        //given
-        long lastArticleId = 400L;
-        String query = "클라이밍";
-        PageRequest pageRequest = PageRequest.of(0, 5, Sort.by("id").descending());
-        when(gymRepository.findByIdLessThanAndNameContains(lastArticleId, query, pageRequest)).thenReturn(gymPage);
+        @Test
+        @DisplayName("조회 성공")
+        void getGym() {
 
-        //when
-        final List<GymResponseDto> gymResponseDtos = gymService.getSearchGyms(query, lastArticleId, 5);
+            //given
+            Long gymId = 3L;
+            when(gymRepository.findById(gymId)).thenReturn(Optional.of(new Gym("클라이밍짐", "주소", "전화번호",3)));
 
-        //then
-        assertThat(gymResponseDtos.size()).isEqualTo(5);
+            //when
+            final GymResponseDto gymResponseDto = gymService.getGym(gymId);
+
+            //then
+            assertThat(gymResponseDto.getName()).isEqualTo("클라이밍짐");
+            assertThat(gymResponseDto.getLocation()).isEqualTo("주소");
+            assertThat(gymResponseDto.getPhone()).isEqualTo("전화번호");
+            assertThat(gymResponseDto.getAvgScore()).isEqualTo(3);
+        }
+
+        @Test
+        @DisplayName("조회 실패")
+        void getGym_failed() {
+
+            //given
+            Long gymId = -3L;
+
+            //when
+            CustomException exception = Assertions.assertThrows(CustomException.class,
+                    () -> gymService.getGym(gymId));
+            //then
+            assertThat("해당 클라이밍짐 정보를 찾을 수 없습니다").isEqualTo(exception.getErrorCode().getErrorMessage());
+        }
     }
 
-    @Test
-    @DisplayName("클라이밍짐 - Id 범위 밖으로 설정")
-    void getSearchGyms_failed() {
+    @Nested
+    @DisplayName("클라이밍짐 즐겨찾기")
+    class LikeGymTest {
 
-        //given
-        long lastArticleId = -3L;
-        String query = "클라이밍";
+        @Test
+        @DisplayName("추가 성공")
+        void likeGym_delete() {
 
-        //when
-        CustomException exception = Assertions.assertThrows(CustomException.class,
-                () -> gymService.getSearchGyms(query, lastArticleId, 5));
+            //given
+            Member member = new Member();
+            UserDetailsImpl userDetails = new UserDetailsImpl();
+            userDetails.setMember(member);
 
-        //then
-        assertThat("ID 값이 올바르지 않습니다").isEqualTo(exception.getErrorCode().getErrorMessage());
-    }
+            Gym gym = new Gym();
+            gymRepository.save(gym);
 
-    @Test
-    @DisplayName("클라이밍짐 - 상세 조회 성공")
-    void getGym() {
+            when(gymRepository.findById(gym.getId())).thenReturn(Optional.of(gym));
+            when(likeGymRepository.findByMemberAndGymId(member, gym.getId())).thenReturn(null);
 
-        //given
-        Long gymId = 3L;
-        when(gymRepository.findById(gymId)).thenReturn(Optional.of(new Gym("클라이밍짐", "주소", "전화번호",3)));
+            //when
+            String success = gymService.likeGym(userDetails,gym.getId());
 
-        //when
-        final  GymResponseDto gymResponseDto = gymService.getGym(gymId);
+            //then
+            assertThat(success).isEqualTo("즐겨 찾기 추가 완료");
+        }
 
-        //then
-        assertThat(gymResponseDto.getName()).isEqualTo("클라이밍짐");
-        assertThat(gymResponseDto.getLocation()).isEqualTo("주소");
-        assertThat(gymResponseDto.getPhone()).isEqualTo("전화번호");
-        assertThat(gymResponseDto.getAvgScore()).isEqualTo(3);
-    }
+        @Test
+        @DisplayName("삭제 성공")
+        void likeGym_add() {
 
-    @Test
-    @DisplayName("클라이밍짐 - 상세 조회 실패")
-    void getGym_failed() {
+            //given
+            Member member = new Member();
+            UserDetailsImpl userDetails = new UserDetailsImpl();
+            userDetails.setMember(member);
 
-        //given
-        Long gymId = -3L;
+            Gym gym = new Gym();
+            gymRepository.save(gym);
 
-        //when
-        CustomException exception = Assertions.assertThrows(CustomException.class,
-                () -> gymService.getGym(gymId));
-        //then
-        assertThat("해당 클라이밍짐 정보를 찾을 수 없습니다").isEqualTo(exception.getErrorCode().getErrorMessage());
+            LikeGym likGym = new LikeGym(member, gym);
+
+            when(gymRepository.findById(gym.getId())).thenReturn(Optional.of(gym));
+            when(likeGymRepository.findByMemberAndGymId(member, gym.getId())).thenReturn(likGym);
+
+            //when
+            String success = gymService.likeGym(userDetails,gym.getId());
+
+            //then
+            assertThat(success).isEqualTo("즐겨 찾기 삭제 완료");
+        }
+
+        @Test
+        @DisplayName("실패")
+        void likeGym_failed() {
+
+            //given
+            Long gymId = -3L;
+
+            //when
+            CustomException exception = Assertions.assertThrows(CustomException.class,
+                    () -> gymService.likeGym(new UserDetailsImpl(),gymId));
+            //then
+            assertThat("해당 클라이밍짐 정보를 찾을 수 없습니다").isEqualTo(exception.getErrorCode().getErrorMessage());
+
+        }
     }
 }

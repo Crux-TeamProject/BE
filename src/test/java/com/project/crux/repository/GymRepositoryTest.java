@@ -2,13 +2,11 @@ package com.project.crux.repository;
 
 import com.project.crux.domain.Gym;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +15,6 @@ import java.util.Optional;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest
-@ExtendWith(SpringExtension.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class GymRepositoryTest {
 
@@ -33,7 +30,6 @@ class GymRepositoryTest {
             gyms.add(gym);
         }
     }
-
 
     @Test
     @DisplayName("클라이밍짐 - 이름으로 조회 성공")

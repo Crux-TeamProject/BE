@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import com.project.crux.domain.Gym;
 import com.project.crux.domain.response.GymResponseDto;
 import com.project.crux.domain.response.ResponseDto;
+import com.project.crux.security.jwt.UserDetailsImpl;
 import com.project.crux.service.GymService;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -137,4 +138,19 @@ class GymControllerTest {
     }
 
 
+    @Test
+    @DisplayName("클라이밍짐 즐겨찾기 추가 삭제 성공")
+    void likeGym() throws Exception {
+
+        //given
+        Long gymId = 3L;
+        when(gymService.likeGym(new UserDetailsImpl(), gymId)).thenReturn("즐겨 찾기 추가 완료");
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.post("/likegyms/" + gymId)
+        );
+        //then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("data").value("즐겨 찾기 추가 완료"));
+    }
 }
