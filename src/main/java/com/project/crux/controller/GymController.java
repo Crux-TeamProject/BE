@@ -1,12 +1,11 @@
 package com.project.crux.controller;
 
 import com.project.crux.domain.response.ResponseDto;
+import com.project.crux.security.jwt.UserDetailsImpl;
 import com.project.crux.service.GymService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,4 +31,9 @@ public class GymController {
         return ResponseDto.success(gymService.getGym(gymId));
     }
 
+    //api 짐 즐겨찾기 추가,삭제
+    @PostMapping("/likegyms/{gymId}")
+    public ResponseDto<?> likeGym(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long gymId){
+        return ResponseDto.success(gymService.likeGym(userDetails,gymId));
+    }
 }

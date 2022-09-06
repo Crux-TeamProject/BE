@@ -24,5 +24,9 @@ public class LikeGym {
     @ManyToOne(fetch = FetchType.LAZY)
     private Gym gym;
 
+    public LikeGym(Member member, Gym gym) {
+        this.member = member;
+        this.gym = gym;
+    }
 
 }
