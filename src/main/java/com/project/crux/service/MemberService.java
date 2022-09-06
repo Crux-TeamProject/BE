@@ -5,8 +5,11 @@ import com.project.crux.domain.request.LoginRequestDto;
 import com.project.crux.domain.request.SignupRequestDto;
 import com.project.crux.domain.response.LoginResponseDto;
 import com.project.crux.domain.response.ResponseDto;
+import com.project.crux.exception.CustomException;
+import com.project.crux.exception.ErrorCode;
 import com.project.crux.repository.MemberRepository;
 import com.project.crux.security.jwt.TokenProvider;
+import com.project.crux.security.jwt.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,14 +24,12 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-
     private final TokenProvider tokenProvider;
 
     //일반회원가입
     @Transactional
     public ResponseDto<?> signUpMember(SignupRequestDto signupRequestDto) {
-
-        if (memberRepository.findByNickname(signupRequestDto.getNickname()).equals(signupRequestDto.getNickname())) {
+        if (memberRepository.findByNickname(signupRequestDto.getNickname()).isPresent()) {
             return ResponseDto.fail("DUPLICATE_NICKNAME", "중복된 닉네임이 존재합니다.");
         }
 
@@ -45,31 +46,28 @@ public class MemberService {
     //이메일 중복 확인
     public ResponseDto<?> checkEmail(String email) {
         if (memberRepository.findByEmail(email).isPresent()) {
-            return ResponseDto.fail("DUPLICATE_EMAIL", "중복된 이메일이 존재합니다.");
-        } else {
-            return ResponseDto.success("사용 가능한 이메일 입니다.");
+            throw new CustomException(ErrorCode.DUPLICATE_EMAIL);
         }
+        return ResponseDto.success("사용 가능한 이메일 입니다.");
     }
 
     public ResponseDto<?> checkNickname(String nickname) {
         if (memberRepository.findByNickname(nickname).isPresent()) {
-            return ResponseDto.fail("DUPLICATE_NICKNAME", "중복된 닉네임이 존재합니다.");
-        } else {
-            return ResponseDto.success("사용 가능한 닉네임 입니다.");
+            throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
         }
+        return ResponseDto.success("사용 가능한 닉네임 입니다.");
+
     }
 
     //일반 로그인
     public ResponseDto<?> login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
         Member member = isPresentMember(loginRequestDto.getEmail());
         if (null == member) {
-            return ResponseDto.fail("USER_NOT_FOUND",
-                    "해당 유저 정보를 찾을 수 없습니다");
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
         if (!member.validatePassword(passwordEncoder, loginRequestDto.getPassword())) {
-            return ResponseDto.fail("INVALID_PASSWORD", "비밀번호가 틀렸습니다");
+            throw new CustomException(ErrorCode.INVALID_PASSWORD);
         }
-
         String token = tokenProvider.generateToken(member);
         tokenToHeaders(token, response);
 
@@ -94,5 +92,10 @@ public class MemberService {
 
     }
 
-
+    @Transactional
+    public ResponseDto<?> withdraw(UserDetailsImpl userDetails) {
+        Member member = userDetails.getMember();
+        memberRepository.delete(member);
+        return ResponseDto.success("회원 탈퇴 완료");
+    }
 }

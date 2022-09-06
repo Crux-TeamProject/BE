@@ -3,6 +3,7 @@ package com.project.crux.domain.request;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -23,6 +24,6 @@ public class SignupRequestDto {
     private String password;
 
     @NotBlank(message =  "자기소개는 필수 입력 값입니다.")
+    @Length(max = 150)
     private String content;
-
 }
