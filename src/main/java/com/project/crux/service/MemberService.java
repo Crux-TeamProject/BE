@@ -1,15 +1,19 @@
 package com.project.crux.service;
 
 import com.project.crux.domain.Member;
+import com.project.crux.domain.request.LoginRequestDto;
 import com.project.crux.domain.request.SignupRequestDto;
+import com.project.crux.domain.response.LoginResponseDto;
 import com.project.crux.domain.response.ResponseDto;
 import com.project.crux.repository.MemberRepository;
+import com.project.crux.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
-import javax.xml.ws.Response;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +21,8 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+
+    private final TokenProvider tokenProvider;
 
     //일반회원가입
     @Transactional
@@ -52,4 +58,41 @@ public class MemberService {
             return ResponseDto.success("사용 가능한 닉네임 입니다.");
         }
     }
+
+    //일반 로그인
+    public ResponseDto<?> login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
+        Member member = isPresentMember(loginRequestDto.getEmail());
+        if (null == member) {
+            return ResponseDto.fail("USER_NOT_FOUND",
+                    "해당 유저 정보를 찾을 수 없습니다");
+        }
+        if (!member.validatePassword(passwordEncoder, loginRequestDto.getPassword())) {
+            return ResponseDto.fail("INVALID_PASSWORD", "비밀번호가 틀렸습니다");
+        }
+
+        String token = tokenProvider.generateToken(member);
+        tokenToHeaders(token, response);
+
+        return ResponseDto.success(
+                LoginResponseDto.builder()
+                        .id(member.getId())
+                        .email(member.getEmail())
+                        .nickname(member.getNickname())
+                        .build()
+        );
+
+    }
+
+    @Transactional(readOnly = true)
+    public Member isPresentMember(String email) {
+        Optional<Member> optionalMember = memberRepository.findByEmail(email);
+        return optionalMember.orElse(null);
+    }
+
+    public void tokenToHeaders(String token, HttpServletResponse response) {
+        response.addHeader("Access_Token", "Bearer " + token);
+
+    }
+
+
 }

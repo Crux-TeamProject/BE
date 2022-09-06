@@ -1,11 +1,13 @@
 package com.project.crux.controller;
 
+import com.project.crux.domain.request.LoginRequestDto;
 import com.project.crux.domain.request.SignupRequestDto;
 import com.project.crux.domain.response.ResponseDto;
 import com.project.crux.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @RestController
@@ -28,5 +30,11 @@ public class MemberController {
     @GetMapping("/members/nickname-check")
     public ResponseDto<?>checkNickname(@RequestParam String nickname){
         return memberService.checkNickname(nickname);
+    }
+
+    @PostMapping("/members/login")
+    public ResponseDto<?>login(@RequestBody LoginRequestDto loginRequestDto,
+                               HttpServletResponse response){
+        return memberService.login(loginRequestDto, response);
     }
 }

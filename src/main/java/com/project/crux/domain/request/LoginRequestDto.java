@@ -1,9 +1,13 @@
 package com.project.crux.domain.request;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
-
+@Getter
+@Setter
 public class LoginRequestDto {
     @Email(message = "올바른 이메일 형식이 아닙니다")
     @NotBlank(message = "이메일은 필수 입력 값입니다")
