@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -34,7 +35,7 @@ public class Member {
     private String content;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
-    private List<MemberCrew> memberCrewList;
+    private List<MemberCrew> memberCrewList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<LikeGym> likeGymList;

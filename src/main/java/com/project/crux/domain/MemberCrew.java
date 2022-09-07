@@ -1,7 +1,6 @@
 package com.project.crux.domain;
 
 import com.project.crux.common.Status;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +8,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class MemberCrew {
     @Id
@@ -24,8 +22,18 @@ public class MemberCrew {
     @ManyToOne(fetch = FetchType.LAZY)
     private Crew crew;
 
-
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private Status status = Status.SUBMIT;
+
+    public MemberCrew(Member member, Crew crew) {
+        this.member = member;
+        this.crew = crew;
+        member.getMemberCrewList().add(this);
+        crew.getMemberCrewList().add(this);
+    }
+
+    public void updateStatus(Status status) {
+        this.status = status;
+    }
 }
