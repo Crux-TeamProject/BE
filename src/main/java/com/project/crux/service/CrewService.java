@@ -13,8 +13,12 @@ import com.project.crux.repository.MemberCrewRepository;
 import com.project.crux.repository.MemberRepository;
 import com.project.crux.security.jwt.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -46,4 +50,18 @@ public class CrewService {
     private Member getMember(Member member) {
         return memberRepository.findById(member.getId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
+
+    public List<CrewResponseDto> findAllCrew(Long lastCrewId, int size) {
+        verifyLastCrewId(lastCrewId);
+        PageRequest pageRequest = PageRequest.of(0, size);
+        return crewRepository.findByIdLessThanOrderByIdDesc(lastCrewId, pageRequest)
+                .stream().map(CrewResponseDto::from).collect(Collectors.toList());
+    }
+
+    private void verifyLastCrewId(Long lastCrewId) {
+        if (lastCrewId < 0) {
+            throw new CustomException(ErrorCode.INVALID_ARTICLEID);
+        }
+    }
+
 }
