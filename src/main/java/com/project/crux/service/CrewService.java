@@ -59,7 +59,7 @@ public class CrewService {
     }
 
     private void verifyLastCrewId(Long lastCrewId) {
-        if (lastCrewId < 0 || Integer.MAX_VALUE < lastCrewId) {
+        if (lastCrewId < 0) {
             throw new CustomException(ErrorCode.INVALID_ARTICLEID);
         }
     }

@@ -17,6 +17,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+
+import java.util.*;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -64,6 +68,29 @@ class CrewControllerTest {
                 .andExpect(jsonPath("$.data.content").value(CREW_CONTENT))
                 .andExpect(jsonPath("$.data.imgUrl").value(CREW_IMG_URL))
                 .andExpect(jsonPath("$.data.crewNum").value(1));
+    }
+
+    @DisplayName("전체 크루 조회 성공")
+    @Test
+    void findAllCrew() throws Exception {
+        //given
+        Long lastCrewId = 4L;
+        int size = 2;
+        MultiValueMap<String, String> request = new LinkedMultiValueMap<>();
+        request.add("lastCrewId", String.valueOf(lastCrewId));
+        request.add("size", String.valueOf(size));
+
+        when(crewService.findAllCrew(lastCrewId, size))
+                .thenReturn(new ArrayList<>());
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get("/crews")
+                        .params(request)
+        );
+
+        //then
+        resultActions.andExpect(status().isOk());
     }
 
     private CrewRequestDto crewRequestDto() {

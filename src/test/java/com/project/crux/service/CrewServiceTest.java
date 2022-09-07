@@ -5,6 +5,7 @@ import com.project.crux.domain.Member;
 import com.project.crux.domain.MemberCrew;
 import com.project.crux.domain.request.CrewRequestDto;
 import com.project.crux.domain.response.CrewResponseDto;
+import com.project.crux.exception.CustomException;
 import com.project.crux.exception.ErrorCode;
 import com.project.crux.repository.CrewRepository;
 import com.project.crux.repository.MemberCrewRepository;
@@ -18,10 +19,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.util.ReflectionTestUtils.*;
@@ -33,7 +40,7 @@ class CrewServiceTest {
     static final String CREW_IMG_URL = "https://img.freepik.com/premium-vector/cute-octopus-cartoon-hand-drawn-style_42349-125.jpg?w=826";
     static final String USER_EMAIL = "email.gmail.com";
     static final String USER_NICKNAME = "nickname1";
-    static final String USER_PASSWORD = "password1";
+    static final String USER_PASSWORD = "password1!";
     static final String USER_CONTENT = "안녕하세요";
 
     @InjectMocks
@@ -90,6 +97,57 @@ class CrewServiceTest {
                         .hasMessage(ErrorCode.INVALID_CREW_NAME.getErrorMessage());
             }
         }
+    }
+
+
+    @Nested
+    @DisplayName("전체 크루 조회")
+    class findAllCrew {
+        @DisplayName("전체 크루 조회 성공")
+        @Test
+        void findAllCrewSuccess() {
+            //given
+            Long lastCrewId = 5L;
+            int size = 2;
+            PageRequest pageRequest = PageRequest.of(0, size);
+            when(crewRepository.findByIdLessThanOrderByIdDesc(lastCrewId, pageRequest))
+                    .thenReturn(getCrewPage(lastCrewId, size));
+            //when
+            List<CrewResponseDto> crewResponseDtoList = crewService.findAllCrew(lastCrewId, size);
+
+            //then
+            Assertions.assertThat(crewResponseDtoList.size()).isEqualTo(size);
+        }
+
+
+        @Nested
+        @DisplayName("전체 크루 조회 실패")
+        class findAllCrewFail {
+            @DisplayName("last Crew Id는 0 이상이어야 합니다.")
+            @Test
+            void invalidCrewName() {
+                //given
+                Long lastCrewId = -1L;
+                int size = 2;
+
+                //when
+                CustomException customException = assertThrows(CustomException.class,
+                        () -> crewService.findAllCrew(lastCrewId, size));
+
+                //then
+                assertThat(customException.getErrorCode().getErrorMessage())
+                        .isEqualTo(ErrorCode.INVALID_ARTICLEID.getErrorMessage());
+            }
+        }
+    }
+
+    private Page<Crew> getCrewPage(Long lastCrewId, int size) {
+        long count = lastCrewId - size;
+        List<Crew> crews = new ArrayList<>();
+        for (long i = count; i < lastCrewId; i++) {
+            crews.add(new Crew(CREW_NAME, CREW_CONTENT, CREW_IMG_URL));
+        }
+        return new PageImpl<>(crews);
     }
 
     private Crew getSavedCrew() {
