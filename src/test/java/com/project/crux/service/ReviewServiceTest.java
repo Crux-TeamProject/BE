@@ -68,6 +68,7 @@ class ReviewServiceTest {
             List<ReviewPhoto> reviewPhotoList = new ArrayList<>();
             reviewPhotoList.add(reviewphoto);
             ReviewRequestDto requestDto = new ReviewRequestDto(4, "리뷰내용", reviewPhotoList);
+
             when(gymRepository.findById(1L)).thenReturn(Optional.of(gym));
             when(reviewPhotoRepository.save(reviewphoto)).thenReturn(reviewphoto);
 
@@ -116,6 +117,7 @@ class ReviewServiceTest {
             UserDetailsImpl userDetails = new UserDetailsImpl();
             userDetails.setMember(member);
             ReviewRequestDto requestDto = new ReviewRequestDto(5, "리뷰수정", reviewPhotoList);
+
             when(gymRepository.findById(1L)).thenReturn(Optional.of(gym));
             when(reviewRepository.findById(1L)).thenReturn(Optional.ofNullable(review));
             when(reviewPhotoRepository.save(reviewphoto)).thenReturn(reviewphoto);

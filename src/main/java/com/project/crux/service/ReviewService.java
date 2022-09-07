@@ -3,6 +3,7 @@ package com.project.crux.service;
 import com.project.crux.domain.Gym;
 import com.project.crux.domain.Member;
 import com.project.crux.domain.Review;
+import com.project.crux.domain.ReviewPhoto;
 import com.project.crux.domain.request.ReviewRequestDto;
 import com.project.crux.domain.response.ReviewPhotoResponseDto;
 import com.project.crux.domain.response.ReviewResponseDto;
@@ -15,6 +16,9 @@ import com.project.crux.security.jwt.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -65,6 +69,36 @@ public class ReviewService {
         return reviewResponseDto;
     }
 
+    public ReviewResponseDto getReview(Long reviewId) {
+
+        Review review = reviewRepository.findById(reviewId).orElseThrow(()-> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+        ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review);
+        List<ReviewPhoto> reviewPhotoList = reviewPhotoRepository.findAllByReview(review);
+
+        reviewPhotoList.forEach(reviewPhoto -> {
+            reviewResponseDto.getReviewPhotoList().add(new ReviewPhotoResponseDto(reviewPhoto));
+        });
+        return reviewResponseDto;
+    }
+
+    public List<ReviewResponseDto> getAllReviews(Long gymId) {
+
+        Gym gym = gymRepository.findById(gymId).orElseThrow(() -> new CustomException(ErrorCode.GYM_NOT_FOUND));
+        List<Review> reviewList = reviewRepository.findByGym(gym);
+
+        List<ReviewResponseDto> reviewResponseDtoList = new ArrayList<>();
+
+        reviewList.forEach(review -> {
+            ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review);
+            List<ReviewPhoto> reviewPhotoList = reviewPhotoRepository.findAllByReview(review);
+            reviewPhotoList.forEach(reviewPhoto -> {
+                reviewResponseDto.getReviewPhotoList().add(new ReviewPhotoResponseDto(reviewPhoto));
+            });
+            reviewResponseDtoList.add(reviewResponseDto);
+        });
+        return reviewResponseDtoList;
+    }
+
     public void imgSave(ReviewRequestDto requestDto, ReviewResponseDto reviewResponseDto, Review review) {
         requestDto.getReviewPhotoList().forEach(reviewPhoto -> {
             reviewPhoto.setReview(review);
@@ -72,4 +106,5 @@ public class ReviewService {
             reviewResponseDto.getReviewPhotoList().add(new ReviewPhotoResponseDto(reviewPhoto.getImgUrl()));
         });
     }
+
 }

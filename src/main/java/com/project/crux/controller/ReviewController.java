@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class ReviewController {
@@ -29,4 +31,17 @@ public class ReviewController {
                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseDto.success(reviewService.updateReview(requestDto ,gymId, reviewId ,userDetails));
     }
+
+    //api 짐 리뷰 상세 조회
+    @GetMapping("/reviews/{reviewId}")
+    public ResponseDto<ReviewResponseDto> getReview(@PathVariable Long reviewId) {
+        return ResponseDto.success(reviewService.getReview(reviewId));
+    }
+
+    //api 짐 리뷰 전체 조회
+    @GetMapping("/reviews/{gymId}")
+    public ResponseDto<List<ReviewResponseDto>> getAllReviews(@PathVariable Long gymId) {
+        return ResponseDto.success(reviewService.getAllReviews(gymId));
+    }
+
 }
