@@ -102,11 +102,11 @@ class ReviewControllerTest {
         ReviewRequestDto requestDto  = new ReviewRequestDto(review.getScore(),review.getContent(), null);
         ReviewResponseDto responseDto = new ReviewResponseDto(review);
         responseDto.getReviewPhotoList().add(new ReviewPhotoResponseDto());
-        when(reviewService.updateReview(any(ReviewRequestDto.class), eq(1L),eq(1L), eq(new UserDetailsImpl()))).thenReturn(responseDto);
+        when(reviewService.updateReview(any(ReviewRequestDto.class), eq(1L), eq(new UserDetailsImpl()))).thenReturn(responseDto);
 
         //when
         ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.put("/reviews/" + 1L +"/" + 1L)
+                MockMvcRequestBuilders.put("/reviews/" + 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new Gson().toJson(requestDto))
         );
@@ -120,5 +120,72 @@ class ReviewControllerTest {
         assertThat(response.getData().getScore()).isEqualTo(4);
         assertThat(response.getData().getContent()).isEqualTo("리뷰내용");
         assertThat(response.getData().getReviewPhotoList().size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("리뷰 삭제 성공")
+    void deleteReview() throws Exception {
+
+        //given
+        when(reviewService.deleteReview(new UserDetailsImpl(),1L)).thenReturn("후기 삭제 완료");
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.delete("/reviews/" + 1L)
+        );
+        //then
+        MvcResult mvcResult = resultActions.andExpect(status().isOk()).andReturn();
+        ResponseDto<String> response = new Gson().fromJson(mvcResult.getResponse().getContentAsString(), ResponseDto.class);
+        assertThat(response.getData()).isEqualTo("후기 삭제 완료");
+    }
+
+    @Test
+    @DisplayName("리뷰 상세조회 성공")
+    void getReview() throws Exception {
+
+        //given
+        ReviewResponseDto responseDto = new ReviewResponseDto(review);
+        responseDto.getReviewPhotoList().add(new ReviewPhotoResponseDto());
+        when(reviewService.getReview(1L)).thenReturn(responseDto);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get("/review/" + 1L)
+        );
+        //then
+        MvcResult mvcResult = resultActions.andExpect(status().isOk()).andReturn();
+
+        Type ResponseDto = new TypeToken<ResponseDto<ReviewResponseDto>>() {
+        }.getType();
+
+        ResponseDto<ReviewResponseDto> response = new Gson().fromJson(mvcResult.getResponse().getContentAsString(), ResponseDto);
+        assertThat(response.getData().getScore()).isEqualTo(4);
+        assertThat(response.getData().getContent()).isEqualTo("리뷰내용");
+        assertThat(response.getData().getReviewPhotoList().size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("리뷰 전체조회 성공")
+    void getAllReviews() throws Exception {
+
+        //given
+        List<ReviewResponseDto> reviewResponseDtoList = new ArrayList<>();
+        ReviewResponseDto responseDto = new ReviewResponseDto(review);
+        reviewResponseDtoList.add(responseDto);
+        when(reviewService.getAllReviews(1L)).thenReturn(reviewResponseDtoList);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get("/reviews/" + 1L)
+        );
+        //then
+        MvcResult mvcResult = resultActions.andExpect(status().isOk()).andReturn();
+
+        Type ResponseDto = new TypeToken<ResponseDto<List<ReviewResponseDto>>>() {
+        }.getType();
+
+        ResponseDto<List<ReviewResponseDto>> response = new Gson().fromJson(mvcResult.getResponse().getContentAsString(), ResponseDto);
+        assertThat(response.getData().size()).isEqualTo(1);
+        assertThat(response.getData().get(0).getScore()).isEqualTo(4);
+        assertThat(response.getData().get(0).getContent()).isEqualTo("리뷰내용");
     }
 }

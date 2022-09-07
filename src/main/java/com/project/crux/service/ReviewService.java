@@ -50,10 +50,9 @@ public class ReviewService {
     }
 
     @Transactional
-    public ReviewResponseDto updateReview(ReviewRequestDto requestDto, Long gymId, Long reviewId,
+    public ReviewResponseDto updateReview(ReviewRequestDto requestDto, Long reviewId,
                                           UserDetailsImpl userDetails) {
         Member member = userDetails.getMember();
-        gymRepository.findById(gymId).orElseThrow(() -> new CustomException(ErrorCode.GYM_NOT_FOUND));
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
 
         if (!review.getMember().equals(member)) {
@@ -69,15 +68,24 @@ public class ReviewService {
         return reviewResponseDto;
     }
 
+    public String deleteReview(UserDetailsImpl userDetails, Long reviewId) {
+        Member member = userDetails.getMember();
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+
+        if (!review.getMember().equals(member)) {
+            throw new CustomException(ErrorCode.INVALID_REVIEW_DELETE);
+        }
+        reviewRepository.delete(review);
+        return "후기 삭제 완료";
+    }
+
     public ReviewResponseDto getReview(Long reviewId) {
 
         Review review = reviewRepository.findById(reviewId).orElseThrow(()-> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
         ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review);
         List<ReviewPhoto> reviewPhotoList = reviewPhotoRepository.findAllByReview(review);
 
-        reviewPhotoList.forEach(reviewPhoto -> {
-            reviewResponseDto.getReviewPhotoList().add(new ReviewPhotoResponseDto(reviewPhoto));
-        });
+        reviewPhotoList.forEach(reviewPhoto -> reviewResponseDto.getReviewPhotoList().add(new ReviewPhotoResponseDto(reviewPhoto)));
         return reviewResponseDto;
     }
 
@@ -91,15 +99,13 @@ public class ReviewService {
         reviewList.forEach(review -> {
             ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review);
             List<ReviewPhoto> reviewPhotoList = reviewPhotoRepository.findAllByReview(review);
-            reviewPhotoList.forEach(reviewPhoto -> {
-                reviewResponseDto.getReviewPhotoList().add(new ReviewPhotoResponseDto(reviewPhoto));
-            });
+            reviewPhotoList.forEach(reviewPhoto -> reviewResponseDto.getReviewPhotoList().add(new ReviewPhotoResponseDto(reviewPhoto)));
             reviewResponseDtoList.add(reviewResponseDto);
         });
         return reviewResponseDtoList;
     }
 
-    public void imgSave(ReviewRequestDto requestDto, ReviewResponseDto reviewResponseDto, Review review) {
+    private void imgSave(ReviewRequestDto requestDto, ReviewResponseDto reviewResponseDto, Review review) {
         requestDto.getReviewPhotoList().forEach(reviewPhoto -> {
             reviewPhoto.setReview(review);
             reviewPhotoRepository.save(reviewPhoto);
