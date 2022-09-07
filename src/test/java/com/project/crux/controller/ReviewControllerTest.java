@@ -102,7 +102,7 @@ class ReviewControllerTest {
         ReviewRequestDto requestDto  = new ReviewRequestDto(review.getScore(),review.getContent(), null);
         ReviewResponseDto responseDto = new ReviewResponseDto(review);
         responseDto.getReviewPhotoList().add(new ReviewPhotoResponseDto());
-        when(reviewService.updateReview(any(ReviewRequestDto.class), eq(1L),eq(1L), eq(new UserDetailsImpl()))).thenReturn(responseDto);
+        when(reviewService.updateReview(any(ReviewRequestDto.class), eq(1L), eq(new UserDetailsImpl()))).thenReturn(responseDto);
 
         //when
         ResultActions resultActions = mockMvc.perform(

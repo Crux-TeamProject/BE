@@ -110,21 +110,18 @@ class ReviewServiceTest {
         void updateReview() {
 
             //given
-            Gym gym = new Gym();
-            gymRepository.save(gym);
             List<ReviewPhoto> reviewPhotoList = new ArrayList<>();
             reviewPhotoList.add(reviewphoto);
             UserDetailsImpl userDetails = new UserDetailsImpl();
             userDetails.setMember(member);
             ReviewRequestDto requestDto = new ReviewRequestDto(5, "리뷰수정", reviewPhotoList);
 
-            when(gymRepository.findById(1L)).thenReturn(Optional.of(gym));
             when(reviewRepository.findById(1L)).thenReturn(Optional.ofNullable(review));
             when(reviewPhotoRepository.save(reviewphoto)).thenReturn(reviewphoto);
 
 
             //when
-            ReviewResponseDto reviewResponseDto = reviewService.updateReview(requestDto, 1L,1L, userDetails);
+            ReviewResponseDto reviewResponseDto = reviewService.updateReview(requestDto, 1L, userDetails);
 
             //then
             assertThat(reviewResponseDto.getScore()).isEqualTo(5);
@@ -138,13 +135,11 @@ class ReviewServiceTest {
         void updateReview_failed_reviewId() {
 
             //given
-            Gym gym = new Gym();
             ReviewRequestDto requestDto = new ReviewRequestDto();
-            when(gymRepository.findById(1L)).thenReturn(Optional.of(gym));
 
             //when
             CustomException exception = Assertions.assertThrows(CustomException.class,
-                    () -> reviewService.updateReview(requestDto, 1L,1L ,new UserDetailsImpl()));
+                    () -> reviewService.updateReview(requestDto, 1L, new UserDetailsImpl()));
             //then
             assertThat("해당 리뷰 정보를 찾을 수 없습니다").isEqualTo(exception.getErrorCode().getErrorMessage());
 
@@ -155,14 +150,12 @@ class ReviewServiceTest {
         void updateReview_failed_reviewId_Member() {
 
             //given
-            Gym gym = new Gym();
             ReviewRequestDto requestDto = new ReviewRequestDto();
-            when(gymRepository.findById(1L)).thenReturn(Optional.of(gym));
             when(reviewRepository.findById(1L)).thenReturn(Optional.ofNullable(review));
 
             //when
             CustomException exception = Assertions.assertThrows(CustomException.class,
-                    () -> reviewService.updateReview(requestDto, 1L,1L ,new UserDetailsImpl()));
+                    () -> reviewService.updateReview(requestDto, 1L, new UserDetailsImpl()));
             //then
             assertThat("리뷰 수정 권한이 없습니다").isEqualTo(exception.getErrorCode().getErrorMessage());
 
