@@ -106,7 +106,7 @@ class ReviewControllerTest {
 
         //when
         ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.put("/reviews/" + 1L +"/" + 1L)
+                MockMvcRequestBuilders.put("/reviews/" + 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new Gson().toJson(requestDto))
         );
