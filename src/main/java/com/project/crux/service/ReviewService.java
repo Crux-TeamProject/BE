@@ -85,9 +85,7 @@ public class ReviewService {
         ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review);
         List<ReviewPhoto> reviewPhotoList = reviewPhotoRepository.findAllByReview(review);
 
-        reviewPhotoList.forEach(reviewPhoto -> {
-            reviewResponseDto.getReviewPhotoList().add(new ReviewPhotoResponseDto(reviewPhoto));
-        });
+        reviewPhotoList.forEach(reviewPhoto -> reviewResponseDto.getReviewPhotoList().add(new ReviewPhotoResponseDto(reviewPhoto)));
         return reviewResponseDto;
     }
 
@@ -101,15 +99,13 @@ public class ReviewService {
         reviewList.forEach(review -> {
             ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review);
             List<ReviewPhoto> reviewPhotoList = reviewPhotoRepository.findAllByReview(review);
-            reviewPhotoList.forEach(reviewPhoto -> {
-                reviewResponseDto.getReviewPhotoList().add(new ReviewPhotoResponseDto(reviewPhoto));
-            });
+            reviewPhotoList.forEach(reviewPhoto -> reviewResponseDto.getReviewPhotoList().add(new ReviewPhotoResponseDto(reviewPhoto)));
             reviewResponseDtoList.add(reviewResponseDto);
         });
         return reviewResponseDtoList;
     }
 
-    public void imgSave(ReviewRequestDto requestDto, ReviewResponseDto reviewResponseDto, Review review) {
+    private void imgSave(ReviewRequestDto requestDto, ReviewResponseDto reviewResponseDto, Review review) {
         requestDto.getReviewPhotoList().forEach(reviewPhoto -> {
             reviewPhoto.setReview(review);
             reviewPhotoRepository.save(reviewPhoto);
