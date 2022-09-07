@@ -22,6 +22,7 @@ public enum ErrorCode {
     */
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "비밀번호가 틀렸습니다"),
     INVALID_REVIEW_UPDATE(HttpStatus.UNAUTHORIZED,"리뷰 수정 권한이 없습니다"),
+    INVALID_REVIEW_DELETE(HttpStatus.UNAUTHORIZED,"리뷰 삭제 권한이 없습니다"),
 
     /*
     404 Not Found

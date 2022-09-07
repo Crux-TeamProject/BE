@@ -133,23 +133,6 @@ class ReviewServiceTest {
 
         }
 
-
-        @Test
-        @DisplayName("Gym Id 조회 실패")
-        void updateReview_failed_gymId() {
-
-            //given
-            ReviewRequestDto requestDto = new ReviewRequestDto();
-
-            //when
-            CustomException exception = Assertions.assertThrows(CustomException.class,
-                    () -> reviewService.updateReview(requestDto, 1L,1L ,new UserDetailsImpl()));
-            //then
-            assertThat("해당 클라이밍짐 정보를 찾을 수 없습니다").isEqualTo(exception.getErrorCode().getErrorMessage());
-
-        }
-
-
         @Test
         @DisplayName("Review Id 조회 실패")
         void updateReview_failed_reviewId() {

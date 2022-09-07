@@ -50,10 +50,9 @@ public class ReviewService {
     }
 
     @Transactional
-    public ReviewResponseDto updateReview(ReviewRequestDto requestDto, Long gymId, Long reviewId,
+    public ReviewResponseDto updateReview(ReviewRequestDto requestDto, Long reviewId,
                                           UserDetailsImpl userDetails) {
         Member member = userDetails.getMember();
-        gymRepository.findById(gymId).orElseThrow(() -> new CustomException(ErrorCode.GYM_NOT_FOUND));
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
 
         if (!review.getMember().equals(member)) {
@@ -67,6 +66,17 @@ public class ReviewService {
         imgSave(requestDto, reviewResponseDto, review);
 
         return reviewResponseDto;
+    }
+
+    public String deleteReview(UserDetailsImpl userDetails, Long reviewId) {
+        Member member = userDetails.getMember();
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+
+        if (!review.getMember().equals(member)) {
+            throw new CustomException(ErrorCode.INVALID_REVIEW_DELETE);
+        }
+        reviewRepository.delete(review);
+        return "후기 삭제 완료";
     }
 
     public ReviewResponseDto getReview(Long reviewId) {

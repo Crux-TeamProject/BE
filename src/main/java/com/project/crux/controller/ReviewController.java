@@ -25,11 +25,17 @@ public class ReviewController {
     }
 
     //api 짐 리뷰 수정
-    @PutMapping("/reviews/{gymId}/{reviewId}")
-    public ResponseDto<ReviewResponseDto> updateReview(@RequestBody ReviewRequestDto requestDto,
-                                                       @PathVariable Long gymId, @PathVariable Long reviewId,
+    @PutMapping("/reviews/{reviewId}")
+    public ResponseDto<ReviewResponseDto> updateReview(@RequestBody ReviewRequestDto requestDto, @PathVariable Long reviewId,
                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return ResponseDto.success(reviewService.updateReview(requestDto ,gymId, reviewId ,userDetails));
+        return ResponseDto.success(reviewService.updateReview(requestDto , reviewId ,userDetails));
+    }
+
+    //api 짐 리뷰 삭제
+    @DeleteMapping("/reviews/{reviewId}")
+    public ResponseDto<?> deleteReview(@PathVariable Long reviewId,
+                                       @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseDto.success(reviewService.deleteReview(userDetails, reviewId));
     }
 
     //api 짐 리뷰 상세 조회
