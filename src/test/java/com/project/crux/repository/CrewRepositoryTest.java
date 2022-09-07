@@ -18,7 +18,6 @@ class CrewRepositoryTest {
     static String CREW_NAME = "문어크루";
     static String CREW_CONTENT = "문어크루 입니다.";
     static String CREW_IMG_URL = "https://img.freepik.com/premium-vector/cute-octopus-cartoon-hand-drawn-style_42349-125.jpg?w=826";
-    static Crew crew;
 
     @Autowired
     private CrewRepository crewRepository;
@@ -29,9 +28,9 @@ class CrewRepositoryTest {
         //when
         Crew savedCrew = crewRepository.save(new Crew(CREW_NAME, CREW_CONTENT, CREW_IMG_URL));
         //then
-        Assertions.assertThat(savedCrew.getName()).isEqualTo(crew.getName());
-        Assertions.assertThat(savedCrew.getContent()).isEqualTo(crew.getContent());
-        Assertions.assertThat(savedCrew.getImgUrl()).isEqualTo(crew.getImgUrl());
+        Assertions.assertThat(savedCrew.getName()).isEqualTo(CREW_NAME);
+        Assertions.assertThat(savedCrew.getContent()).isEqualTo(CREW_CONTENT);
+        Assertions.assertThat(savedCrew.getImgUrl()).isEqualTo(CREW_IMG_URL);
     }
 
     @Test
