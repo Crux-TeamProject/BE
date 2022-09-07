@@ -8,9 +8,9 @@ import com.project.crux.service.CrewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,5 +22,11 @@ public class CrewController {
     public ResponseEntity<?> createCrew(@RequestBody CrewRequestDto crewRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         CrewResponseDto crew = crewService.createCrew(crewRequestDto, userDetails);
         return ResponseEntity.ok(ResponseDto.success(crew));
+    }
+
+    @GetMapping("/crews")
+    public ResponseEntity<?> findAllCrew(@RequestParam Long lastCrewId, @RequestParam int size) {
+        List<CrewResponseDto> crewResponseDtoList = crewService.findAllCrew(lastCrewId, size);
+        return ResponseEntity.ok(ResponseDto.success(crewResponseDtoList));
     }
 }
