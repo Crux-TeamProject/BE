@@ -11,6 +11,7 @@ import com.project.crux.exception.ErrorCode;
 import com.project.crux.repository.CrewRepository;
 import com.project.crux.repository.MemberCrewRepository;
 import com.project.crux.repository.MemberRepository;
+import com.project.crux.security.jwt.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,9 +27,8 @@ public class CrewService {
     private final MemberCrewRepository memberCrewRepository;
     private final MemberRepository memberRepository;
 
-    public CrewResponseDto createCrew(CrewRequestDto crewRequestDto, Member member) {
-        verifyMember(member);
-
+    public CrewResponseDto createCrew(CrewRequestDto crewRequestDto, UserDetailsImpl userDetails) {
+        Member member = getMember(userDetails.getMember());
         String imgUrl = getImgUrl(crewRequestDto);
         Crew savedCrew = crewRepository.save(new Crew(crewRequestDto.getName(), crewRequestDto.getContent(), imgUrl));
 
@@ -43,7 +43,7 @@ public class CrewService {
         return crewRequestDto.getImgUrl() == null ? DEFAULT_IMAGE_URL : crewRequestDto.getImgUrl();
     }
 
-    private void verifyMember(Member member) {
-        memberRepository.findById(member.getId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    private Member getMember(Member member) {
+        return memberRepository.findById(member.getId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 }

@@ -20,7 +20,7 @@ public class CrewController {
 
     @PostMapping("/crews")
     public ResponseEntity<?> createCrew(@RequestBody CrewRequestDto crewRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        CrewResponseDto crew = crewService.createCrew(crewRequestDto, userDetails.getMember());
+        CrewResponseDto crew = crewService.createCrew(crewRequestDto, userDetails);
         return ResponseEntity.ok(ResponseDto.success(crew));
     }
 }

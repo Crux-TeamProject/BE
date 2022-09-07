@@ -29,6 +29,8 @@ public class MemberCrew {
     public MemberCrew(Member member, Crew crew) {
         this.member = member;
         this.crew = crew;
+        member.getMemberCrewList().add(this);
+        crew.getMemberCrewList().add(this);
     }
 
     public void updateStatus(Status status) {
