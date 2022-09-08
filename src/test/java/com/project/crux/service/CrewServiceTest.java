@@ -77,7 +77,6 @@ class CrewServiceTest {
             assertThat(crewResponseDto.getName()).isEqualTo(CREW_NAME);
             assertThat(crewResponseDto.getContent()).isEqualTo(CREW_CONTENT);
             assertThat(crewResponseDto.getImgUrl()).isEqualTo(CREW_IMG_URL);
-            assertThat(crewResponseDto.getCrewNum()).isEqualTo(1);
         }
 
 

@@ -39,4 +39,17 @@ public class CrewController {
         Page<CrewResponseDto> crewResponseDtoList = crewService.findAllPopularCrew(pageable);
         return ResponseEntity.ok(ResponseDto.success(crewResponseDtoList));
     }
+
+    //api 크루가입 신청
+    @PostMapping("crews/{crewId}")
+    public ResponseDto<String> registerSubmit(@PathVariable Long crewId,
+                                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseDto.success(crewService.registerSubmit(crewId, userDetails));
+    }
+
+    //api 크루 가입 승인
+    @PostMapping("crews/{crewId}/{memberId}")
+    public ResponseDto<String> registerPermit(@PathVariable Long crewId, @PathVariable Long memberId) {
+        return ResponseDto.success(crewService.registerPermit(crewId, memberId));
+    }
 }
