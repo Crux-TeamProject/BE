@@ -1,6 +1,7 @@
 package com.project.crux.controller;
 
 import com.project.crux.domain.request.CrewRequestDto;
+import com.project.crux.domain.response.CrewFindOneResponseDto;
 import com.project.crux.domain.response.CrewResponseDto;
 import com.project.crux.domain.response.ResponseDto;
 import com.project.crux.security.jwt.UserDetailsImpl;
@@ -44,8 +45,14 @@ public class CrewController {
 
     //크루 상세 조회
     @GetMapping("/crews/{crewId}")
-    public ResponseDto<?> findCrew(@PathVariable Long crewId) {
+    public ResponseDto<CrewFindOneResponseDto> findCrew(@PathVariable Long crewId) {
         return ResponseDto.success(crewService.findCrew(crewId));
+    }
+
+    //크루 수정
+    @PutMapping("/crews/{crewId}")
+    public ResponseDto<CrewResponseDto> updateCrew(@PathVariable Long crewId, @RequestBody CrewRequestDto crewRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseDto.success(crewService.updateCrew(crewId, crewRequestDto, userDetails));
     }
 
     //api 크루가입 신청

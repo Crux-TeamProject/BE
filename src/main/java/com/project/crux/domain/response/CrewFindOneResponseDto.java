@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-public class FindOneCrewResponseDto {
+public class CrewFindOneResponseDto {
     private Long id;
     private String name;
     private String content;
@@ -16,7 +16,7 @@ public class FindOneCrewResponseDto {
     private List<MemberCrewResponseDto> memberList;
     private int crewNum;
 
-    public FindOneCrewResponseDto(Crew crew) {
+    public CrewFindOneResponseDto(Crew crew) {
         this.id = crew.getId();
         this.name = crew.getName();
         this.content = crew.getContent();

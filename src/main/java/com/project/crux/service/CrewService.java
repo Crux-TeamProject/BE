@@ -6,7 +6,7 @@ import com.project.crux.domain.Member;
 import com.project.crux.domain.MemberCrew;
 import com.project.crux.domain.request.CrewRequestDto;
 import com.project.crux.domain.response.CrewResponseDto;
-import com.project.crux.domain.response.FindOneCrewResponseDto;
+import com.project.crux.domain.response.CrewFindOneResponseDto;
 import com.project.crux.exception.CustomException;
 import com.project.crux.exception.ErrorCode;
 import com.project.crux.repository.CrewRepository;
@@ -50,10 +50,7 @@ public class CrewService {
         return crewRequestDto.getImgUrl() == null ? DEFAULT_IMAGE_URL : crewRequestDto.getImgUrl();
     }
 
-    private Member getMember(Member member) {
-        return memberRepository.findById(member.getId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-    }
-
+    @Transactional(readOnly = true)
     public List<CrewResponseDto> findAllCrew(Long lastCrewId, int size) {
         verifyLastCrewId(lastCrewId);
         PageRequest pageRequest = PageRequest.of(0, size);
@@ -67,13 +64,14 @@ public class CrewService {
         }
     }
 
+    @Transactional(readOnly = true)
     public Page<CrewResponseDto> findAllPopularCrew(Pageable pageable) {
         return crewRepository.findAll(pageable).map(CrewResponseDto::from);
     }
 
     public String registerSubmit(Long crewId, UserDetailsImpl userDetails) {
 
-        Crew crew = crewRepository.findById(crewId).orElseThrow(()-> new CustomException(ErrorCode.CREW_NOT_FOUND));
+        Crew crew = getCrew(crewId);
         Member member = userDetails.getMember();
 
         if(memberCrewRepository.findByCrewAndMember(crew,member).isPresent()){
@@ -87,16 +85,43 @@ public class CrewService {
 
     public String registerPermit(Long crewId, Long memberId) {
 
-        Crew crew = crewRepository.findById(crewId).orElseThrow(()-> new CustomException(ErrorCode.CREW_NOT_FOUND));
+        Crew crew = getCrew(crewId);
         Member member = memberRepository.findById(memberId).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        MemberCrew memberCrew = memberCrewRepository.findByCrewAndMember(crew,member).orElseThrow(()-> new CustomException(ErrorCode.MEMBERCREW_NOT_FOUND));
+        MemberCrew memberCrew = getMemberCrew(crew, member);
         memberCrew.updateStatus(Status.PERMIT);
         return "크루 가입 승인 완료";
     }
 
-    public FindOneCrewResponseDto findCrew(Long crewId) {
-        Crew crew = crewRepository.findById(crewId).orElseThrow(() -> new CustomException(ErrorCode.CREW_NOT_FOUND));
-        return new FindOneCrewResponseDto(crew);
+    @Transactional(readOnly = true)
+    public CrewFindOneResponseDto findCrew(Long crewId) {
+        Crew crew = getCrew(crewId);
+        return new CrewFindOneResponseDto(crew);
+    }
+
+    public CrewResponseDto updateCrew(Long crewId, CrewRequestDto crewRequestDto, UserDetailsImpl userDetails) {
+        Crew crew = getCrew(crewId);
+        MemberCrew memberCrew = getMemberCrew(crew, userDetails.getMember());
+        checkPermission(memberCrew);
+        crew.update(crewRequestDto.getName(), crewRequestDto.getContent(), crewRequestDto.getImgUrl());
+        return CrewResponseDto.from(crew);
+    }
+
+    private Member getMember(Member member) {
+        return memberRepository.findById(member.getId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    private MemberCrew getMemberCrew(Crew crew, Member member) {
+        return memberCrewRepository.findByCrewAndMember(crew, member).orElseThrow(()-> new CustomException(ErrorCode.MEMBERCREW_NOT_FOUND));
+    }
+
+    private Crew getCrew(Long crewId) {
+        return crewRepository.findById(crewId).orElseThrow(()-> new CustomException(ErrorCode.CREW_NOT_FOUND));
+    }
+
+    private void checkPermission(MemberCrew memberCrew) {
+        if (memberCrew.getStatus() == Status.SUBMIT) {
+            throw new CustomException(ErrorCode.UPDATE_CREW_PERMISSION_ERROR);
+        }
     }
 }
