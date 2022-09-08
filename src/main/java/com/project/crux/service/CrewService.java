@@ -35,7 +35,7 @@ public class CrewService {
     private final MemberRepository memberRepository;
 
     public CrewResponseDto createCrew(CrewRequestDto crewRequestDto, UserDetailsImpl userDetails) {
-        Member member = getMember(userDetails.getMember());
+        Member member = getMember(userDetails.getMember().getId());
         String imgUrl = getImgUrl(crewRequestDto);
         Crew savedCrew = crewRepository.save(new Crew(crewRequestDto.getName(), crewRequestDto.getContent(), imgUrl));
 
@@ -86,7 +86,7 @@ public class CrewService {
     public String registerPermit(Long crewId, Long memberId) {
 
         Crew crew = getCrew(crewId);
-        Member member = memberRepository.findById(memberId).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
+        Member member = getMember(memberId);
 
         MemberCrew memberCrew = getMemberCrew(crew, member);
         memberCrew.updateStatus(Status.PERMIT);
@@ -115,8 +115,39 @@ public class CrewService {
         return "크루 삭제 완료";
     }
 
-    private Member getMember(Member member) {
-        return memberRepository.findById(member.getId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    public String withdrawCrew(Long crewId, UserDetailsImpl userDetails) {
+        Crew crew = getCrew(crewId);
+        MemberCrew memberCrew = getMemberCrew(crew, userDetails.getMember());
+        checkAdminOrPermit(memberCrew);
+        memberCrewRepository.delete(memberCrew);
+        return "크루 탈퇴 완료";
+    }
+
+    public String dropMemberCrew(Long crewId, Long memberId, UserDetailsImpl userDetails) {
+        Crew crew = getCrew(crewId);
+        Member toMember = getMember(memberId);
+        MemberCrew toMemberCrew = getMemberCrew(crew, toMember);
+        MemberCrew fromMemberCrew = getMemberCrew(crew, userDetails.getMember());
+        checkAdmin(fromMemberCrew);
+        checkPermit(toMemberCrew);
+        memberCrewRepository.delete(toMemberCrew);
+        return "크루 추방 완료";
+    }
+
+    private void checkPermit(MemberCrew memberCrew) {
+        if (memberCrew.getStatus() != Status.PERMIT) {
+            throw new CustomException(ErrorCode.NOT_PERMIT);
+        }
+    }
+
+    private void checkAdminOrPermit(MemberCrew memberCrew) {
+        if (memberCrew.getStatus() == Status.SUBMIT) {
+            throw new CustomException(ErrorCode.NOT_ADMIN_OR_PERMIT);
+        }
+    }
+
+    private Member getMember(Long id) {
+        return memberRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 
     private MemberCrew getMemberCrew(Crew crew, Member member) {
@@ -129,7 +160,7 @@ public class CrewService {
 
     private void checkAdmin(MemberCrew memberCrew) {
         if (memberCrew.getStatus() != Status.ADMIN) {
-            throw new CustomException(ErrorCode.NOT_ADMIN_PERMISSION_ERROR);
+            throw new CustomException(ErrorCode.NOT_ADMIN);
         }
     }
 }

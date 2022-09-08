@@ -28,8 +28,9 @@ public enum ErrorCode {
     /*
     403 FORBIDDEN : 권한 없음
      */
-    NOT_ADMIN_PERMISSION_ERROR(HttpStatus.FORBIDDEN, "크루장만 가능합니다"),
-
+    NOT_ADMIN(HttpStatus.FORBIDDEN, "크루장만 가능합니다"),
+    NOT_PERMIT(HttpStatus.FORBIDDEN, "크루원이 아닙니다"),
+    NOT_ADMIN_OR_PERMIT(HttpStatus.FORBIDDEN, "크루에 가입된 사람이 아닙니다"),
     /*
     404 Not Found
      */
