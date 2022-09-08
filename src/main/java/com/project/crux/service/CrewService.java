@@ -13,7 +13,9 @@ import com.project.crux.repository.MemberCrewRepository;
 import com.project.crux.repository.MemberRepository;
 import com.project.crux.security.jwt.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,4 +66,7 @@ public class CrewService {
         }
     }
 
+    public Page<CrewResponseDto> findAllPopularCrew(Pageable pageable) {
+        return crewRepository.findAll(pageable).map(CrewResponseDto::from);
+    }
 }

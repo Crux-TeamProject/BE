@@ -4,6 +4,7 @@ import com.project.crux.exception.ErrorCode;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Formula;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
@@ -31,6 +32,9 @@ public class Crew {
 
     @OneToMany(mappedBy = "crew", cascade = CascadeType.REMOVE)
     private List<MemberCrew> memberCrewList = new ArrayList<>();
+
+    @Formula("(select count(*) from member_crew mc where mc.crew_id = id)")
+    private int countOfMemberCrewList;
 
     @Builder
     public Crew(String name, String content, String imgUrl) {
