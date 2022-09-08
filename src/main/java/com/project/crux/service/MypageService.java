@@ -1,6 +1,7 @@
 package com.project.crux.service;
 
 import com.project.crux.domain.*;
+import com.project.crux.domain.request.MypageRequestDto;
 import com.project.crux.domain.response.CrewResponseDto;
 import com.project.crux.domain.response.LikeGymResponseDto;
 import com.project.crux.domain.response.MypageResponseDto;
@@ -10,8 +11,10 @@ import com.project.crux.exception.ErrorCode;
 import com.project.crux.repository.LikeGymRepository;
 import com.project.crux.repository.MemberCrewRepository;
 import com.project.crux.repository.MemberRepository;
+import com.project.crux.security.jwt.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,5 +46,11 @@ public class MypageService {
             crewResponseDtos.add(CrewResponseDto.from(crew));
         }
         return ResponseDto.success(new MypageResponseDto(member, crewResponseDtos, likeGymResponseDtos));
+    }
+    @Transactional
+    public ResponseDto<?> editMypage(UserDetailsImpl userDetails, MypageRequestDto mypageRequestDto) {
+        Member member = memberRepository.findById(userDetails.getMember().getId()).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
+        member.update(mypageRequestDto);
+       return ResponseDto.success("수정 완료");
     }
 }

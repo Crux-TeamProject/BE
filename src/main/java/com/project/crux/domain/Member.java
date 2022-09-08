@@ -1,6 +1,7 @@
 package com.project.crux.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.project.crux.domain.request.MypageRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -64,5 +65,10 @@ public class Member {
         }
         Member member = (Member) o;
         return id != null && Objects.equals(id, member.id);
+    }
+
+    public void update(MypageRequestDto mypageRequestDto) {
+        this.content = mypageRequestDto.getContent();
+        this.nickname = mypageRequestDto.getNickname();
     }
 }
