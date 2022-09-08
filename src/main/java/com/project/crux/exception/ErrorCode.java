@@ -26,6 +26,11 @@ public enum ErrorCode {
     INVALID_REVIEW_DELETE(HttpStatus.UNAUTHORIZED,"리뷰 삭제 권한이 없습니다"),
 
     /*
+    403 FORBIDDEN : 권한 없음
+     */
+    NOT_ADMIN_PERMISSION_ERROR(HttpStatus.FORBIDDEN, "크루장만 가능합니다"),
+
+    /*
     404 Not Found
      */
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 유저 정보를 찾을 수 없습니다"),

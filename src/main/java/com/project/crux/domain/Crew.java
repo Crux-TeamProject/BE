@@ -43,4 +43,10 @@ public class Crew {
         this.content = content;
         this.imgUrl = imgUrl;
     }
+
+    public void update(String name, String content, String imgUrl) {
+        this.name = name;
+        this.content = content;
+        this.imgUrl = imgUrl;
+    }
 }
