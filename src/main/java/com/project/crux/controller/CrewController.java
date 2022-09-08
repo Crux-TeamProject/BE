@@ -55,6 +55,12 @@ public class CrewController {
         return ResponseDto.success(crewService.updateCrew(crewId, crewRequestDto, userDetails));
     }
 
+    //크루 삭제
+    @DeleteMapping("/crews/{crewId}")
+    public ResponseDto<String> deleteCrew(@PathVariable Long crewId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseDto.success(crewService.deleteCrew(crewId, userDetails));
+    }
+
     //api 크루가입 신청
     @PostMapping("crews/{crewId}")
     public ResponseDto<String> registerSubmit(@PathVariable Long crewId,

@@ -13,4 +13,6 @@ public interface MemberCrewRepository extends JpaRepository<MemberCrew, Long> {
     List<MemberCrew> findAllByMember(Member member);
 
     Optional<MemberCrew> findByCrewAndMember(Crew crew, Member member);
+
+    List<MemberCrew> findAllByCrewId(Long crewId);
 }

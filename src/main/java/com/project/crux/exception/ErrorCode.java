@@ -28,7 +28,7 @@ public enum ErrorCode {
     /*
     403 FORBIDDEN : 권한 없음
      */
-    UPDATE_CREW_PERMISSION_ERROR(HttpStatus.FORBIDDEN, "크루에 가입된 회원만 수정할 수 있습니다"),
+    NOT_ADMIN_PERMISSION_ERROR(HttpStatus.FORBIDDEN, "크루장만 가능합니다"),
 
     /*
     404 Not Found

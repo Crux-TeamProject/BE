@@ -102,9 +102,17 @@ public class CrewService {
     public CrewResponseDto updateCrew(Long crewId, CrewRequestDto crewRequestDto, UserDetailsImpl userDetails) {
         Crew crew = getCrew(crewId);
         MemberCrew memberCrew = getMemberCrew(crew, userDetails.getMember());
-        checkPermission(memberCrew);
+        checkAdmin(memberCrew);
         crew.update(crewRequestDto.getName(), crewRequestDto.getContent(), crewRequestDto.getImgUrl());
         return CrewResponseDto.from(crew);
+    }
+
+    public String deleteCrew(Long crewId, UserDetailsImpl userDetails) {
+        Crew crew = getCrew(crewId);
+        MemberCrew memberCrew = getMemberCrew(crew, userDetails.getMember());
+        checkAdmin(memberCrew);
+        memberCrewRepository.deleteAll(memberCrewRepository.findAllByCrewId(crewId));
+        return "크루 삭제 완료";
     }
 
     private Member getMember(Member member) {
@@ -119,9 +127,9 @@ public class CrewService {
         return crewRepository.findById(crewId).orElseThrow(()-> new CustomException(ErrorCode.CREW_NOT_FOUND));
     }
 
-    private void checkPermission(MemberCrew memberCrew) {
-        if (memberCrew.getStatus() == Status.SUBMIT) {
-            throw new CustomException(ErrorCode.UPDATE_CREW_PERMISSION_ERROR);
+    private void checkAdmin(MemberCrew memberCrew) {
+        if (memberCrew.getStatus() != Status.ADMIN) {
+            throw new CustomException(ErrorCode.NOT_ADMIN_PERMISSION_ERROR);
         }
     }
 }
