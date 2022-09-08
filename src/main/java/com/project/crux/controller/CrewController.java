@@ -10,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,22 +21,31 @@ public class CrewController {
 
     private final CrewService crewService;
 
+    //크루 생성
     @PostMapping("/crews")
-    public ResponseEntity<?> createCrew(@RequestBody CrewRequestDto crewRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseDto<CrewResponseDto> createCrew(@RequestBody CrewRequestDto crewRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         CrewResponseDto crew = crewService.createCrew(crewRequestDto, userDetails);
-        return ResponseEntity.ok(ResponseDto.success(crew));
+        return ResponseDto.success(crew);
     }
 
+    //크루 전체 조회
     @GetMapping("/crews")
-    public ResponseEntity<?> findAllCrew(@RequestParam Long lastCrewId, @RequestParam int size) {
+    public ResponseDto<List<CrewResponseDto>> findAllCrew(@RequestParam Long lastCrewId, @RequestParam int size) {
         List<CrewResponseDto> crewResponseDtoList = crewService.findAllCrew(lastCrewId, size);
-        return ResponseEntity.ok(ResponseDto.success(crewResponseDtoList));
+        return ResponseDto.success(crewResponseDtoList);
     }
 
+    //인기 크루 조회
     @GetMapping("/crews/popular")
-    public ResponseEntity<?> findAllPopularCrew(@PageableDefault(sort = "countOfMemberCrewList", direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseDto<Page<CrewResponseDto>> findAllPopularCrew(@PageableDefault(sort = "countOfMemberCrewList", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<CrewResponseDto> crewResponseDtoList = crewService.findAllPopularCrew(pageable);
-        return ResponseEntity.ok(ResponseDto.success(crewResponseDtoList));
+        return ResponseDto.success(crewResponseDtoList);
+    }
+
+    //크루 상세 조회
+    @GetMapping("/crews/{crewId}")
+    public ResponseDto<?> findCrew(@PathVariable Long crewId) {
+        return ResponseDto.success(crewService.findCrew(crewId));
     }
 
     //api 크루가입 신청
