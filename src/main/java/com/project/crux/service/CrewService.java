@@ -6,6 +6,7 @@ import com.project.crux.domain.Member;
 import com.project.crux.domain.MemberCrew;
 import com.project.crux.domain.request.CrewRequestDto;
 import com.project.crux.domain.response.CrewResponseDto;
+import com.project.crux.domain.response.FindOneCrewResponseDto;
 import com.project.crux.exception.CustomException;
 import com.project.crux.exception.ErrorCode;
 import com.project.crux.repository.CrewRepository;
@@ -92,5 +93,10 @@ public class CrewService {
         MemberCrew memberCrew = memberCrewRepository.findByCrewAndMember(crew,member).orElseThrow(()-> new CustomException(ErrorCode.MEMBERCREW_NOT_FOUND));
         memberCrew.updateStatus(Status.PERMIT);
         return "크루 가입 승인 완료";
+    }
+
+    public FindOneCrewResponseDto findCrew(Long crewId) {
+        Crew crew = crewRepository.findById(crewId).orElseThrow(() -> new CustomException(ErrorCode.CREW_NOT_FOUND));
+        return new FindOneCrewResponseDto(crew);
     }
 }
