@@ -115,6 +115,20 @@ public class CrewService {
         return "크루 삭제 완료";
     }
 
+    public String withdrawCrew(Long crewId, UserDetailsImpl userDetails) {
+        Crew crew = getCrew(crewId);
+        MemberCrew memberCrew = getMemberCrew(crew, userDetails.getMember());
+        checkAdminOrPermit(memberCrew);
+        memberCrewRepository.delete(memberCrew);
+        return "크루 탈퇴 완료";
+    }
+
+    private void checkAdminOrPermit(MemberCrew memberCrew) {
+        if (memberCrew.getStatus() == Status.SUBMIT) {
+            throw new CustomException(ErrorCode.NOT_ADMIN_OR_PERMIT_PERMISSION);
+        }
+    }
+
     private Member getMember(Member member) {
         return memberRepository.findById(member.getId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
@@ -129,7 +143,7 @@ public class CrewService {
 
     private void checkAdmin(MemberCrew memberCrew) {
         if (memberCrew.getStatus() != Status.ADMIN) {
-            throw new CustomException(ErrorCode.NOT_ADMIN_PERMISSION_ERROR);
+            throw new CustomException(ErrorCode.NOT_ADMIN_PERMISSION);
         }
     }
 }

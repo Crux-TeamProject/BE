@@ -73,4 +73,10 @@ public class CrewController {
     public ResponseDto<String> registerPermit(@PathVariable Long crewId, @PathVariable Long memberId) {
         return ResponseDto.success(crewService.registerPermit(crewId, memberId));
     }
+
+    //크루 탈퇴
+    @DeleteMapping("/memberCrews/{crewId}")
+    public ResponseDto<String> withdrawCrew(@PathVariable Long crewId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseDto.success(crewService.withdrawCrew(crewId, userDetails));
+    }
 }
