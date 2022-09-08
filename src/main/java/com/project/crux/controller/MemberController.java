@@ -5,7 +5,6 @@ import com.project.crux.domain.request.SignupRequestDto;
 import com.project.crux.domain.response.ResponseDto;
 import com.project.crux.security.jwt.UserDetailsImpl;
 import com.project.crux.service.MemberService;
-import com.project.crux.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
