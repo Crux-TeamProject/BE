@@ -16,6 +16,7 @@ public enum ErrorCode {
     INVALID_AVGSCORE(HttpStatus.BAD_REQUEST, "평균 평점은 0에서 5사이여야 합니다"),
     INVALID_ARTICLEID(HttpStatus.BAD_REQUEST, "ID 값이 올바르지 않습니다"),
     INVALID_CREW_NAME(HttpStatus.BAD_REQUEST, "크루명을 입력해주세요"),
+    ADMIN_REGISTER_SUBMIT(HttpStatus.BAD_REQUEST, "크루 생성자는 가입신청을 할 수 없습니다."),
 
     /*
     401 UNAUTHORIZED : 인증되지 않은 사용자
@@ -29,7 +30,10 @@ public enum ErrorCode {
      */
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 유저 정보를 찾을 수 없습니다"),
     GYM_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 클라이밍짐 정보를 찾을 수 없습니다"),
-    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 리뷰 정보를 찾을 수 없습니다" );
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 리뷰 정보를 찾을 수 없습니다" ),
+    CREW_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 크루 정보를 찾을 수 없습니다" ),
+    MEMBERCREW_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 멤버의 크루 가입 정보를 찾을 수 없습니다" );
+
 
 
 

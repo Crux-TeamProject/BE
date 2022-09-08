@@ -1,6 +1,7 @@
 package com.project.crux.domain;
 
 import com.project.crux.common.Status;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -29,8 +30,6 @@ public class MemberCrew {
     public MemberCrew(Member member, Crew crew) {
         this.member = member;
         this.crew = crew;
-        member.getMemberCrewList().add(this);
-        crew.getMemberCrewList().add(this);
     }
 
     public void updateStatus(Status status) {
