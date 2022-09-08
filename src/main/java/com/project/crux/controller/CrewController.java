@@ -79,4 +79,10 @@ public class CrewController {
     public ResponseDto<String> withdrawCrew(@PathVariable Long crewId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseDto.success(crewService.withdrawCrew(crewId, userDetails));
     }
+
+    //크루 추방
+    @DeleteMapping("/memberCrews/{crewId}/{memberId}")
+    public ResponseDto<String> dropMemberCrew(@PathVariable Long crewId, @PathVariable Long memberId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseDto.success(crewService.dropMemberCrew(crewId, memberId, userDetails));
+    }
 }
