@@ -13,7 +13,7 @@ public class CrewFindOneResponseDto {
     private String name;
     private String content;
     private String imgUrl;
-    private List<MemberCrewResponseDto> memberList;
+    private List<CrewMemberResponseDto> memberList;
     private int crewNum;
 
     public CrewFindOneResponseDto(Crew crew) {
@@ -21,9 +21,9 @@ public class CrewFindOneResponseDto {
         this.name = crew.getName();
         this.content = crew.getContent();
         this.imgUrl = crew.getImgUrl();
-        this.memberList = crew.getMemberCrewList().stream()
+        this.memberList = crew.getCrewMemberList().stream()
                 .filter(memberCrew -> !memberCrew.getStatus().equals(Status.SUBMIT))
-                .map(MemberCrewResponseDto::new).collect(Collectors.toList());
+                .map(CrewMemberResponseDto::new).collect(Collectors.toList());
         this.crewNum = crew.getCountOfMemberCrewList();
     }
 }

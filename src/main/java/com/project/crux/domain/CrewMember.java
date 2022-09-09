@@ -1,7 +1,6 @@
 package com.project.crux.domain;
 
 import com.project.crux.common.Status;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +9,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity
-public class MemberCrew {
+public class CrewMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,7 +26,7 @@ public class MemberCrew {
     @Enumerated(value = EnumType.STRING)
     private Status status = Status.SUBMIT;
 
-    public MemberCrew(Member member, Crew crew) {
+    public CrewMember(Member member, Crew crew) {
         this.member = member;
         this.crew = crew;
     }

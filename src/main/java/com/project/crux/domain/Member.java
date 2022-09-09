@@ -38,7 +38,7 @@ public class Member {
     private String content;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
-    private List<MemberCrew> memberCrewList = new ArrayList<>();
+    private List<CrewMember> crewMemberList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<LikeGym> likeGymList;

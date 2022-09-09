@@ -2,13 +2,13 @@ package com.project.crux.service;
 
 import com.project.crux.domain.Crew;
 import com.project.crux.domain.Member;
-import com.project.crux.domain.MemberCrew;
+import com.project.crux.domain.CrewMember;
 import com.project.crux.domain.request.CrewRequestDto;
 import com.project.crux.domain.response.CrewResponseDto;
 import com.project.crux.exception.CustomException;
 import com.project.crux.exception.ErrorCode;
 import com.project.crux.repository.CrewRepository;
-import com.project.crux.repository.MemberCrewRepository;
+import com.project.crux.repository.CrewMemberRepository;
 import com.project.crux.repository.MemberRepository;
 import com.project.crux.security.jwt.UserDetailsImpl;
 import org.assertj.core.api.Assertions;
@@ -53,7 +53,7 @@ class CrewServiceTest {
     private MemberRepository memberRepository;
 
     @Mock
-    private MemberCrewRepository memberCrewRepository;
+    private CrewMemberRepository crewMemberRepository;
 
     @Nested
     @DisplayName("크루 생성")
@@ -67,7 +67,7 @@ class CrewServiceTest {
 
             when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(getSavedMember()));
             when(crewRepository.save(any(Crew.class))).thenReturn(getSavedCrew());
-            when(memberCrewRepository.save(any(MemberCrew.class))).thenReturn(null);
+            when(crewMemberRepository.save(any(CrewMember.class))).thenReturn(null);
 
             //when
             CrewResponseDto crewResponseDto = crewService.createCrew(crewRequestDto, userDetails);
