@@ -57,31 +57,16 @@ class GymServiceTest {
         void getPopularGyms() {
 
             //given
-            double lastAvgScore = 5;
-            PageRequest pageRequest = PageRequest.of(0, 5, Sort.by("avgScore").descending());
-            when(gymRepository.findByAvgScoreLessThan(lastAvgScore, pageRequest)).thenReturn(gymPage);
+            Pageable pageable = null;
+            when(gymRepository.findAll(pageable)).thenReturn(gymPage);
 
             //when
-            final List<GymResponseDto> gymResponseDtos = gymService.getPopularGyms(lastAvgScore, 5);
+            final List<GymResponseDto> gymResponseDtos = gymService.getPopularGyms(pageable);
 
             //then
             assertThat(gymResponseDtos.size()).isEqualTo(5);
         }
 
-        @Test
-        @DisplayName("평점 범위 밖으로 설정")
-        void getPopularGyms_failed() {
-
-            //given
-            double lastAvgScore = 7;
-
-            //when
-            CustomException exception = Assertions.assertThrows(CustomException.class,
-                    () -> gymService.getPopularGyms(lastAvgScore, 5));
-
-            //then
-            assertThat("평균 평점은 0에서 5사이여야 합니다").isEqualTo(exception.getErrorCode().getErrorMessage());
-        }
     }
 
     @Nested

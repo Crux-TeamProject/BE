@@ -14,6 +14,7 @@ import com.project.crux.security.jwt.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,14 +32,9 @@ public class GymService {
     private final ReviewPhotoRepository reviewPhotoRepository;
 
 
-    public List<GymResponseDto> getPopularGyms(double lastAvgScore, int size) {
+    public List<GymResponseDto> getPopularGyms(Pageable pageable) {
 
-        if (lastAvgScore < 0 || 5 < lastAvgScore) {
-            throw new CustomException(ErrorCode.INVALID_AVGSCORE);
-        }
-        PageRequest pageRequest = PageRequest.of(0, size, Sort.by("avgScore").descending());
-
-        Page<Gym> gyms = gymRepository.findByAvgScoreLessThan(lastAvgScore, pageRequest);
+        Page<Gym> gyms = gymRepository.findAll(pageable);
 
         return pageToDtoList(gyms);
     }

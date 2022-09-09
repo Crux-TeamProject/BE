@@ -4,6 +4,9 @@ import com.project.crux.domain.response.ResponseDto;
 import com.project.crux.security.jwt.UserDetailsImpl;
 import com.project.crux.service.GymService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,8 +18,8 @@ public class GymController {
 
     //api 인기 클라이밍짐 조회
     @GetMapping("/gyms/popular")
-    public ResponseDto<?> getPopularGyms(@RequestParam double lastAvgScore, @RequestParam int size) {
-        return ResponseDto.success(gymService.getPopularGyms(lastAvgScore, size));
+    public ResponseDto<?> getPopularGyms(@PageableDefault(sort = "avgScore", direction = Sort.Direction.DESC) Pageable pageable) {
+        return ResponseDto.success(gymService.getPopularGyms(pageable));
     }
 
     //api 클라이밍짐 검색 조회
