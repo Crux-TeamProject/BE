@@ -258,42 +258,4 @@ class ReviewServiceTest {
         }
     }
 
-
-    @Nested
-    @DisplayName("리뷰 전체 조회")
-    class getAllReviewTest {
-
-        @Test
-        @DisplayName("성공")
-        void getAllReviews() {
-
-            //given
-            List<Review> reviewList = new ArrayList<>();
-            reviewList.add(review);
-            reviewList.add(review2);
-            when(gymRepository.findById(1L)).thenReturn(Optional.of(gym));
-            when(reviewRepository.findByGym(gym)).thenReturn(reviewList);
-            when(reviewPhotoRepository.findAllByReview(review)).thenReturn(new ArrayList<>());
-
-            //when
-            List<ReviewResponseDto> reviewResponseDtoList = reviewService.getAllReviews(1L);
-
-            //then
-            assertThat(reviewResponseDtoList.size()).isEqualTo(2);
-            assertThat(reviewResponseDtoList.get(1).getScore()).isEqualTo(5);
-        }
-
-        @Test
-        @DisplayName("Review Id 조회 실패")
-        void getAllReviews_failed() {
-
-            //when
-            CustomException exception = Assertions.assertThrows(CustomException.class,
-                    () -> reviewService.getAllReviews(1L));
-
-            //then
-            assertThat( "해당 클라이밍짐 정보를 찾을 수 없습니다").isEqualTo(exception.getErrorCode().getErrorMessage());
-        }
-
-    }
 }

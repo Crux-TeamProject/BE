@@ -44,10 +44,5 @@ public class ReviewController {
         return ResponseDto.success(reviewService.getReview(reviewId));
     }
 
-    //api 짐 리뷰 전체 조회
-    @GetMapping("/reviews/{gymId}")
-    public ResponseDto<List<ReviewResponseDto>> getAllReviews(@PathVariable Long gymId) {
-        return ResponseDto.success(reviewService.getAllReviews(gymId));
-    }
 
 }

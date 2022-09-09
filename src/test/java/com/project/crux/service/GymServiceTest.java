@@ -1,12 +1,12 @@
 package com.project.crux.service;
 
-import com.project.crux.domain.Gym;
-import com.project.crux.domain.LikeGym;
-import com.project.crux.domain.Member;
+import com.project.crux.domain.*;
 import com.project.crux.domain.response.GymResponseDto;
 import com.project.crux.exception.CustomException;
 import com.project.crux.repository.GymRepository;
 import com.project.crux.repository.LikeGymRepository;
+import com.project.crux.repository.ReviewPhotoRepository;
+import com.project.crux.repository.ReviewRepository;
 import com.project.crux.security.jwt.UserDetailsImpl;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,6 +31,10 @@ class GymServiceTest {
     private GymRepository gymRepository;
     @Mock
     private LikeGymRepository likeGymRepository;
+    @Mock
+    private ReviewRepository reviewRepository;
+    @Mock
+    private ReviewPhotoRepository reviewPhotoRepository;
 
     static Page<Gym> gymPage;
 
@@ -127,7 +131,14 @@ class GymServiceTest {
 
             //given
             Long gymId = 3L;
-            when(gymRepository.findById(gymId)).thenReturn(Optional.of(new Gym("클라이밍짐", "주소", "전화번호",3)));
+            Gym gym = new Gym("클라이밍짐", "주소", "전화번호",3);
+            List<Review> reviewList = new ArrayList<>();
+            List<ReviewPhoto> reviewPhotoList = new ArrayList<>();
+            reviewList.add(new Review());
+
+            when(gymRepository.findById(gymId)).thenReturn(Optional.of(gym));
+            when(reviewRepository.findByGym(gym)).thenReturn(reviewList);
+            when(reviewPhotoRepository.findAllByReview(reviewList.get(0))).thenReturn(reviewPhotoList);
 
             //when
             final GymResponseDto gymResponseDto = gymService.getGym(gymId);
@@ -137,6 +148,7 @@ class GymServiceTest {
             assertThat(gymResponseDto.getLocation()).isEqualTo("주소");
             assertThat(gymResponseDto.getPhone()).isEqualTo("전화번호");
             assertThat(gymResponseDto.getAvgScore()).isEqualTo(3);
+            assertThat(gymResponseDto.getReviews().size()).isEqualTo(1);
         }
 
         @Test
