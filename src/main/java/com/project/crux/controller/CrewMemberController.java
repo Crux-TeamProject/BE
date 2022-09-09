@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class CrewMemberController {
@@ -44,9 +46,15 @@ public class CrewMemberController {
 
     //크루 사진 등록
     @PostMapping("/crew-posts/{crewId}")
-    public ResponseDto<CrewPostResponseDto> createCrewPhotos(@PathVariable Long crewId,
+    public ResponseDto<CrewPostResponseDto> createCrewPost(@PathVariable Long crewId,
                                                              @RequestBody CrewPhotoRequestDto crewPhotoRequestDto,
                                                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseDto.success(crewMemberService.createCrewPost(crewId, crewPhotoRequestDto, userDetails));
+    }
+
+    //크루 사진 조회
+    @GetMapping("/crew-posts/{crewId}")
+    public ResponseDto<List<CrewPostResponseDto>> findAllCrewPosts(@PathVariable Long crewId, @RequestParam Long lastCrewPostId, @RequestParam int size) {
+        return ResponseDto.success(crewMemberService.findAllCrewPosts(crewId, lastCrewPostId, size));
     }
 }
