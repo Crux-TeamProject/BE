@@ -1,14 +1,13 @@
 package com.project.crux.controller;
 
+import com.project.crux.domain.request.CrewPhotoRequestDto;
+import com.project.crux.domain.response.CrewPostResponseDto;
 import com.project.crux.domain.response.ResponseDto;
 import com.project.crux.security.jwt.UserDetailsImpl;
 import com.project.crux.service.CrewMemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,13 +30,23 @@ public class CrewMemberController {
 
     //크루 탈퇴
     @DeleteMapping("/crew-members/{crewId}")
-    public ResponseDto<String> withdrawCrew(@PathVariable Long crewId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseDto<String> withdrawCrew(@PathVariable Long crewId,
+                                            @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseDto.success(crewMemberService.withdrawCrew(crewId, userDetails));
     }
 
     //크루 추방
     @DeleteMapping("/crew-members/{crewId}/{memberId}")
-    public ResponseDto<String> dropMemberCrew(@PathVariable Long crewId, @PathVariable Long memberId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseDto<String> dropMemberCrew(@PathVariable Long crewId, @PathVariable Long memberId,
+                                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseDto.success(crewMemberService.dropMemberCrew(crewId, memberId, userDetails));
+    }
+
+    //크루 사진 등록
+    @PostMapping("/crew-posts/{crewId}")
+    public ResponseDto<CrewPostResponseDto> createCrewPhotos(@PathVariable Long crewId,
+                                                             @RequestBody CrewPhotoRequestDto crewPhotoRequestDto,
+                                                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseDto.success(crewMemberService.createCrewPost(crewId, crewPhotoRequestDto, userDetails));
     }
 }

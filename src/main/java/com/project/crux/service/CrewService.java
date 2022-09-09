@@ -77,7 +77,7 @@ public class CrewService {
 
     public CrewResponseDto updateCrew(Long crewId, CrewRequestDto crewRequestDto, UserDetailsImpl userDetails) {
         Crew crew = getCrew(crewId);
-        CrewMember crewMember = getMemberCrew(crew, userDetails.getMember());
+        CrewMember crewMember = getCrewMember(crew, userDetails.getMember());
         checkAdmin(crewMember);
         crew.update(crewRequestDto.getName(), crewRequestDto.getContent(), crewRequestDto.getImgUrl());
         return CrewResponseDto.from(crew);
@@ -85,7 +85,7 @@ public class CrewService {
 
     public String deleteCrew(Long crewId, UserDetailsImpl userDetails) {
         Crew crew = getCrew(crewId);
-        CrewMember crewMember = getMemberCrew(crew, userDetails.getMember());
+        CrewMember crewMember = getCrewMember(crew, userDetails.getMember());
         checkAdmin(crewMember);
         crewMemberRepository.deleteAll(crewMemberRepository.findAllByCrewId(crewId));
         return "크루 삭제 완료";
@@ -95,7 +95,7 @@ public class CrewService {
         return memberRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 
-    CrewMember getMemberCrew(Crew crew, Member member) {
+    CrewMember getCrewMember(Crew crew, Member member) {
         return crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow(()-> new CustomException(ErrorCode.MEMBERCREW_NOT_FOUND));
     }
 

@@ -24,6 +24,6 @@ public class CrewFindOneResponseDto {
         this.memberList = crew.getCrewMemberList().stream()
                 .filter(memberCrew -> !memberCrew.getStatus().equals(Status.SUBMIT))
                 .map(CrewMemberResponseDto::new).collect(Collectors.toList());
-        this.crewNum = crew.getCountOfMemberCrewList();
+        this.crewNum = crew.getCountOfCrewMemberList();
     }
 }
