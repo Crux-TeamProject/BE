@@ -57,16 +57,31 @@ class GymServiceTest {
         void getPopularGyms() {
 
             //given
-            Pageable pageable = null;
-            when(gymRepository.findAll(pageable)).thenReturn(gymPage);
+            double lastAvgScore = 5;
+            PageRequest pageRequest = PageRequest.of(0, 5, Sort.by("avgScore").descending());
+            when(gymRepository.findByAvgScoreLessThan(lastAvgScore, pageRequest)).thenReturn(gymPage);
 
             //when
-            final List<GymResponseDto> gymResponseDtos = gymService.getPopularGyms(pageable);
+            final List<GymResponseDto> gymResponseDtos = gymService.getPopularGyms(lastAvgScore, 5);
 
             //then
             assertThat(gymResponseDtos.size()).isEqualTo(5);
         }
 
+        @Test
+        @DisplayName("평점 범위 밖으로 설정")
+        void getPopularGyms_failed() {
+
+            //given
+            double lastAvgScore = 7;
+
+            //when
+            CustomException exception = Assertions.assertThrows(CustomException.class,
+                    () -> gymService.getPopularGyms(lastAvgScore, 5));
+
+            //then
+            assertThat("평균 평점은 0에서 5사이여야 합니다").isEqualTo(exception.getErrorCode().getErrorMessage());
+        }
     }
 
     @Nested
@@ -77,17 +92,33 @@ class GymServiceTest {
         @DisplayName("조회 성공")
         void getSearchGyms() {
             //given
+            long lastArticleId = 400L;
             String query = "클라이밍";
             PageRequest pageRequest = PageRequest.of(0, 5, Sort.by("id").descending());
-            when(gymRepository.findByNameContains(query, pageRequest)).thenReturn(gymPage);
+            when(gymRepository.findByIdLessThanAndNameContains(lastArticleId, query, pageRequest)).thenReturn(gymPage);
 
             //when
-            final List<GymResponseDto> gymResponseDtos = gymService.getSearchGyms(query,pageRequest);
+            final List<GymResponseDto> gymResponseDtos = gymService.getSearchGyms(query, lastArticleId, 5);
 
             //then
             assertThat(gymResponseDtos.size()).isEqualTo(5);
         }
 
+        @Test
+        @DisplayName("Id 범위 밖으로 설정")
+        void getSearchGyms_failed() {
+
+            //given
+            long lastArticleId = -3L;
+            String query = "클라이밍";
+
+            //when
+            CustomException exception = Assertions.assertThrows(CustomException.class,
+                    () -> gymService.getSearchGyms(query, lastArticleId, 5));
+
+            //then
+            assertThat("ID 값이 올바르지 않습니다").isEqualTo(exception.getErrorCode().getErrorMessage());
+        }
     }
 
     @Nested
