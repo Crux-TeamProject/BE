@@ -2,7 +2,7 @@ package com.project.crux.repository;
 
 import com.project.crux.domain.Crew;
 import com.project.crux.domain.Member;
-import com.project.crux.domain.MemberCrew;
+import com.project.crux.domain.CrewMember;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -12,7 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.transaction.annotation.Transactional;
 
 @DataJpaTest
-class MemberCrewRepositoryTest {
+class CrewMemberRepositoryTest {
     static String CREW_NAME = "문어크루";
     static String CREW_CONTENT = "문어크루 입니다.";
     static String CREW_IMG_URL = "https://img.freepik.com/premium-vector/cute-octopus-cartoon-hand-drawn-style_42349-125.jpg?w=826";
@@ -24,7 +24,7 @@ class MemberCrewRepositoryTest {
     static Member member;
 
     @Autowired
-    private MemberCrewRepository memberCrewRepository;
+    private CrewMemberRepository crewMemberRepository;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -41,17 +41,17 @@ class MemberCrewRepositoryTest {
     @Transactional
     @DisplayName("멤버 크루 저장 성공")
     @Test
-    void memberCrewSave() {
+    void crewMemberSave() {
         //given
         Crew savedCrew = crewRepository.save(crew);
         Member savedMember = memberRepository.save(member);
-        MemberCrew memberCrew = new MemberCrew(savedMember, savedCrew);
+        CrewMember crewMember = new CrewMember(savedMember, savedCrew);
 
         //when
-        MemberCrew savedMemberCrew = memberCrewRepository.save(memberCrew);
+        CrewMember savedCrewMember = crewMemberRepository.save(crewMember);
 
         //then
-        Assertions.assertThat(savedMemberCrew.getMember()).isSameAs(savedMember);
-        Assertions.assertThat(savedMemberCrew.getCrew()).isSameAs(savedCrew);
+        Assertions.assertThat(savedCrewMember.getMember()).isSameAs(savedMember);
+        Assertions.assertThat(savedCrewMember.getCrew()).isSameAs(savedCrew);
     }
 }

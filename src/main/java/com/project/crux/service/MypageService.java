@@ -9,7 +9,7 @@ import com.project.crux.domain.response.ResponseDto;
 import com.project.crux.exception.CustomException;
 import com.project.crux.exception.ErrorCode;
 import com.project.crux.repository.LikeGymRepository;
-import com.project.crux.repository.MemberCrewRepository;
+import com.project.crux.repository.CrewMemberRepository;
 import com.project.crux.repository.MemberRepository;
 import com.project.crux.security.jwt.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ public class MypageService {
     //마이 페이지 조회 기능
     private final MemberRepository memberRepository;
     private final LikeGymRepository likeGymRepository;
-    private final MemberCrewRepository memberCrewRepository;
+    private final CrewMemberRepository crewMemberRepository;
 
     public ResponseDto<?> viewMypage(Long memberId) {
         Member member = memberRepository.findById(memberId).orElse(null);
@@ -40,9 +40,9 @@ public class MypageService {
             likeGymResponseDtos.add(new LikeGymResponseDto(gym));
         }
         List<CrewResponseDto> crewResponseDtos = new ArrayList<>();
-        List<MemberCrew> crewList = memberCrewRepository.findAllByMember(member);
-        for (MemberCrew memberCrew : crewList) {
-            Crew crew = memberCrew.getCrew();
+        List<CrewMember> crewList = crewMemberRepository.findAllByMember(member);
+        for (CrewMember crewMember : crewList) {
+            Crew crew = crewMember.getCrew();
             crewResponseDtos.add(CrewResponseDto.from(crew));
         }
         return ResponseDto.success(new MypageResponseDto(member, crewResponseDtos, likeGymResponseDtos));

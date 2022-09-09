@@ -3,14 +3,14 @@ package com.project.crux.service;
 import com.project.crux.common.Status;
 import com.project.crux.domain.Crew;
 import com.project.crux.domain.Member;
-import com.project.crux.domain.MemberCrew;
+import com.project.crux.domain.CrewMember;
 import com.project.crux.domain.request.CrewRequestDto;
 import com.project.crux.domain.response.CrewFindOneResponseDto;
 import com.project.crux.domain.response.CrewResponseDto;
 import com.project.crux.exception.CustomException;
 import com.project.crux.exception.ErrorCode;
 import com.project.crux.repository.CrewRepository;
-import com.project.crux.repository.MemberCrewRepository;
+import com.project.crux.repository.CrewMemberRepository;
 import com.project.crux.repository.MemberRepository;
 import com.project.crux.security.jwt.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ public class CrewService {
     private static final String DEFAULT_IMAGE_URL = "";
 
     private final CrewRepository crewRepository;
-    private final MemberCrewRepository memberCrewRepository;
+    private final CrewMemberRepository crewMemberRepository;
     private final MemberRepository memberRepository;
 
     public CrewResponseDto createCrew(CrewRequestDto crewRequestDto, UserDetailsImpl userDetails) {
@@ -39,9 +39,9 @@ public class CrewService {
         String imgUrl = getImgUrl(crewRequestDto);
         Crew savedCrew = crewRepository.save(new Crew(crewRequestDto.getName(), crewRequestDto.getContent(), imgUrl));
 
-        MemberCrew memberCrew = new MemberCrew(member, savedCrew);
-        memberCrew.updateStatus(Status.ADMIN);
-        memberCrewRepository.save(memberCrew);
+        CrewMember crewMember = new CrewMember(member, savedCrew);
+        crewMember.updateStatus(Status.ADMIN);
+        crewMemberRepository.save(crewMember);
 
         return CrewResponseDto.from(savedCrew);
     }
@@ -77,17 +77,17 @@ public class CrewService {
 
     public CrewResponseDto updateCrew(Long crewId, CrewRequestDto crewRequestDto, UserDetailsImpl userDetails) {
         Crew crew = getCrew(crewId);
-        MemberCrew memberCrew = getMemberCrew(crew, userDetails.getMember());
-        checkAdmin(memberCrew);
+        CrewMember crewMember = getMemberCrew(crew, userDetails.getMember());
+        checkAdmin(crewMember);
         crew.update(crewRequestDto.getName(), crewRequestDto.getContent(), crewRequestDto.getImgUrl());
         return CrewResponseDto.from(crew);
     }
 
     public String deleteCrew(Long crewId, UserDetailsImpl userDetails) {
         Crew crew = getCrew(crewId);
-        MemberCrew memberCrew = getMemberCrew(crew, userDetails.getMember());
-        checkAdmin(memberCrew);
-        memberCrewRepository.deleteAll(memberCrewRepository.findAllByCrewId(crewId));
+        CrewMember crewMember = getMemberCrew(crew, userDetails.getMember());
+        checkAdmin(crewMember);
+        crewMemberRepository.deleteAll(crewMemberRepository.findAllByCrewId(crewId));
         return "크루 삭제 완료";
     }
 
@@ -95,16 +95,16 @@ public class CrewService {
         return memberRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 
-    MemberCrew getMemberCrew(Crew crew, Member member) {
-        return memberCrewRepository.findByCrewAndMember(crew, member).orElseThrow(()-> new CustomException(ErrorCode.MEMBERCREW_NOT_FOUND));
+    CrewMember getMemberCrew(Crew crew, Member member) {
+        return crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow(()-> new CustomException(ErrorCode.MEMBERCREW_NOT_FOUND));
     }
 
     Crew getCrew(Long crewId) {
         return crewRepository.findById(crewId).orElseThrow(()-> new CustomException(ErrorCode.CREW_NOT_FOUND));
     }
 
-    private void checkAdmin(MemberCrew memberCrew) {
-        if (memberCrew.getStatus() != Status.ADMIN) {
+    private void checkAdmin(CrewMember crewMember) {
+        if (crewMember.getStatus() != Status.ADMIN) {
             throw new CustomException(ErrorCode.NOT_ADMIN);
         }
     }
