@@ -22,6 +22,7 @@ public class MemberCrewService {
     private final CrewRepository crewRepository;
     private final MemberCrewRepository memberCrewRepository;
     private final MemberRepository memberRepository;
+    private final CrewService crewService;
 
 
     public String registerSubmit(Long crewId, UserDetailsImpl userDetails) {
@@ -46,5 +47,42 @@ public class MemberCrewService {
         MemberCrew memberCrew = memberCrewRepository.findByCrewAndMember(crew,member).orElseThrow(()-> new CustomException(ErrorCode.MEMBERCREW_NOT_FOUND));
         memberCrew.updateStatus(Status.PERMIT);
         return "크루 가입 승인 완료";
+    }
+
+    public String withdrawCrew(Long crewId, UserDetailsImpl userDetails) {
+        Crew crew = crewService.getCrew(crewId);
+        MemberCrew memberCrew = crewService.getMemberCrew(crew, userDetails.getMember());
+        checkAdminOrPermit(memberCrew);
+        memberCrewRepository.delete(memberCrew);
+        return "크루 탈퇴 완료";
+    }
+
+    public String dropMemberCrew(Long crewId, Long memberId, UserDetailsImpl userDetails) {
+        Crew crew = crewService.getCrew(crewId);
+        Member toMember = crewService.getMember(memberId);
+        MemberCrew toMemberCrew = crewService.getMemberCrew(crew, toMember);
+        MemberCrew fromMemberCrew = crewService.getMemberCrew(crew, userDetails.getMember());
+        checkAdmin(fromMemberCrew);
+        checkPermit(toMemberCrew);
+        memberCrewRepository.delete(toMemberCrew);
+        return "크루 추방 완료";
+    }
+
+    private void checkPermit(MemberCrew memberCrew) {
+        if (memberCrew.getStatus() != Status.PERMIT) {
+            throw new CustomException(ErrorCode.NOT_PERMIT);
+        }
+    }
+
+    private void checkAdminOrPermit(MemberCrew memberCrew) {
+        if (memberCrew.getStatus() == Status.SUBMIT) {
+            throw new CustomException(ErrorCode.NOT_ADMIN_OR_PERMIT);
+        }
+    }
+
+    private void checkAdmin(MemberCrew memberCrew) {
+        if (memberCrew.getStatus() != Status.ADMIN) {
+            throw new CustomException(ErrorCode.NOT_ADMIN);
+        }
     }
 }
