@@ -14,7 +14,6 @@ import com.project.crux.security.jwt.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,17 +31,28 @@ public class GymService {
     private final ReviewPhotoRepository reviewPhotoRepository;
 
 
-    public List<GymResponseDto> getPopularGyms(Pageable pageable) {
+    public List<GymResponseDto> getPopularGyms(double lastAvgScore, int size) {
 
-        Page<Gym> gyms = gymRepository.findAll(pageable);
+        if (lastAvgScore < 0 || 5 < lastAvgScore) {
+            throw new CustomException(ErrorCode.INVALID_AVGSCORE);
+        }
+        PageRequest pageRequest = PageRequest.of(0, size, Sort.by("avgScore").descending());
+
+        Page<Gym> gyms = gymRepository.findByAvgScoreLessThan(lastAvgScore, pageRequest);
 
         return pageToDtoList(gyms);
     }
 
 
-    public List<GymResponseDto> getSearchGyms(String query, Pageable pageable) {
+    public List<GymResponseDto> getSearchGyms(String query, Long lastArticleId, int size) {
 
-        Page<Gym> gyms = gymRepository.findByNameContains(query, pageable);
+        if (lastArticleId < 0 || Integer.MAX_VALUE < lastArticleId) {
+            throw new CustomException(ErrorCode.INVALID_ARTICLEID);
+
+        }
+        PageRequest pageRequest = PageRequest.of(0, size, Sort.by("id").descending());
+
+        Page<Gym> gyms = gymRepository.findByIdLessThanAndNameContains(lastArticleId, query, pageRequest);
 
         return pageToDtoList(gyms);
     }

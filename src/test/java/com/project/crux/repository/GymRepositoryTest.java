@@ -56,14 +56,15 @@ class GymRepositoryTest {
     void findByAvgScoreLessThan() {
 
         //given
+        double lastAvgScore = 3.5;
         PageRequest pageRequest = PageRequest.of(0, 5, Sort.by("avgScore").descending());
         gymRepository.saveAll(gyms);
 
         //when
-        Page<Gym> gymPage = gymRepository.findAll(pageRequest);
+        Page<Gym> gymPage = gymRepository.findByAvgScoreLessThan(lastAvgScore, pageRequest);
 
         //then
-        assertThat(gymPage.getContent().size()).isEqualTo(5);
+        assertThat(gymPage.getContent().stream().allMatch(gym -> gym.getAvgScore() < lastAvgScore)).isEqualTo(true);
     }
 
     @Test
@@ -72,15 +73,16 @@ class GymRepositoryTest {
     void findByIdLessThanAndNameContains() {
 
         //given
+        long lastArticleId = 20L;
         String query = "클라이밍";
         PageRequest pageRequest = PageRequest.of(0, 5, Sort.by("id").descending());
         gymRepository.saveAll(gyms);
 
         //when
-        Page<Gym> gymPage = gymRepository.findByNameContains(query, pageRequest);
+        Page<Gym> gymPage = gymRepository.findByIdLessThanAndNameContains(lastArticleId, query, pageRequest);
 
         //then
-        assertThat(gymPage.getContent().stream().allMatch(gym -> gym.getName().contains("클라이밍"))).isEqualTo(true);
+        assertThat(gymPage.getContent().stream().allMatch(gym -> gym.getId() < lastArticleId)).isEqualTo(true);
     }
 
     @Test

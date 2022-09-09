@@ -12,10 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -51,7 +47,6 @@ class GymControllerTest {
     public void init() {
         mockMvc = MockMvcBuilders.standaloneSetup(gymController)
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))
-                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
                 .build();
 
         gymResponseDtoList = new ArrayList<>();
@@ -68,13 +63,13 @@ class GymControllerTest {
     void getPopularGyms() throws Exception {
 
         //given
-        Pageable pageable = PageRequest.of(0,5, Sort.by("avgScore").descending());
-        when(gymService.getPopularGyms(pageable)).thenReturn(gymResponseDtoList);
+        double lastAvgScore = 5;
+        int size = 5;
+        when(gymService.getPopularGyms(lastAvgScore, size)).thenReturn(gymResponseDtoList);
 
         MultiValueMap<String, String> info = new LinkedMultiValueMap<>();
-        info.add("page", String.valueOf(0));
-        info.add("size", String.valueOf(5));
-        info.add("sort", "DESC");
+        info.add("lastAvgScore", String.valueOf(lastAvgScore));
+        info.add("size", String.valueOf(size));
 
         //when
         ResultActions resultActions = mockMvc.perform(
@@ -93,14 +88,14 @@ class GymControllerTest {
     void getSearchGyms() throws Exception {
 
         //given
-        Pageable pageable = PageRequest.of(0,5, Sort.by("id").descending());
-        when(gymService.getSearchGyms("클라이밍", pageable)).thenReturn(gymResponseDtoList);
+        Long lastArticleId = 400L;
+        int size = 5;
+        when(gymService.getSearchGyms("클라이밍", lastArticleId, size)).thenReturn(gymResponseDtoList);
 
         MultiValueMap<String, String> info = new LinkedMultiValueMap<>();
-        info.add("page", String.valueOf(0));
-        info.add("size", String.valueOf(5));
-        info.add("query", "클라이밍");
-        info.add("sort", "DESC");
+        info.add("query","클라이밍");
+        info.add("lastArticleId", String.valueOf(lastArticleId));
+        info.add("size", String.valueOf(size));
 
         //when
         ResultActions resultActions = mockMvc.perform(
