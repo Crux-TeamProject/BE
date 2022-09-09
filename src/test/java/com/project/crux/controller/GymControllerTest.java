@@ -93,14 +93,14 @@ class GymControllerTest {
     void getSearchGyms() throws Exception {
 
         //given
-        Long lastArticleId = 400L;
-        int size = 5;
-        when(gymService.getSearchGyms("클라이밍", lastArticleId, size)).thenReturn(gymResponseDtoList);
+        Pageable pageable = PageRequest.of(0,5, Sort.by("id").descending());
+        when(gymService.getSearchGyms("클라이밍", pageable)).thenReturn(gymResponseDtoList);
 
         MultiValueMap<String, String> info = new LinkedMultiValueMap<>();
-        info.add("query","클라이밍");
-        info.add("lastArticleId", String.valueOf(lastArticleId));
-        info.add("size", String.valueOf(size));
+        info.add("page", String.valueOf(0));
+        info.add("size", String.valueOf(5));
+        info.add("query", "클라이밍");
+        info.add("sort", "DESC");
 
         //when
         ResultActions resultActions = mockMvc.perform(

@@ -24,8 +24,8 @@ public class GymController {
 
     //api 클라이밍짐 검색 조회
     @GetMapping("/gyms/search")
-    public ResponseDto<?> getSearchGyms(@RequestParam String query, @RequestParam Long lastArticleId, @RequestParam int size) {
-        return ResponseDto.success(gymService.getSearchGyms(query,lastArticleId,size));
+    public ResponseDto<?> getSearchGyms(@RequestParam String query, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        return ResponseDto.success(gymService.getSearchGyms(query,pageable));
     }
 
     //api 짐 상세 조회

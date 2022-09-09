@@ -40,15 +40,9 @@ public class GymService {
     }
 
 
-    public List<GymResponseDto> getSearchGyms(String query, Long lastArticleId, int size) {
+    public List<GymResponseDto> getSearchGyms(String query, Pageable pageable) {
 
-        if (lastArticleId < 0 || Integer.MAX_VALUE < lastArticleId) {
-            throw new CustomException(ErrorCode.INVALID_ARTICLEID);
-
-        }
-        PageRequest pageRequest = PageRequest.of(0, size, Sort.by("id").descending());
-
-        Page<Gym> gyms = gymRepository.findByIdLessThanAndNameContains(lastArticleId, query, pageRequest);
+        Page<Gym> gyms = gymRepository.findByNameContains(query, pageable);
 
         return pageToDtoList(gyms);
     }
