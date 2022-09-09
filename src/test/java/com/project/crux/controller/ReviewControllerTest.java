@@ -162,30 +162,4 @@ class ReviewControllerTest {
         assertThat(response.getData().getContent()).isEqualTo("리뷰내용");
         assertThat(response.getData().getReviewPhotoList().size()).isEqualTo(1);
     }
-
-    @Test
-    @DisplayName("리뷰 전체조회 성공")
-    void getAllReviews() throws Exception {
-
-        //given
-        List<ReviewResponseDto> reviewResponseDtoList = new ArrayList<>();
-        ReviewResponseDto responseDto = new ReviewResponseDto(review);
-        reviewResponseDtoList.add(responseDto);
-        when(reviewService.getAllReviews(1L)).thenReturn(reviewResponseDtoList);
-
-        //when
-        ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.get("/reviews/" + 1L)
-        );
-        //then
-        MvcResult mvcResult = resultActions.andExpect(status().isOk()).andReturn();
-
-        Type ResponseDto = new TypeToken<ResponseDto<List<ReviewResponseDto>>>() {
-        }.getType();
-
-        ResponseDto<List<ReviewResponseDto>> response = new Gson().fromJson(mvcResult.getResponse().getContentAsString(), ResponseDto);
-        assertThat(response.getData().size()).isEqualTo(1);
-        assertThat(response.getData().get(0).getScore()).isEqualTo(4);
-        assertThat(response.getData().get(0).getContent()).isEqualTo("리뷰내용");
-    }
 }

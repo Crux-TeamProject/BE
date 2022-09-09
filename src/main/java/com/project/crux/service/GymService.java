@@ -1,13 +1,15 @@
 package com.project.crux.service;
 
-import com.project.crux.domain.Gym;
-import com.project.crux.domain.LikeGym;
-import com.project.crux.domain.Member;
+import com.project.crux.domain.*;
 import com.project.crux.domain.response.GymResponseDto;
+import com.project.crux.domain.response.ReviewPhotoResponseDto;
+import com.project.crux.domain.response.ReviewResponseDto;
 import com.project.crux.exception.CustomException;
 import com.project.crux.exception.ErrorCode;
 import com.project.crux.repository.GymRepository;
 import com.project.crux.repository.LikeGymRepository;
+import com.project.crux.repository.ReviewPhotoRepository;
+import com.project.crux.repository.ReviewRepository;
 import com.project.crux.security.jwt.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,6 +27,8 @@ public class GymService {
 
     private final GymRepository gymRepository;
     private final LikeGymRepository likeGymRepository;
+    private final ReviewRepository reviewRepository;
+    private final ReviewPhotoRepository reviewPhotoRepository;
 
 
     public List<GymResponseDto> getPopularGyms(double lastAvgScore, int size) {
@@ -58,7 +62,19 @@ public class GymService {
 
         Gym gym = gymRepository.findById(gymId).orElseThrow(() -> new CustomException(ErrorCode.GYM_NOT_FOUND));
 
-        return new GymResponseDto(gym);
+        GymResponseDto gymResponseDto = new GymResponseDto(gym);
+        List<Review> reviewList = reviewRepository.findByGym(gym);
+
+        List<ReviewResponseDto> reviews = gymResponseDto.getReviews();
+
+        reviewList.forEach(review -> {
+            ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review);
+            List<ReviewPhoto> reviewPhotoList = reviewPhotoRepository.findAllByReview(review);
+            reviewPhotoList.forEach(reviewPhoto -> reviewResponseDto.getReviewPhotoList().add(new ReviewPhotoResponseDto(reviewPhoto)));
+            reviews.add(reviewResponseDto);
+        });
+
+        return gymResponseDto;
     }
 
     @Transactional

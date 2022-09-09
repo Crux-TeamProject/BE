@@ -6,7 +6,6 @@ import com.project.crux.domain.Member;
 import com.project.crux.domain.MemberCrew;
 import com.project.crux.domain.request.CrewRequestDto;
 import com.project.crux.domain.response.CrewResponseDto;
-import com.project.crux.domain.response.CrewFindOneResponseDto;
 import com.project.crux.exception.CustomException;
 import com.project.crux.exception.ErrorCode;
 import com.project.crux.repository.CrewRepository;
@@ -35,7 +34,7 @@ public class CrewService {
     private final MemberRepository memberRepository;
 
     public CrewResponseDto createCrew(CrewRequestDto crewRequestDto, UserDetailsImpl userDetails) {
-        Member member = getMember(userDetails.getMember().getId());
+        Member member = getMember(userDetails.getMember());
         String imgUrl = getImgUrl(crewRequestDto);
         Crew savedCrew = crewRepository.save(new Crew(crewRequestDto.getName(), crewRequestDto.getContent(), imgUrl));
 
@@ -50,7 +49,10 @@ public class CrewService {
         return crewRequestDto.getImgUrl() == null ? DEFAULT_IMAGE_URL : crewRequestDto.getImgUrl();
     }
 
-    @Transactional(readOnly = true)
+    private Member getMember(Member member) {
+        return memberRepository.findById(member.getId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    }
+
     public List<CrewResponseDto> findAllCrew(Long lastCrewId, int size) {
         verifyLastCrewId(lastCrewId);
         PageRequest pageRequest = PageRequest.of(0, size);
@@ -64,33 +66,8 @@ public class CrewService {
         }
     }
 
-    @Transactional(readOnly = true)
     public Page<CrewResponseDto> findAllPopularCrew(Pageable pageable) {
         return crewRepository.findAll(pageable).map(CrewResponseDto::from);
-    }
-
-    public String registerSubmit(Long crewId, UserDetailsImpl userDetails) {
-
-        Crew crew = getCrew(crewId);
-        Member member = userDetails.getMember();
-
-        if(memberCrewRepository.findByCrewAndMember(crew,member).isPresent()){
-            throw new CustomException(ErrorCode.ADMIN_REGISTER_SUBMIT);
-        }
-
-        MemberCrew memberCrew = new MemberCrew(member, crew);
-        memberCrewRepository.save(memberCrew);
-        return "크루 가입 신청 완료";
-    }
-
-    public String registerPermit(Long crewId, Long memberId) {
-
-        Crew crew = getCrew(crewId);
-        Member member = getMember(memberId);
-
-        MemberCrew memberCrew = getMemberCrew(crew, member);
-        memberCrew.updateStatus(Status.PERMIT);
-        return "크루 가입 승인 완료";
     }
 
     @Transactional(readOnly = true)

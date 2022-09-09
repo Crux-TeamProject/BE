@@ -89,21 +89,6 @@ public class ReviewService {
         return reviewResponseDto;
     }
 
-    public List<ReviewResponseDto> getAllReviews(Long gymId) {
-
-        Gym gym = gymRepository.findById(gymId).orElseThrow(() -> new CustomException(ErrorCode.GYM_NOT_FOUND));
-        List<Review> reviewList = reviewRepository.findByGym(gym);
-
-        List<ReviewResponseDto> reviewResponseDtoList = new ArrayList<>();
-
-        reviewList.forEach(review -> {
-            ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review);
-            List<ReviewPhoto> reviewPhotoList = reviewPhotoRepository.findAllByReview(review);
-            reviewPhotoList.forEach(reviewPhoto -> reviewResponseDto.getReviewPhotoList().add(new ReviewPhotoResponseDto(reviewPhoto)));
-            reviewResponseDtoList.add(reviewResponseDto);
-        });
-        return reviewResponseDtoList;
-    }
 
     private void imgSave(ReviewRequestDto requestDto, ReviewResponseDto reviewResponseDto, Review review) {
         requestDto.getReviewPhotoList().forEach(reviewPhoto -> {

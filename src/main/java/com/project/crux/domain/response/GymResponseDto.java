@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,6 +19,7 @@ public class GymResponseDto {
     private String imgUrl;
     private String phone;
     private double avgScore;
+    private List<ReviewResponseDto> reviews = new ArrayList<>();
 
     public GymResponseDto(Gym gym) {
         this.id = gym.getId();
