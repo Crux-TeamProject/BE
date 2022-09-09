@@ -5,6 +5,7 @@ import com.project.crux.security.jwt.UserDetailsImpl;
 import com.project.crux.service.MemberCrewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,5 +27,17 @@ public class MemberCrewController {
     @PostMapping("membercrews/{crewId}/{memberId}")
     public ResponseDto<String> registerPermit(@PathVariable Long crewId, @PathVariable Long memberId) {
         return ResponseDto.success(memberCrewService.registerPermit(crewId, memberId));
+    }
+
+    //크루 탈퇴
+    @DeleteMapping("/memberCrews/{crewId}")
+    public ResponseDto<String> withdrawCrew(@PathVariable Long crewId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseDto.success(memberCrewService.withdrawCrew(crewId, userDetails));
+    }
+
+    //크루 추방
+    @DeleteMapping("/memberCrews/{crewId}/{memberId}")
+    public ResponseDto<String> dropMemberCrew(@PathVariable Long crewId, @PathVariable Long memberId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseDto.success(memberCrewService.dropMemberCrew(crewId, memberId, userDetails));
     }
 }
