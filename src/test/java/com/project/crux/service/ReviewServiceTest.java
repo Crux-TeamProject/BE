@@ -75,7 +75,6 @@ class ReviewServiceTest {
 
             //given
             Gym gym = new Gym();
-            gymRepository.save(gym);
             List<ReviewPhoto> reviewPhotoList = new ArrayList<>();
             reviewPhotoList.add(reviewphoto);
             ReviewRequestDto requestDto = new ReviewRequestDto(4, "리뷰내용", reviewPhotoList);
@@ -90,6 +89,7 @@ class ReviewServiceTest {
             assertThat(reviewResponseDto.getScore()).isEqualTo(4);
             assertThat(reviewResponseDto.getContent()).isEqualTo("리뷰내용");
             assertThat(reviewResponseDto.getReviewPhotoList().get(0).getImgUrl()).isEqualTo("이미지 주소.png");
+            assertThat(gym.getAvgScore()).isEqualTo(4);
 
         }
 

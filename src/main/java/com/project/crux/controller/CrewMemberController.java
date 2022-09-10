@@ -7,9 +7,10 @@ import com.project.crux.security.jwt.UserDetailsImpl;
 import com.project.crux.service.CrewMemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,8 +27,10 @@ public class CrewMemberController {
 
     //api 크루 가입 승인
     @PostMapping("crew-members/{crewId}/{memberId}")
-    public ResponseDto<String> registerPermit(@PathVariable Long crewId, @PathVariable Long memberId) {
-        return ResponseDto.success(crewMemberService.registerPermit(crewId, memberId));
+    public ResponseDto<String> registerPermit(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                              @PathVariable Long crewId, @PathVariable Long memberId,
+                                              @RequestParam Boolean permit) {
+        return ResponseDto.success(crewMemberService.registerPermit(userDetails, crewId, memberId, permit));
     }
 
     //크루 탈퇴

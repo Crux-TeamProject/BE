@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -19,7 +20,7 @@ public class ReviewController {
 
     //api 짐 리뷰 작성
     @PostMapping("/reviews/{gymId}")
-    public ResponseDto<ReviewResponseDto> createReview(@RequestBody ReviewRequestDto requestDto, @PathVariable Long gymId,
+    public ResponseDto<ReviewResponseDto> createReview(@Valid @RequestBody ReviewRequestDto requestDto, @PathVariable Long gymId,
                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseDto.success(reviewService.createReview(requestDto, gymId, userDetails));
     }

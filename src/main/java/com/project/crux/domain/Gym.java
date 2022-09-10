@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -31,6 +33,9 @@ public class Gym {
     @Column
     private double avgScore;
 
+    @OneToMany(mappedBy = "gym", cascade = CascadeType.REMOVE)
+    private List<Review> reviewList = new ArrayList<>();
+
     public Gym(String place_name, String address_name, String phone) {
         this.name = place_name;
         this.location = address_name;
@@ -52,5 +57,10 @@ public class Gym {
 
     public void updateImg(String image_url) {
         this.imgUrl = image_url;
+    }
+
+
+    public void updateScore(int score) {
+        this.avgScore = (avgScore * reviewList.size() + score) / (reviewList.size() + 1);
     }
 }

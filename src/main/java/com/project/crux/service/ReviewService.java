@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -40,6 +39,8 @@ public class ReviewService {
                 .member(member)
                 .gym(gym)
                 .build();
+
+       gym.updateScore(requestDto.getScore());
 
         reviewRepository.save(review);
         ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review);

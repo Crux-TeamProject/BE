@@ -1,13 +1,17 @@
 package com.project.crux.service;
 
 import com.project.crux.common.Status;
-import com.project.crux.domain.*;
-import com.project.crux.domain.request.CrewPhotoRequestDto;
-import com.project.crux.domain.response.CrewPostResponseDto;
+import com.project.crux.domain.Crew;
+import com.project.crux.domain.Member;
+import com.project.crux.domain.CrewMember;
 import com.project.crux.exception.CustomException;
 import com.project.crux.exception.ErrorCode;
-import com.project.crux.repository.*;
+import com.project.crux.repository.CrewRepository;
+import com.project.crux.repository.CrewMemberRepository;
+import com.project.crux.repository.MemberRepository;
 import com.project.crux.security.jwt.UserDetailsImpl;
+import com.project.crux.sse.NotificationService;
+import com.project.crux.sse.NotificationType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -29,15 +33,23 @@ public class CrewMemberService {
     private final CrewPostRepository crewPostRepository;
     private final CrewPhotoRepository crewPhotoRepository;
     private final CrewService crewService;
+    private final NotificationService notificationService;
 
 
     public String registerSubmit(Long crewId, UserDetailsImpl userDetails) {
 
-        Crew crew = crewRepository.findById(crewId).orElseThrow(() -> new CustomException(ErrorCode.CREW_NOT_FOUND));
+        Crew crew = getCrew(crewId);
         Member member = userDetails.getMember();
 
-        if (crewMemberRepository.findByCrewAndMember(crew, member).isPresent()) {
+        CrewMember crewLeader = crewMemberRepository.findByCrewAndStatus(crew, Status.ADMIN).orElseThrow(() -> new CustomException(ErrorCode.CREWLEADER_NOT_FOUND));
+        String content = member.getNickname() + "님이 가입 신청하셨습니다";
+        notificationService.send(crewLeader.getMember(), NotificationType.SUBMIT, content);
+
+        if (crewLeader.getMember().equals(member)) {
             throw new CustomException(ErrorCode.ADMIN_REGISTER_SUBMIT);
+        }
+        if (crewMemberRepository.findByCrewAndMember(crew, member).isPresent()) {
+            throw new CustomException(ErrorCode.REGISTER_SUBMIT_EXIST);
         }
 
         CrewMember crewMember = new CrewMember(member, crew);
@@ -45,14 +57,34 @@ public class CrewMemberService {
         return "크루 가입 신청 완료";
     }
 
-    public String registerPermit(Long crewId, Long memberId) {
+    public String registerPermit(UserDetailsImpl userDetails, Long crewId, Long memberId, Boolean permit) {
 
         Crew crew = crewRepository.findById(crewId).orElseThrow(() -> new CustomException(ErrorCode.CREW_NOT_FOUND));
+        CrewMember crewLeader = crewMemberRepository.findByCrewAndStatus(crew, Status.ADMIN).orElseThrow(() -> new CustomException(ErrorCode.CREWLEADER_NOT_FOUND));
+
+        if (!userDetails.getMember().equals(crewLeader.getMember())) {
+            throw new CustomException(ErrorCode.NOT_ADMIN);
+        }
+
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        CrewMember crewMember = crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow(() -> new CustomException(ErrorCode.MEMBERCREW_NOT_FOUND));
-        crewMember.updateStatus(Status.PERMIT);
-        return "크루 가입 승인 완료";
+        if (permit) {
+            String content = member.getNickname() + "님이 가입 되셨습니다";
+            notificationService.send(member, NotificationType.PERMIT, content);
+
+            CrewMember crewMember = crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow(() -> new CustomException(ErrorCode.CREWMEMBER_NOT_FOUND));
+            crewMember.updateStatus(Status.PERMIT);
+
+            return "크루 가입 승인 완료";
+        }
+
+        String content = member.getNickname() + "님이 가입 거절되셨습니다";
+        notificationService.send(member, NotificationType.REJECT, content);
+
+        CrewMember crewMember = crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow(() -> new CustomException(ErrorCode.CREWMEMBER_NOT_FOUND));
+        crewMemberRepository.delete(crewMember);
+
+        return "크루 가입 승인 거절";
     }
 
     public String withdrawCrew(Long crewId, UserDetailsImpl userDetails) {
@@ -73,6 +105,7 @@ public class CrewMemberService {
         crewMemberRepository.delete(toCrewMember);
         return "크루 추방 완료";
     }
+
 
     public CrewPostResponseDto createCrewPost(Long crewId, CrewPhotoRequestDto crewPhotoRequestDto, UserDetailsImpl userDetails) {
         Crew crew = crewService.getCrew(crewId);
@@ -97,6 +130,9 @@ public class CrewMemberService {
         return "사진 삭제 완료";
     }
 
+    private Crew getCrew(Long crewId) {
+        return crewRepository.findById(crewId).orElseThrow(() -> new CustomException(ErrorCode.CREW_NOT_FOUND));
+    }
     private static void checkSameMember(Member author, Member loginMember) {
         if (!Objects.equals(author.getId(), loginMember.getId())) {
             throw new CustomException(ErrorCode.NO_PERMISSION_EXCEPTION);
