@@ -9,8 +9,13 @@ import com.project.crux.exception.ErrorCode;
 import com.project.crux.repository.*;
 import com.project.crux.security.jwt.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -74,6 +79,13 @@ public class CrewMemberService {
         CrewPost crewPost = crewPostRepository.save(new CrewPost(crewMember));
         crewPhotoRequestDto.getImgList().forEach(imgUrl -> crewPhotoRepository.save(new CrewPhoto(crewPost, imgUrl)));
         return new CrewPostResponseDto(crewPost);
+    }
+
+    @Transactional(readOnly = true)
+    public List<CrewPostResponseDto> findAllCrewPosts(Long crewId, Long lastCrewPostId, int size) {
+        PageRequest pageRequest = PageRequest.of(0, size).withSort(Sort.Direction.DESC, "id");
+        return crewPostRepository.findAllByIdLessThanAndCrewMember_CrewId(lastCrewPostId, crewId, pageRequest)
+                .stream().map(CrewPostResponseDto::new).collect(Collectors.toList());
     }
 
     private void checkPermit(CrewMember crewMember) {
