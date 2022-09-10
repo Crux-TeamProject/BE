@@ -94,6 +94,7 @@ public class SecurityConfig {
                 .antMatchers("/members/nickname-check").permitAll()
                 .antMatchers("/members/signup").permitAll()
                 .antMatchers("/gyms/**").permitAll()
+                .antMatchers("/subscribe/**").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/crews/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/crew-posts/**").permitAll()

@@ -1,6 +1,7 @@
 package com.project.crux.repository;
 
 
+import com.project.crux.common.Status;
 import com.project.crux.domain.Crew;
 import com.project.crux.domain.Member;
 import com.project.crux.domain.CrewMember;
@@ -15,4 +16,6 @@ public interface CrewMemberRepository extends JpaRepository<CrewMember, Long> {
     Optional<CrewMember> findByCrewAndMember(Crew crew, Member member);
 
     List<CrewMember> findAllByCrewId(Long crewId);
+
+    Optional<CrewMember> findByCrewAndStatus(Crew crew, Status admin);
 }
