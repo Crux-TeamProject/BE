@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 @Entity
@@ -21,6 +24,9 @@ public class CrewMember {
     @JoinColumn(name = "crew_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private Crew crew;
+
+    @OneToMany(mappedBy = "crewMember", cascade = CascadeType.REMOVE)
+    private List<CrewPost> crewPostList = new ArrayList<>();
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)

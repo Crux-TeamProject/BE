@@ -19,7 +19,7 @@ public class CrewResponseDto {
                 .name(crew.getName())
                 .content(crew.getContent())
                 .imgUrl(crew.getImgUrl())
-                .crewNum(crew.getCountOfMemberCrewList())
+                .crewNum(crew.getCountOfCrewMemberList())
                 .build();
     }
 }

@@ -1,14 +1,12 @@
 package com.project.crux.service;
 
 import com.project.crux.common.Status;
-import com.project.crux.domain.Crew;
-import com.project.crux.domain.Member;
-import com.project.crux.domain.CrewMember;
+import com.project.crux.domain.*;
+import com.project.crux.domain.request.CrewPhotoRequestDto;
+import com.project.crux.domain.response.CrewPostResponseDto;
 import com.project.crux.exception.CustomException;
 import com.project.crux.exception.ErrorCode;
-import com.project.crux.repository.CrewRepository;
-import com.project.crux.repository.CrewMemberRepository;
-import com.project.crux.repository.MemberRepository;
+import com.project.crux.repository.*;
 import com.project.crux.security.jwt.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,15 +20,17 @@ public class CrewMemberService {
     private final CrewRepository crewRepository;
     private final CrewMemberRepository crewMemberRepository;
     private final MemberRepository memberRepository;
+    private final CrewPostRepository crewPostRepository;
+    private final CrewPhotoRepository crewPhotoRepository;
     private final CrewService crewService;
 
 
     public String registerSubmit(Long crewId, UserDetailsImpl userDetails) {
 
-        Crew crew = crewRepository.findById(crewId).orElseThrow(()-> new CustomException(ErrorCode.CREW_NOT_FOUND));
+        Crew crew = crewRepository.findById(crewId).orElseThrow(() -> new CustomException(ErrorCode.CREW_NOT_FOUND));
         Member member = userDetails.getMember();
 
-        if(crewMemberRepository.findByCrewAndMember(crew,member).isPresent()){
+        if (crewMemberRepository.findByCrewAndMember(crew, member).isPresent()) {
             throw new CustomException(ErrorCode.ADMIN_REGISTER_SUBMIT);
         }
 
@@ -41,17 +41,17 @@ public class CrewMemberService {
 
     public String registerPermit(Long crewId, Long memberId) {
 
-        Crew crew = crewRepository.findById(crewId).orElseThrow(()-> new CustomException(ErrorCode.CREW_NOT_FOUND));
-        Member member = memberRepository.findById(memberId).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
+        Crew crew = crewRepository.findById(crewId).orElseThrow(() -> new CustomException(ErrorCode.CREW_NOT_FOUND));
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        CrewMember crewMember = crewMemberRepository.findByCrewAndMember(crew,member).orElseThrow(()-> new CustomException(ErrorCode.MEMBERCREW_NOT_FOUND));
+        CrewMember crewMember = crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow(() -> new CustomException(ErrorCode.MEMBERCREW_NOT_FOUND));
         crewMember.updateStatus(Status.PERMIT);
         return "크루 가입 승인 완료";
     }
 
     public String withdrawCrew(Long crewId, UserDetailsImpl userDetails) {
         Crew crew = crewService.getCrew(crewId);
-        CrewMember crewMember = crewService.getMemberCrew(crew, userDetails.getMember());
+        CrewMember crewMember = crewService.getCrewMember(crew, userDetails.getMember());
         checkAdminOrPermit(crewMember);
         crewMemberRepository.delete(crewMember);
         return "크루 탈퇴 완료";
@@ -60,12 +60,20 @@ public class CrewMemberService {
     public String dropMemberCrew(Long crewId, Long memberId, UserDetailsImpl userDetails) {
         Crew crew = crewService.getCrew(crewId);
         Member toMember = crewService.getMember(memberId);
-        CrewMember toCrewMember = crewService.getMemberCrew(crew, toMember);
-        CrewMember fromCrewMember = crewService.getMemberCrew(crew, userDetails.getMember());
+        CrewMember toCrewMember = crewService.getCrewMember(crew, toMember);
+        CrewMember fromCrewMember = crewService.getCrewMember(crew, userDetails.getMember());
         checkAdmin(fromCrewMember);
         checkPermit(toCrewMember);
         crewMemberRepository.delete(toCrewMember);
         return "크루 추방 완료";
+    }
+
+    public CrewPostResponseDto createCrewPost(Long crewId, CrewPhotoRequestDto crewPhotoRequestDto, UserDetailsImpl userDetails) {
+        Crew crew = crewService.getCrew(crewId);
+        CrewMember crewMember = crewService.getCrewMember(crew, userDetails.getMember());
+        CrewPost crewPost = crewPostRepository.save(new CrewPost(crewMember));
+        crewPhotoRequestDto.getImgList().forEach(imgUrl -> crewPhotoRepository.save(new CrewPhoto(crewPost, imgUrl)));
+        return new CrewPostResponseDto(crewPost);
     }
 
     private void checkPermit(CrewMember crewMember) {
