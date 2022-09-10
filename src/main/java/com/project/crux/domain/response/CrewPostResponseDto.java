@@ -1,6 +1,5 @@
 package com.project.crux.domain.response;
 
-import com.project.crux.domain.CrewPhoto;
 import com.project.crux.domain.CrewPost;
 import lombok.Getter;
 
@@ -9,11 +8,11 @@ import java.util.stream.Collectors;
 
 @Getter
 public class CrewPostResponseDto {
-    Long crewPostId;
-    List<String> imgList;
+    Long postId;
+    List<CrewPhotoResponseDto> imgList;
 
     public CrewPostResponseDto(CrewPost crewPost) {
-        this.crewPostId = crewPost.getId();
-        this.imgList = crewPost.getPhotoList().stream().map(CrewPhoto::getImgUrl).collect(Collectors.toList());
+        this.postId = crewPost.getId();
+        this.imgList = crewPost.getPhotoList().stream().map(CrewPhotoResponseDto::new).collect(Collectors.toList());
     }
 }

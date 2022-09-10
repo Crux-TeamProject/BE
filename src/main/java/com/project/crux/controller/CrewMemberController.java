@@ -54,7 +54,13 @@ public class CrewMemberController {
 
     //크루 사진 조회
     @GetMapping("/crew-posts/{crewId}")
-    public ResponseDto<List<CrewPostResponseDto>> findAllCrewPosts(@PathVariable Long crewId, @RequestParam Long lastCrewPostId, @RequestParam int size) {
-        return ResponseDto.success(crewMemberService.findAllCrewPosts(crewId, lastCrewPostId, size));
+    public ResponseDto<List<CrewPostResponseDto>> findAllCrewPosts(@PathVariable Long crewId, @RequestParam Long lastPostId, @RequestParam int size) {
+        return ResponseDto.success(crewMemberService.findAllCrewPosts(crewId, lastPostId, size));
+    }
+
+    //크루 사진 삭제
+    @DeleteMapping("/crew-posts/{photoId}")
+    public ResponseDto<String> deletePhoto(@PathVariable Long photoId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseDto.success(crewMemberService.delete(photoId, userDetails));
     }
 }

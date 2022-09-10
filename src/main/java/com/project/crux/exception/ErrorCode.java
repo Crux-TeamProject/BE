@@ -31,6 +31,8 @@ public enum ErrorCode {
     NOT_ADMIN(HttpStatus.FORBIDDEN, "크루장만 가능합니다"),
     NOT_PERMIT(HttpStatus.FORBIDDEN, "크루원이 아닙니다"),
     NOT_ADMIN_OR_PERMIT(HttpStatus.FORBIDDEN, "크루에 가입된 사람이 아닙니다"),
+    NO_PERMISSION_EXCEPTION(HttpStatus.FORBIDDEN, "권한이 없습니다"),
+
     /*
     404 Not Found
      */
@@ -38,7 +40,8 @@ public enum ErrorCode {
     GYM_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 클라이밍짐 정보를 찾을 수 없습니다"),
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 리뷰 정보를 찾을 수 없습니다" ),
     CREW_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 크루 정보를 찾을 수 없습니다" ),
-    MEMBERCREW_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 멤버의 크루 가입 정보를 찾을 수 없습니다" );
+    MEMBERCREW_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 멤버의 크루 가입 정보를 찾을 수 없습니다" ),
+    PHOTO_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 사진을 찾을 수 없습니다");
 
 
 

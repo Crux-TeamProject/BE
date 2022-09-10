@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -86,6 +87,20 @@ public class CrewMemberService {
         PageRequest pageRequest = PageRequest.of(0, size).withSort(Sort.Direction.DESC, "id");
         return crewPostRepository.findAllByIdLessThanAndCrewMember_CrewId(lastCrewPostId, crewId, pageRequest)
                 .stream().map(CrewPostResponseDto::new).collect(Collectors.toList());
+    }
+
+    public String delete(Long photoId, UserDetailsImpl userDetails) {
+        CrewPhoto crewPhoto = crewPhotoRepository.findById(photoId).orElseThrow(() -> new CustomException(ErrorCode.PHOTO_NOT_FOUND));
+        Member author = crewPhoto.getCrewPost().getCrewMember().getMember();
+        checkSameMember(author, userDetails.getMember());
+        crewPhotoRepository.delete(crewPhoto);
+        return "사진 삭제 완료";
+    }
+
+    private static void checkSameMember(Member author, Member loginMember) {
+        if (!Objects.equals(author.getId(), loginMember.getId())) {
+            throw new CustomException(ErrorCode.NO_PERMISSION_EXCEPTION);
+        }
     }
 
     private void checkPermit(CrewMember crewMember) {
