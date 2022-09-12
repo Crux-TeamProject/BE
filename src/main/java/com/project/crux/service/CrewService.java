@@ -4,6 +4,7 @@ import com.project.crux.common.Status;
 import com.project.crux.domain.Crew;
 import com.project.crux.domain.Member;
 import com.project.crux.domain.CrewMember;
+import com.project.crux.domain.Notice;
 import com.project.crux.domain.request.CrewRequestDto;
 import com.project.crux.domain.response.CrewFindOneResponseDto;
 import com.project.crux.domain.response.CrewResponseDto;
@@ -12,6 +13,7 @@ import com.project.crux.exception.ErrorCode;
 import com.project.crux.repository.CrewRepository;
 import com.project.crux.repository.CrewMemberRepository;
 import com.project.crux.repository.MemberRepository;
+import com.project.crux.repository.NoticeRepository;
 import com.project.crux.security.jwt.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -33,6 +35,7 @@ public class CrewService {
     private final CrewRepository crewRepository;
     private final CrewMemberRepository crewMemberRepository;
     private final MemberRepository memberRepository;
+    private final NoticeRepository noticeRepository;
 
     public CrewResponseDto createCrew(CrewRequestDto crewRequestDto, UserDetailsImpl userDetails) {
         Member member = getMember(userDetails.getMember().getId());
@@ -72,7 +75,8 @@ public class CrewService {
     @Transactional(readOnly = true)
     public CrewFindOneResponseDto findCrew(Long crewId) {
         Crew crew = getCrew(crewId);
-        return new CrewFindOneResponseDto(crew);
+        List<Notice> noticeList = noticeRepository.findAllByCrewMember_Crew(crew);
+        return new CrewFindOneResponseDto(crew, noticeList);
     }
 
     public CrewResponseDto updateCrew(Long crewId, CrewRequestDto crewRequestDto, UserDetailsImpl userDetails) {
