@@ -29,9 +29,6 @@ public class MemberService {
     //일반회원가입
     @Transactional
     public ResponseDto<?> signUpMember(SignupRequestDto signupRequestDto) {
-        if (memberRepository.findByNickname(signupRequestDto.getNickname()).isPresent()) {
-            return ResponseDto.fail("DUPLICATE_NICKNAME", "중복된 닉네임이 존재합니다.");
-        }
 
         Member member = Member.builder()
                 .email(signupRequestDto.getEmail())
@@ -50,7 +47,7 @@ public class MemberService {
         }
         return ResponseDto.success("사용 가능한 이메일 입니다.");
     }
-
+    //닉네임 중복 확인
     public ResponseDto<?> checkNickname(String nickname) {
         if (memberRepository.findByNickname(nickname).isPresent()) {
             throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
