@@ -3,6 +3,7 @@ package com.project.crux.service;
 import com.project.crux.common.Status;
 import com.project.crux.domain.*;
 import com.project.crux.domain.request.CrewPhotoRequestDto;
+import com.project.crux.domain.response.CrewMemberResponseDto;
 import com.project.crux.domain.response.CrewPostResponseDto;
 import com.project.crux.exception.CustomException;
 import com.project.crux.exception.ErrorCode;
@@ -84,6 +85,16 @@ public class CrewMemberService {
         return "크루 가입 승인 거절";
     }
 
+    public List<CrewMemberResponseDto> findSummitCrewMembers(Long crewId, UserDetailsImpl userDetails) {
+        Crew crew = getCrew(crewId);
+        CrewMember crewMember = crewService.getCrewMember(crew, userDetails.getMember());
+        checkAdmin(crewMember);
+        return crewMemberRepository.findAllByCrewId(crew.getId()).stream()
+                .filter(cm -> cm.getStatus().equals(Status.SUBMIT))
+                .map(CrewMemberResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
     public String withdrawCrew(Long crewId, UserDetailsImpl userDetails) {
         Crew crew = crewService.getCrew(crewId);
         CrewMember crewMember = crewService.getCrewMember(crew, userDetails.getMember());
@@ -102,7 +113,6 @@ public class CrewMemberService {
         crewMemberRepository.delete(toCrewMember);
         return "크루 추방 완료";
     }
-
 
     public CrewPostResponseDto createCrewPost(Long crewId, CrewPhotoRequestDto crewPhotoRequestDto, UserDetailsImpl userDetails) {
         Crew crew = crewService.getCrew(crewId);
