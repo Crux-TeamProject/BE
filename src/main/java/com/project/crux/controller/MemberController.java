@@ -1,6 +1,8 @@
 package com.project.crux.controller;
 
+import com.project.crux.domain.request.EmailRequestDto;
 import com.project.crux.domain.request.LoginRequestDto;
+import com.project.crux.domain.request.NicknameRequestDto;
 import com.project.crux.domain.request.SignupRequestDto;
 import com.project.crux.domain.response.ResponseDto;
 import com.project.crux.security.jwt.UserDetailsImpl;
@@ -25,13 +27,13 @@ public class MemberController {
     }
     //이메일 중복 확인
     @GetMapping("/members/email-check")
-    public ResponseDto<?>checkEmail(@RequestParam String email){
-        return memberService.checkEmail(email);
+    public ResponseDto<?>checkEmail(@ModelAttribute @Valid EmailRequestDto emailRequestDto){
+        return memberService.checkEmail(emailRequestDto.getEmail());
     }
     //닉네임 중복 확인
     @GetMapping("/members/nickname-check")
-    public ResponseDto<?>checkNickname(@RequestParam String nickname){
-        return memberService.checkNickname(nickname);
+    public ResponseDto<?>checkNickname(@ModelAttribute @Valid NicknameRequestDto nicknameRequestDto){
+        return memberService.checkNickname(nicknameRequestDto.getNickname());
     }
     //일반 로그인
     @PostMapping("/members/login")
