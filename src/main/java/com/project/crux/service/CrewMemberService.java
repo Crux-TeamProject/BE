@@ -39,48 +39,41 @@ public class CrewMemberService {
 
         Crew crew = getCrew(crewId);
         Member member = userDetails.getMember();
+        CrewMember crewMember = getCrewMember(crew,member);
+        checkCrewLeader(crewMember);
 
-        CrewMember crewLeader = crewMemberRepository.findByCrewAndStatus(crew, Status.ADMIN).orElseThrow(() -> new CustomException(ErrorCode.CREWLEADER_NOT_FOUND));
         String content = member.getNickname() + "님이 가입 신청하셨습니다";
-        notificationService.send(crewLeader.getMember(), NotificationType.SUBMIT, content);
+        sendNotice((crewMember.getMember()), NotificationType.SUBMIT, content);
 
-        if (crewLeader.getMember().equals(member)) {
-            throw new CustomException(ErrorCode.ADMIN_REGISTER_SUBMIT);
-        }
-        if (crewMemberRepository.findByCrewAndMember(crew, member).isPresent()) {
-            throw new CustomException(ErrorCode.REGISTER_SUBMIT_EXIST);
-        }
+        checkAdminRegister(crewMember, member);
+        checkDuplicateRegister(crew, member);
 
-        CrewMember crewMember = new CrewMember(member, crew);
-        crewMemberRepository.save(crewMember);
+        crewMemberRepository.save(new CrewMember(member, crew));
         return "크루 가입 신청 완료";
     }
 
     public String registerPermit(UserDetailsImpl userDetails, Long crewId, Long memberId, Boolean permit) {
 
-        Crew crew = crewRepository.findById(crewId).orElseThrow(() -> new CustomException(ErrorCode.CREW_NOT_FOUND));
-        CrewMember crewLeader = crewMemberRepository.findByCrewAndMember(crew, userDetails.getMember()).orElseThrow(()-> new CustomException(ErrorCode.CREWMEMBER_NOT_FOUND));
+        Crew crew = getCrew(crewId);
+        Member loginMember = userDetails.getMember();
+        checkCrewLeader(getCrewMember(crew,loginMember));
 
-        if (!(crewLeader.getMember().equals(userDetails.getMember()))) {
-            throw new CustomException(ErrorCode.NOT_ADMIN);
-        }
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        Member registerMember = getMember(memberId);
+        CrewMember crewMember = getCrewMember(crew, registerMember);
 
         if (permit) {
-            CrewMember crewMember = crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow(() -> new CustomException(ErrorCode.CREWMEMBER_NOT_FOUND));
             crewMember.updateStatus(Status.PERMIT);
 
-            String content = member.getNickname() + "님이 가입 되셨습니다";
-            notificationService.send(member, NotificationType.PERMIT, content);
+            String content = registerMember.getNickname() + "님이 가입 되셨습니다";
+            sendNotice(registerMember, NotificationType.PERMIT, content);
 
             return "크루 가입 승인 완료";
         }
 
-        CrewMember crewMember = crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow(() -> new CustomException(ErrorCode.CREWMEMBER_NOT_FOUND));
         crewMemberRepository.delete(crewMember);
 
-        String content = member.getNickname() + "님이 가입 거절되셨습니다";
-        notificationService.send(member, NotificationType.REJECT, content);
+        String content = registerMember.getNickname() + "님이 가입 거절되셨습니다";
+        sendNotice(registerMember, NotificationType.REJECT, content);
 
         return "크루 가입 승인 거절";
     }
@@ -162,5 +155,35 @@ public class CrewMemberService {
         if (crewMember.getStatus() != Status.ADMIN) {
             throw new CustomException(ErrorCode.NOT_ADMIN);
         }
+    }
+
+    private CrewMember getCrewMember(Crew crew ,Member member) {
+        return crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow(()-> new CustomException(ErrorCode.CREWMEMBER_NOT_FOUND));
+    }
+
+    private void checkCrewLeader(CrewMember crewLeader) {
+        if (!(crewLeader.getStatus().equals(Status.ADMIN))) {
+            throw new CustomException(ErrorCode.NOT_ADMIN);
+        }
+    }
+
+    private void checkAdminRegister(CrewMember crewLeader, Member member) {
+        if (crewLeader.getMember().equals(member)) {
+            throw new CustomException(ErrorCode.ADMIN_REGISTER_SUBMIT);
+        }
+    }
+
+    private void checkDuplicateRegister(Crew crew, Member member) {
+        if (crewMemberRepository.findByCrewAndMember(crew, member).isPresent()) {
+            throw new CustomException(ErrorCode.REGISTER_SUBMIT_EXIST);
+        }
+    }
+
+    private Member getMember(Long memberId) {
+        return memberRepository.findById(memberId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    private void sendNotice(Member member, NotificationType notificationType, String content) {
+        notificationService.send(member,notificationType,content);
     }
 }

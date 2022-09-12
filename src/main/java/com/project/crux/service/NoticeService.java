@@ -32,36 +32,31 @@ public class NoticeService {
     public NoticeResponseDto createNotice(Long crewId, NoticeRequestDto requestDto, UserDetailsImpl userDetails) {
 
         Notice notice = new Notice(requestDto.getContent());
-        Crew crew = crewRepository.findById(crewId).orElseThrow(() -> new CustomException(ErrorCode.CREW_NOT_FOUND));
+        Crew crew = getCrew(crewId);
         Member member = userDetails.getMember();
-        CrewMember crewMember = crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow(() -> new CustomException(ErrorCode.CREWMEMBER_NOT_FOUND));
+        CrewMember crewMember = getCrewMember(crew, member);
 
-        if (crewMember.getStatus().equals(Status.SUBMIT)) {
-            throw new CustomException(ErrorCode.NOT_ADMIN_OR_PERMIT);
-        }
+        checkAdminOrPermit(crewMember);
+
         notice.setCrewMember(crewMember);
 
         String content = member.getNickname() + "님이 공지사항을 올렸습니다.";
-        crew.getCrewMemberList().stream().filter(cm -> cm.getStatus() == Status.ADMIN || cm.getStatus() == Status.PERMIT &&
-                        !cm.getMember().equals(member))
-                .forEach(cm -> {
-                    notificationService.send(cm.getMember(), NotificationType.NOTICE, content);
-                });
+
+        sendNotice(crew, content, member);
 
         noticeRepository.save(notice);
+
         return new NoticeResponseDto(notice);
     }
 
     @Transactional
     public NoticeResponseDto updateNotice(Long noticeId, NoticeRequestDto requestDto, UserDetailsImpl userDetails) {
 
-        Notice notice = noticeRepository.findById(noticeId).orElseThrow(() -> new CustomException(ErrorCode.NOTICE_NOT_FOUND));
+        Notice notice = getNotice(noticeId);
 
         Member member = userDetails.getMember();
 
-        if (!notice.getCrewMember().getMember().equals(member)) {
-            throw new CustomException(ErrorCode.INVALID_NOTICE_UPDATE);
-        }
+        noticeWriterCheck(notice,member,"update");
 
         notice.update(requestDto.getContent());
 
@@ -70,15 +65,49 @@ public class NoticeService {
 
     public String deleteNotice(Long noticeId, UserDetailsImpl userDetails) {
 
-        Notice notice = noticeRepository.findById(noticeId).orElseThrow(() -> new CustomException(ErrorCode.NOTICE_NOT_FOUND));
+        Notice notice = getNotice(noticeId);
 
         Member member = userDetails.getMember();
 
-        if (!notice.getCrewMember().getMember().equals(member)) {
-            throw new CustomException(ErrorCode.INVALID_NOTICE_DELETE);
-        }
+        noticeWriterCheck(notice,member,"delete");
+
         noticeRepository.delete(notice);
 
         return "공지사항 삭제 완료";
+    }
+
+    private Crew getCrew(Long crewId) {
+        return crewRepository.findById(crewId).orElseThrow(()-> new CustomException(ErrorCode.CREW_NOT_FOUND));
+    }
+
+    private CrewMember getCrewMember(Crew crew, Member member) {
+        return crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow(()-> new CustomException(ErrorCode.CREWMEMBER_NOT_FOUND));
+    }
+
+    private void checkAdminOrPermit(CrewMember crewMember) {
+        if (crewMember.getStatus() == Status.SUBMIT) {
+            throw new CustomException(ErrorCode.NOT_ADMIN_OR_PERMIT);
+        }
+    }
+
+    private void sendNotice(Crew crew, String content ,Member member) {
+        crew.getCrewMemberList().stream().filter(cm -> cm.getStatus() == Status.ADMIN || cm.getStatus() == Status.PERMIT &&
+                        !cm.getMember().equals(member))
+                .forEach(cm -> {
+                    notificationService.send(cm.getMember(), NotificationType.NOTICE, content);
+                });
+    }
+
+    private Notice getNotice(Long noticeId) {
+        return noticeRepository.findById(noticeId).orElseThrow(() -> new CustomException(ErrorCode.NOTICE_NOT_FOUND));
+    }
+
+    private void noticeWriterCheck(Notice notice, Member member, String updateOrDelete) {
+        if (!notice.getCrewMember().getMember().equals(member)) {
+            if (updateOrDelete.equals("update")) {
+                throw new CustomException(ErrorCode.INVALID_NOTICE_UPDATE);
+            }
+            throw new CustomException(ErrorCode.INVALID_NOTICE_DELETE);
+        }
     }
 }

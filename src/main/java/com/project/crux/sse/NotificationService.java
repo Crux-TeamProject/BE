@@ -65,7 +65,7 @@ public class NotificationService {
             emitter.send(SseEmitter.event()
                     .id(id)
                     .data(data));
-            log.info(" 알림 전송 완료 ");
+            log.info(" 알림 전송 완료 {}",id);
         } catch (IOException exception) {
             emitterRepository.deleteById(id);
             throw new RuntimeException("연결 오류!");
