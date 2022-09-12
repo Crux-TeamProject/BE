@@ -60,19 +60,15 @@ public class GymService {
 
     public GymResponseDto getGym(Long gymId) {
 
-        Gym gym = gymRepository.findById(gymId).orElseThrow(() -> new CustomException(ErrorCode.GYM_NOT_FOUND));
+        Gym gym = getGymById(gymId);
 
         GymResponseDto gymResponseDto = new GymResponseDto(gym);
+
         List<Review> reviewList = reviewRepository.findByGym(gym);
 
         List<ReviewResponseDto> reviews = gymResponseDto.getReviews();
 
-        reviewList.forEach(review -> {
-            ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review);
-            List<ReviewPhoto> reviewPhotoList = reviewPhotoRepository.findAllByReview(review);
-            reviewPhotoList.forEach(reviewPhoto -> reviewResponseDto.getReviewPhotoList().add(new ReviewPhotoResponseDto(reviewPhoto)));
-            reviews.add(reviewResponseDto);
-        });
+        getReviewResponseList(reviewList, reviews);
 
         return gymResponseDto;
     }
@@ -81,7 +77,7 @@ public class GymService {
     public String likeGym(UserDetailsImpl userDetails, Long gymId) {
 
         Member member = userDetails.getMember();
-        Gym gym = gymRepository.findById(gymId).orElseThrow(()->new CustomException(ErrorCode.GYM_NOT_FOUND));
+        Gym gym = getGymById(gymId);
 
         LikeGym existLike = likeGymRepository.findByMemberAndGymId(member, gymId);
 
@@ -96,6 +92,14 @@ public class GymService {
         return "즐겨 찾기 삭제 완료";
     }
 
+   private void getReviewResponseList(List<Review> reviewList, List<ReviewResponseDto> reviews) {
+        reviewList.forEach(review -> {
+            ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review);
+            List<ReviewPhoto> reviewPhotoList = reviewPhotoRepository.findAllByReview(review);
+            reviewPhotoList.forEach(reviewPhoto -> reviewResponseDto.getReviewPhotoList().add(new ReviewPhotoResponseDto(reviewPhoto)));
+            reviews.add(reviewResponseDto);
+        });
+    }
 
     private List<GymResponseDto> pageToDtoList(Page<Gym> gyms) {
 
@@ -104,6 +108,10 @@ public class GymService {
         gyms.getContent().forEach(gym -> gymResponseDtos.add(new GymResponseDto(gym)));
 
         return gymResponseDtos;
+    }
+
+    private Gym getGymById(Long gymId) {
+        return gymRepository.findById(gymId).orElseThrow(() -> new CustomException(ErrorCode.GYM_NOT_FOUND));
     }
 
 }

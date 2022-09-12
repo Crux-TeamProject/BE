@@ -16,7 +16,6 @@ import com.project.crux.security.jwt.UserDetailsImpl;
 import com.project.crux.sse.NotificationService;
 import com.project.crux.sse.NotificationType;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.annotations.common.reflection.XMember;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
