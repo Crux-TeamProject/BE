@@ -23,12 +23,14 @@ public enum ErrorCode {
     401 UNAUTHORIZED : 인증되지 않은 사용자
     */
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "비밀번호가 틀렸습니다"),
-    INVALID_REVIEW_UPDATE(HttpStatus.UNAUTHORIZED,"리뷰 수정 권한이 없습니다"),
-    INVALID_REVIEW_DELETE(HttpStatus.UNAUTHORIZED,"리뷰 삭제 권한이 없습니다"),
 
     /*
     403 FORBIDDEN : 권한 없음
      */
+    INVALID_REVIEW_UPDATE(HttpStatus.FORBIDDEN,"리뷰 수정 권한이 없습니다"),
+    INVALID_REVIEW_DELETE(HttpStatus.FORBIDDEN,"리뷰 삭제 권한이 없습니다"),
+    INVALID_NOTICE_UPDATE(HttpStatus.FORBIDDEN,"공지사항 수정 권한이 없습니다"),
+    INVALID_NOTICE_DELETE(HttpStatus.FORBIDDEN,"공지사항 삭제 권한이 없습니다"),
     NOT_ADMIN(HttpStatus.FORBIDDEN, "크루장만 가능합니다"),
     NOT_PERMIT(HttpStatus.FORBIDDEN, "크루원이 아닙니다"),
     NOT_ADMIN_OR_PERMIT(HttpStatus.FORBIDDEN, "크루에 가입된 사람이 아닙니다"),
@@ -44,7 +46,8 @@ public enum ErrorCode {
     PHOTO_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 사진을 찾을 수 없습니다"),
     CREWLEADER_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 크루 리더의 정보를 찾을 수 없습니다" ),
     CREWMEMBER_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 멤버의 크루 가입 정보를 찾을 수 없습니다"),
-    SUBSCRIBE_FAIL(HttpStatus.NOT_FOUND,"알림구독을 실패하였습니다");
+    SUBSCRIBE_FAIL(HttpStatus.NOT_FOUND,"알림구독을 실패하였습니다"),
+    NOTICE_NOT_FOUND(HttpStatus.NOT_FOUND,"공지사항 정보를 찾을 수 없습니다");
 
 
 

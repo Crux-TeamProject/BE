@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Hibernate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -64,7 +65,7 @@ public class Member {
             return false;
         }
         Member member = (Member) o;
-        return id != null && Objects.equals(id, member.id);
+        return id != null && Objects.equals(id, member.getId());
     }
 
     public void update(MypageRequestDto mypageRequestDto) {
