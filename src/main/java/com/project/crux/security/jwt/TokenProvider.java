@@ -1,5 +1,6 @@
 package com.project.crux.security.jwt;
 
+import com.nimbusds.jwt.JWT;
 import com.project.crux.domain.Member;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -41,6 +42,7 @@ public class TokenProvider {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
+
 
     // Token 검증
     public boolean validateToken(String token) {

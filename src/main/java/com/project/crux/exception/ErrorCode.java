@@ -19,6 +19,7 @@ public enum ErrorCode {
     ADMIN_REGISTER_SUBMIT(HttpStatus.BAD_REQUEST, "크루 생성자는 가입신청을 할 수 없습니다."),
     REGISTER_SUBMIT_EXIST(HttpStatus.BAD_REQUEST, "이미 가입 신청하셨습니다."),
 
+
     /*
     401 UNAUTHORIZED : 인증되지 않은 사용자
     */
