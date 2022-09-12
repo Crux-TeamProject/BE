@@ -91,7 +91,7 @@ public class CrewService {
         Crew crew = getCrew(crewId);
         CrewMember crewMember = getCrewMember(crew, userDetails.getMember());
         checkAdmin(crewMember);
-        crewMemberRepository.deleteAll(crewMemberRepository.findAllByCrewId(crewId));
+        crewRepository.delete(crew);
         return "크루 삭제 완료";
     }
 
