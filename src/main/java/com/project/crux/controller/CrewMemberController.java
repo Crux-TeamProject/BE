@@ -1,6 +1,7 @@
 package com.project.crux.controller;
 
 import com.project.crux.domain.request.CrewPhotoRequestDto;
+import com.project.crux.domain.response.CrewMemberResponseDto;
 import com.project.crux.domain.response.CrewPostResponseDto;
 import com.project.crux.domain.response.ResponseDto;
 import com.project.crux.security.jwt.UserDetailsImpl;
@@ -32,6 +33,13 @@ public class CrewMemberController {
         return ResponseDto.success(crewMemberService.registerPermit(userDetails, crewId, memberId, permit));
     }
 
+    //크루 가입 신청 목록 조회
+    @GetMapping("/crew-members/{crewId}")
+    public ResponseDto<List<CrewMemberResponseDto>> findSummitCrewMembers(@PathVariable Long crewId,
+                                                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseDto.success(crewMemberService.findSummitCrewMembers(crewId, userDetails));
+    }
+
     //크루 탈퇴
     @DeleteMapping("/crew-members/{crewId}")
     public ResponseDto<String> withdrawCrew(@PathVariable Long crewId,
@@ -49,14 +57,16 @@ public class CrewMemberController {
     //크루 사진 등록
     @PostMapping("/crew-posts/{crewId}")
     public ResponseDto<CrewPostResponseDto> createCrewPost(@PathVariable Long crewId,
-                                                             @RequestBody CrewPhotoRequestDto crewPhotoRequestDto,
-                                                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                                                           @RequestBody CrewPhotoRequestDto crewPhotoRequestDto,
+                                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseDto.success(crewMemberService.createCrewPost(crewId, crewPhotoRequestDto, userDetails));
     }
 
     //크루 사진 조회
     @GetMapping("/crew-posts/{crewId}")
-    public ResponseDto<List<CrewPostResponseDto>> findAllCrewPosts(@PathVariable Long crewId, @RequestParam Long lastPostId, @RequestParam int size) {
+    public ResponseDto<List<CrewPostResponseDto>> findAllCrewPosts(@PathVariable Long crewId,
+                                                                   @RequestParam Long lastPostId,
+                                                                   @RequestParam int size) {
         return ResponseDto.success(crewMemberService.findAllCrewPosts(crewId, lastPostId, size));
     }
 
