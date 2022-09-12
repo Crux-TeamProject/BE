@@ -1,8 +1,6 @@
 package com.project.crux.controller;
 
-import com.project.crux.domain.request.EmailRequestDto;
 import com.project.crux.domain.request.LoginRequestDto;
-import com.project.crux.domain.request.NicknameRequestDto;
 import com.project.crux.domain.request.SignupRequestDto;
 import com.project.crux.domain.response.ResponseDto;
 import com.project.crux.security.jwt.UserDetailsImpl;
@@ -13,12 +11,14 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
 public class MemberController {
 
     private final MemberService memberService;
+    private final KakaoMemberService kakaoMemberService;
 
     //일반 회원가입
     @PostMapping(value = "/members/signup")
@@ -37,7 +37,7 @@ public class MemberController {
     }
     //일반 로그인
     @PostMapping("/members/login")
-    public ResponseDto<?>login(@RequestBody @Valid LoginRequestDto loginRequestDto,
+    public ResponseDto<?>login(@RequestBody LoginRequestDto loginRequestDto,
                                HttpServletResponse response){
         return memberService.login(loginRequestDto, response);
     }
@@ -45,5 +45,10 @@ public class MemberController {
     @DeleteMapping("/members/withdraw")
     public ResponseDto<?>withdraw(@AuthenticationPrincipal UserDetailsImpl userDetails){
         return memberService.withdraw(userDetails);
+    }
+    //카카오 로그인
+    @GetMapping("/oauth/kakao/callback")
+    public void kakaoLogin(@RequestParam String code,HttpServletResponse response) throws IOException {
+        kakaoMemberService.kakaoLogin(code,response);
     }
 }
