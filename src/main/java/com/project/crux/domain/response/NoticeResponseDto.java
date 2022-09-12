@@ -9,9 +9,11 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 public class NoticeResponseDto {
+    private Long id;
     private String content;
 
     public NoticeResponseDto(Notice notice) {
+        this.id = notice.getId();
         this.content = notice.getContent();
     }
 }

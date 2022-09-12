@@ -2,6 +2,7 @@ package com.project.crux.domain.response;
 
 import com.project.crux.common.Status;
 import com.project.crux.domain.Crew;
+import com.project.crux.domain.Notice;
 import lombok.Getter;
 
 import java.util.List;
@@ -15,8 +16,9 @@ public class CrewFindOneResponseDto {
     private String imgUrl;
     private List<CrewMemberResponseDto> memberList;
     private int crewNum;
+    private List<NoticeResponseDto> noticeList;
 
-    public CrewFindOneResponseDto(Crew crew) {
+    public CrewFindOneResponseDto(Crew crew, List<Notice> noticeList) {
         this.id = crew.getId();
         this.name = crew.getName();
         this.content = crew.getContent();
@@ -25,5 +27,6 @@ public class CrewFindOneResponseDto {
                 .filter(memberCrew -> !memberCrew.getStatus().equals(Status.SUBMIT))
                 .map(CrewMemberResponseDto::new).collect(Collectors.toList());
         this.crewNum = crew.getCountOfCrewMemberList();
+        this.noticeList = noticeList.stream().map(NoticeResponseDto::new).collect(Collectors.toList());
     }
 }
