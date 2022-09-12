@@ -96,7 +96,7 @@ public class CrewService {
     }
 
     CrewMember getCrewMember(Crew crew, Member member) {
-        return crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow(()-> new CustomException(ErrorCode.MEMBERCREW_NOT_FOUND));
+        return crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow(()-> new CustomException(ErrorCode.CREWMEMBER_NOT_FOUND));
     }
 
     Crew getCrew(Long crewId) {

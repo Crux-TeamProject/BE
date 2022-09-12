@@ -1,14 +1,12 @@
 package com.project.crux.service;
 
 import com.project.crux.common.Status;
-import com.project.crux.domain.Crew;
-import com.project.crux.domain.Member;
-import com.project.crux.domain.CrewMember;
+import com.project.crux.domain.*;
+import com.project.crux.domain.request.CrewPhotoRequestDto;
+import com.project.crux.domain.response.CrewPostResponseDto;
 import com.project.crux.exception.CustomException;
 import com.project.crux.exception.ErrorCode;
-import com.project.crux.repository.CrewRepository;
-import com.project.crux.repository.CrewMemberRepository;
-import com.project.crux.repository.MemberRepository;
+import com.project.crux.repository.*;
 import com.project.crux.security.jwt.UserDetailsImpl;
 import com.project.crux.sse.NotificationService;
 import com.project.crux.sse.NotificationType;
@@ -60,29 +58,28 @@ public class CrewMemberService {
     public String registerPermit(UserDetailsImpl userDetails, Long crewId, Long memberId, Boolean permit) {
 
         Crew crew = crewRepository.findById(crewId).orElseThrow(() -> new CustomException(ErrorCode.CREW_NOT_FOUND));
-        CrewMember crewLeader = crewMemberRepository.findByCrewAndStatus(crew, Status.ADMIN).orElseThrow(() -> new CustomException(ErrorCode.CREWLEADER_NOT_FOUND));
+        CrewMember crewLeader = crewMemberRepository.findByCrewAndMember(crew, userDetails.getMember()).orElseThrow(()-> new CustomException(ErrorCode.CREWMEMBER_NOT_FOUND));
 
-        if (!userDetails.getMember().equals(crewLeader.getMember())) {
+        if (!(crewLeader.getMember().equals(userDetails.getMember()))) {
             throw new CustomException(ErrorCode.NOT_ADMIN);
         }
-
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         if (permit) {
-            String content = member.getNickname() + "님이 가입 되셨습니다";
-            notificationService.send(member, NotificationType.PERMIT, content);
-
             CrewMember crewMember = crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow(() -> new CustomException(ErrorCode.CREWMEMBER_NOT_FOUND));
             crewMember.updateStatus(Status.PERMIT);
+
+            String content = member.getNickname() + "님이 가입 되셨습니다";
+            notificationService.send(member, NotificationType.PERMIT, content);
 
             return "크루 가입 승인 완료";
         }
 
-        String content = member.getNickname() + "님이 가입 거절되셨습니다";
-        notificationService.send(member, NotificationType.REJECT, content);
-
         CrewMember crewMember = crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow(() -> new CustomException(ErrorCode.CREWMEMBER_NOT_FOUND));
         crewMemberRepository.delete(crewMember);
+
+        String content = member.getNickname() + "님이 가입 거절되셨습니다";
+        notificationService.send(member, NotificationType.REJECT, content);
 
         return "크루 가입 승인 거절";
     }

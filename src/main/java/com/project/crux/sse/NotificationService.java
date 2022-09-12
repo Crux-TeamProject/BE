@@ -5,6 +5,7 @@ import com.project.crux.domain.response.NotificationResponse;
 import com.project.crux.exception.CustomException;
 import com.project.crux.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -12,6 +13,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.io.IOException;
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class NotificationService {
@@ -63,6 +65,7 @@ public class NotificationService {
             emitter.send(SseEmitter.event()
                     .id(id)
                     .data(data));
+            log.info(" 알림 전송 완료 ");
         } catch (IOException exception) {
             emitterRepository.deleteById(id);
             throw new RuntimeException("연결 오류!");
@@ -84,6 +87,7 @@ public class NotificationService {
                     emitterRepository.saveEventCache(key, notification);
                     // 데이터 전송
                     sendToClient(emitter, key, NotificationResponse.from(notification));
+                    log.info("알림 전송 내용 : {}",notification.getContent());
                 }
         );
     }
