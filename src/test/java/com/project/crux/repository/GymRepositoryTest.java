@@ -56,6 +56,16 @@ class GymRepositoryTest {
     void findByAvgScoreLessThan() {
 
         //given
+        PageRequest pageRequest = PageRequest.of(0, 5, Sort.by("avgScore").descending());
+        gymRepository.saveAll(gyms);
+
+        //when
+        Page<Gym> gymPage = gymRepository.findAll(pageRequest);
+
+        //then
+        assertThat(gymPage.getContent().size()).isEqualTo(5);
+
+      /*  //given
         double lastAvgScore = 3.5;
         PageRequest pageRequest = PageRequest.of(0, 5, Sort.by("avgScore").descending());
         gymRepository.saveAll(gyms);
@@ -64,7 +74,7 @@ class GymRepositoryTest {
         Page<Gym> gymPage = gymRepository.findByAvgScoreLessThan(lastAvgScore, pageRequest);
 
         //then
-        assertThat(gymPage.getContent().stream().allMatch(gym -> gym.getAvgScore() < lastAvgScore)).isEqualTo(true);
+        assertThat(gymPage.getContent().stream().allMatch(gym -> gym.getAvgScore() < lastAvgScore)).isEqualTo(true);*/
     }
 
     @Test

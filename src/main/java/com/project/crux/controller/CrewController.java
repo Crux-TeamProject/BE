@@ -38,7 +38,7 @@ public class CrewController {
 
     //인기 크루 조회
     @GetMapping("/crews/popular")
-    public ResponseDto<Page<CrewResponseDto>> findAllPopularCrew(@PageableDefault(sort = "countOfMemberCrewList", direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseDto<Page<CrewResponseDto>> findAllPopularCrew(@PageableDefault(sort = "countOfCrewMemberList", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<CrewResponseDto> crewResponseDtoList = crewService.findAllPopularCrew(pageable);
         return ResponseDto.success(crewResponseDtoList);
     }
