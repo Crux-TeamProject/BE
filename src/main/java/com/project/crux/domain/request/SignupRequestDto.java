@@ -1,6 +1,5 @@
 package com.project.crux.domain.request;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;

@@ -35,8 +35,12 @@ public class Member {
     @JsonIgnore
     private String password;
 
+    @Column(unique = true)
+    private Long kakaoId;
     @Column
     private String content;
+
+
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<CrewMember> crewMemberList = new ArrayList<>();
@@ -51,6 +55,15 @@ public class Member {
         this.password = password;
         this.content = content;
     }
+    //카카오 서비스 생성자
+    @Builder
+    public Member(String nickname, String password, String email, Long kakaoId) {
+        this.nickname = nickname;
+        this.password = password;
+        this.email = email;
+        this.kakaoId = kakaoId;
+    }
+
 
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
         return passwordEncoder.matches(password, this.password);
