@@ -17,8 +17,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 import java.util.*;
 
@@ -70,7 +68,7 @@ class CrewControllerTest {
                 .andExpect(jsonPath("$.data.crewNum").value(1));
     }
 
-    @DisplayName("전체 크루 조회 성공")
+/*    @DisplayName("전체 크루 조회 성공")
     @Test
     void findAllCrew() throws Exception {
         //given
@@ -91,7 +89,7 @@ class CrewControllerTest {
 
         //then
         resultActions.andExpect(status().isOk());
-    }
+    }*/
 
     private CrewRequestDto crewRequestDto() {
         return CrewRequestDto.builder()

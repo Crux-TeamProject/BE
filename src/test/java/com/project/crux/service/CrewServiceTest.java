@@ -5,7 +5,6 @@ import com.project.crux.domain.Member;
 import com.project.crux.domain.CrewMember;
 import com.project.crux.domain.request.CrewRequestDto;
 import com.project.crux.domain.response.CrewResponseDto;
-import com.project.crux.exception.CustomException;
 import com.project.crux.exception.ErrorCode;
 import com.project.crux.repository.CrewRepository;
 import com.project.crux.repository.CrewMemberRepository;
@@ -19,12 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -99,7 +93,7 @@ class CrewServiceTest {
     }
 
 
-    @Nested
+/*    @Nested
     @DisplayName("전체 크루 조회")
     class findAllCrew {
         @DisplayName("전체 크루 조회 성공")
@@ -147,7 +141,7 @@ class CrewServiceTest {
             crews.add(new Crew(CREW_NAME, CREW_CONTENT, CREW_IMG_URL));
         }
         return new PageImpl<>(crews);
-    }
+    }*/
 
     private Crew getSavedCrew() {
         Crew crew = new Crew(CREW_NAME, CREW_CONTENT, CREW_IMG_URL);
