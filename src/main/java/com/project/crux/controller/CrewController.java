@@ -49,6 +49,12 @@ public class CrewController {
         return ResponseDto.success(crewService.findCrew(crewId));
     }
 
+    //크루 검색
+    @GetMapping("/crews/search")
+    public ResponseDto<List<CrewResponseDto>> searchCrew(@RequestParam String query) {
+        return ResponseDto.success(crewService.searchCrew(query));
+    }
+
     //크루 수정
     @PutMapping("/crews/{crewId}")
     public ResponseDto<CrewResponseDto> updateCrew(@PathVariable Long crewId, @RequestBody CrewRequestDto crewRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {

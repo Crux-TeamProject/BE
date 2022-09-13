@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -59,6 +60,12 @@ public class CrewService {
     @Transactional(readOnly = true)
     public Page<CrewResponseDto> findAllPopularCrew(Pageable pageable) {
         return crewRepository.findAll(pageable).map(CrewResponseDto::from);
+    }
+
+    @Transactional(readOnly = true)
+    public List<CrewResponseDto> searchCrew(String query) {
+        return crewRepository.findAllByNameContainsIgnoreCase(query).stream()
+                .map(CrewResponseDto::from).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
