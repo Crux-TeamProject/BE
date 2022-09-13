@@ -17,13 +17,11 @@ import com.project.crux.repository.NoticeRepository;
 import com.project.crux.security.jwt.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -54,17 +52,8 @@ public class CrewService {
     }
 
     @Transactional(readOnly = true)
-    public List<CrewResponseDto> findAllCrew(Long lastCrewId, int size) {
-        verifyLastCrewId(lastCrewId);
-        PageRequest pageRequest = PageRequest.of(0, size);
-        return crewRepository.findByIdLessThanOrderByIdDesc(lastCrewId, pageRequest)
-                .stream().map(CrewResponseDto::from).collect(Collectors.toList());
-    }
-
-    private void verifyLastCrewId(Long lastCrewId) {
-        if (lastCrewId < 0) {
-            throw new CustomException(ErrorCode.INVALID_ARTICLEID);
-        }
+    public Page<CrewResponseDto> findAllCrew(Pageable pageable) {
+        return crewRepository.findAll(pageable).map(CrewResponseDto::from);
     }
 
     @Transactional(readOnly = true)

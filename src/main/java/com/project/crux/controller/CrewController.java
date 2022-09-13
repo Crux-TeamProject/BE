@@ -31,8 +31,8 @@ public class CrewController {
 
     //크루 전체 조회
     @GetMapping("/crews")
-    public ResponseDto<List<CrewResponseDto>> findAllCrew(@RequestParam Long lastCrewId, @RequestParam int size) {
-        List<CrewResponseDto> crewResponseDtoList = crewService.findAllCrew(lastCrewId, size);
+    public ResponseDto<Page<CrewResponseDto>> findAllCrew(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<CrewResponseDto> crewResponseDtoList = crewService.findAllCrew(pageable);
         return ResponseDto.success(crewResponseDtoList);
     }
 
