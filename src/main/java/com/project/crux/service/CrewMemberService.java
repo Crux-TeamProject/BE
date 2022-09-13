@@ -39,16 +39,15 @@ public class CrewMemberService {
 
         Crew crew = getCrew(crewId);
         Member member = userDetails.getMember();
-        CrewMember crewMember = getCrewMember(crew,member);
-        checkCrewLeader(crewMember);
-
-        String content = member.getNickname() + "님이 가입 신청하셨습니다";
-        sendNotice((crewMember.getMember()), NotificationType.SUBMIT, content);
-
-        checkAdminRegister(crewMember, member);
         checkDuplicateRegister(crew, member);
+        CrewMember crewMember = new CrewMember(member, crew);
 
-        crewMemberRepository.save(new CrewMember(member, crew));
+        CrewMember crewLeader = getCrewLeader(crew);
+        checkAdminRegister(crewLeader, member);
+        String content = member.getNickname() + "님이 가입 신청하셨습니다";
+        sendNotice((crewLeader.getMember()), NotificationType.SUBMIT, content);
+
+        crewMemberRepository.save(crewMember);
         return "크루 가입 신청 완료";
     }
 
@@ -157,8 +156,14 @@ public class CrewMemberService {
         }
     }
 
-    private CrewMember getCrewMember(Crew crew ,Member member) {
-        return crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow(()-> new CustomException(ErrorCode.CREWMEMBER_NOT_FOUND));
+    private CrewMember getCrewMember(Crew crew, Member member) {
+        return crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow(() -> new CustomException(ErrorCode.CREWMEMBER_NOT_FOUND));
+    }
+
+    private CrewMember getCrewLeader(Crew crew) {
+        return crew.getCrewMemberList().stream()
+                .filter(cm -> cm.getStatus().equals(Status.ADMIN))
+                .findAny().orElseThrow(() -> new CustomException(ErrorCode.CREWLEADER_NOT_FOUND));
     }
 
     private void checkCrewLeader(CrewMember crewLeader) {
