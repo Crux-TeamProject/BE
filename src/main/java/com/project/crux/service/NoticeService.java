@@ -41,11 +41,9 @@ public class NoticeService {
         notice.setCrewMember(crewMember);
 
         String content = member.getNickname() + "님이 공지사항을 올렸습니다.";
-
         sendNotice(crew, content, member);
 
         noticeRepository.save(notice);
-
         return new NoticeResponseDto(notice);
     }
 
