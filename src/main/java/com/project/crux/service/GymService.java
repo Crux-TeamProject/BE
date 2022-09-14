@@ -13,9 +13,7 @@ import com.project.crux.repository.ReviewRepository;
 import com.project.crux.security.jwt.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +28,14 @@ public class GymService {
     private final LikeGymRepository likeGymRepository;
     private final ReviewRepository reviewRepository;
     private final ReviewPhotoRepository reviewPhotoRepository;
+
+
+    public List<GymResponseDto> getGyms(String lat, String lon, Pageable pageable) {
+
+        Page<Gym> gyms = gymRepository.findByLatAndLon(lat, lon, pageable);
+
+        return pageToDtoListWithDist(gyms,lon,lat);
+    }
 
 
 /*    public List<GymResponseDto> getPopularGyms(double lastAvgScore, int size) {
@@ -127,6 +133,43 @@ public class GymService {
 
     private Gym getGymById(Long gymId) {
         return gymRepository.findById(gymId).orElseThrow(() -> new CustomException(ErrorCode.GYM_NOT_FOUND));
+    }
+
+    private List<GymResponseDto> pageToDtoListWithDist(Page<Gym> gyms, String lon, String lat){
+
+        List<GymResponseDto> gymResponseDtos = new ArrayList<>();
+
+        gyms.getContent().forEach(gym ->
+            gymResponseDtos.add(new GymResponseDto(gym,distance(Double.parseDouble(lat),Double.parseDouble(lon),
+                    Double.parseDouble(gym.getLat()),Double.parseDouble(gym.getLon()))))
+        );
+
+        return gymResponseDtos;
+
+    }
+
+    private double distance(double lat1, double lon1, double lat2, double lon2) {
+
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515;
+        dist = dist * 1.609344;
+        dist = Math.round(dist * 100) / (double) 100 ;
+
+        return (dist);
+    }
+
+    // This function converts decimal degrees to radians
+    private double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    // This function converts radians to decimal degrees
+    private double rad2deg(double rad) {
+        return (rad * 180 / Math.PI);
     }
 
 }

@@ -16,6 +16,14 @@ public class GymController {
 
     private final GymService gymService;
 
+    //api 내 주변 클라이밍짐 조회
+
+    @GetMapping("/gyms")
+    public ResponseDto<?> getGyms(@RequestParam String lat, @RequestParam String lon,
+                                  @PageableDefault Pageable pageable) {
+        return ResponseDto.success(gymService.getGyms(lat, lon, pageable));
+    }
+
 /*    //api 인기 클라이밍짐 조회 ( 커서 기반 페이지네이션 )
     @GetMapping("/gyms/popular")
     public ResponseDto<?> getPopularGyms(@RequestParam double lastAvgScore, @RequestParam int size) {
