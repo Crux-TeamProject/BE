@@ -19,7 +19,18 @@ public class GymResponseDto {
     private String imgUrl;
     private String phone;
     private double avgScore;
+    private double dist;
     private List<ReviewResponseDto> reviews = new ArrayList<>();
+
+    public GymResponseDto(Gym gym, double dist) {
+        this.id = gym.getId();
+        this.name = gym.getName();
+        this.location = gym.getLocation();
+        this.imgUrl = gym.getImgUrl();
+        this.phone = gym.getPhone();
+        this.avgScore = gym.getAvgScore();
+        this.dist = dist;
+    }
 
     public GymResponseDto(Gym gym) {
         this.id = gym.getId();

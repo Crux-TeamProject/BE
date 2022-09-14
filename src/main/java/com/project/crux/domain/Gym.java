@@ -31,15 +31,23 @@ public class Gym {
     private String phone;
 
     @Column
+    private String lon;
+
+    @Column
+    private String lat;
+
+    @Column
     private double avgScore;
 
     @OneToMany(mappedBy = "gym", cascade = CascadeType.REMOVE)
     private List<Review> reviewList = new ArrayList<>();
 
-    public Gym(String place_name, String address_name, String phone) {
+    public Gym(String place_name, String address_name, String phone, String lon , String lat) {
         this.name = place_name;
         this.location = address_name;
         this.phone = phone;
+        this.lon = lon;
+        this.lat = lat;
     }
 
     public Gym(String place_name, String address_name, String phone, double avgScore) {
@@ -49,10 +57,12 @@ public class Gym {
         this.avgScore = avgScore;
     }
 
-    public void update(String place_name, String address_name, String phone) {
+    public void update(String place_name, String address_name, String phone, String lon, String lat) {
         this.name = place_name;
         this.location = address_name;
         this.phone = phone;
+        this.lon = lon;
+        this.lat = lat;
     }
 
     public void updateImg(String image_url) {

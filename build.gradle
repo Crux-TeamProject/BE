@@ -39,6 +39,10 @@ dependencies {
 	implementation 'com.google.code.gson:gson:2.9.0'
 	// Oauth2
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+	implementation group: 'org.hibernate', name: 'hibernate-spatial', version: '5.6.10.Final'
+
+
 }
 
 tasks.named('test') {
