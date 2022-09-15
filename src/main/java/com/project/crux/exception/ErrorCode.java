@@ -9,7 +9,6 @@ public enum ErrorCode {
     /*
     400 Bad Request
      */
-
     DUPLICATE_USERNAME(HttpStatus.BAD_REQUEST, "중복된 아이디가 존재합니다"),
     DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "중복된 이메일이 존재합니다"),
     DUPLICATE_NICKNAME(HttpStatus.BAD_REQUEST, "중복된 닉네임이 존재합니다"),
@@ -20,6 +19,7 @@ public enum ErrorCode {
     REGISTER_SUBMIT_EXIST(HttpStatus.BAD_REQUEST, "이미 가입 신청하셨습니다."),
     ALREADY_LIKED_CREW_EXCEPTION(HttpStatus.BAD_REQUEST, "이미 좋아요한 크루 입니다"),
     ALREADY_UNLIKED_CREW_EXCEPTION(HttpStatus.BAD_REQUEST, "이미 삭제된 좋아요 입니다"),
+
 
 
     /*

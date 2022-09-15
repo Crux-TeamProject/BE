@@ -29,7 +29,12 @@ public class MemberService {
     //일반회원가입
     @Transactional
     public ResponseDto<?> signUpMember(SignupRequestDto signupRequestDto) {
-
+        if (memberRepository.findByNickname(signupRequestDto.getNickname()).isPresent()) {
+            throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
+        }
+        if(memberRepository.findByEmail(signupRequestDto.getEmail()).isPresent()) {
+            throw new CustomException(ErrorCode.DUPLICATE_EMAIL);
+        }
         Member member = Member.builder()
                 .email(signupRequestDto.getEmail())
                 .nickname(signupRequestDto.getNickname())
@@ -47,6 +52,7 @@ public class MemberService {
         }
         return ResponseDto.success("사용 가능한 이메일 입니다.");
     }
+
     //닉네임 중복 확인
     public ResponseDto<?> checkNickname(String nickname) {
         if (memberRepository.findByNickname(nickname).isPresent()) {
