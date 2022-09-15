@@ -50,11 +50,12 @@ public class Member {
     private List<LikeGym> likeGymList;
 
     @Builder
-    public Member(String email, String nickname, String password, String content) {
+    public Member(String email, String nickname, String password, String content,String imgUrl) {
         this.email = email;
         this.nickname = nickname;
         this.password = password;
         this.content = content;
+        this.imgUrl = imgUrl;
     }
     //카카오 서비스 생성자
     @Builder
@@ -85,5 +86,6 @@ public class Member {
     public void update(MypageRequestDto mypageRequestDto) {
         this.content = mypageRequestDto.getContent();
         this.nickname = mypageRequestDto.getNickname();
+        this.imgUrl = mypageRequestDto.getImgUrl();
     }
 }
