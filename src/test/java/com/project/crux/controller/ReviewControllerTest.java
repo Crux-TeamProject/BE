@@ -2,16 +2,11 @@ package com.project.crux.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.project.crux.domain.Gym;
-import com.project.crux.domain.Member;
 import com.project.crux.domain.Review;
-import com.project.crux.domain.ReviewPhoto;
 import com.project.crux.domain.request.ReviewRequestDto;
-import com.project.crux.domain.response.GymResponseDto;
 import com.project.crux.domain.response.ResponseDto;
 import com.project.crux.domain.response.ReviewPhotoResponseDto;
 import com.project.crux.domain.response.ReviewResponseDto;
-import com.project.crux.repository.ReviewRepository;
 import com.project.crux.security.jwt.UserDetailsImpl;
 import com.project.crux.service.ReviewService;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,8 +25,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
