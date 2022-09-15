@@ -9,7 +9,7 @@ spring:
     password: ${RDS.password}
   jpa:
     hibernate:
-      ddl-auto: update #create update none
+      ddl-auto: create #create update none
       use-new-id-generator-mappings: false
     database: mysql
     database-platform: org.hibernate.spatial.dialect.mysql.MySQL56InnoDBSpatialDialect

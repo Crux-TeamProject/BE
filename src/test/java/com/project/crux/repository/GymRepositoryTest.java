@@ -110,9 +110,9 @@ class GymRepositoryTest {
 
         //then
         assertThat(gym.get().getId()).isEqualTo(3L);
-        assertThat(gym.get().getName()).isEqualTo("제주종합경기장 오름마당");
-        assertThat(gym.get().getLocation()).isEqualTo("제주특별자치도 제주시 오라일동 1165");
-        assertThat(gym.get().getPhone()).isEqualTo("064-728-3271");
+        assertThat(gym.get().getName()).isEqualTo("클라이밍짐");
+        assertThat(gym.get().getLocation()).isEqualTo("주소");
+        assertThat(gym.get().getPhone()).isEqualTo("전화번호");
 
     }
 }

@@ -38,7 +38,7 @@ class ReviewPhotoRepositoryTest {
     @BeforeAll
     static void initData() {
         gym = new Gym("이름","주소","전화번호",5.0);
-        member = new Member("이메일","닉네임","비밀번호","자기소개");
+        member = new Member("이메일","닉네임","비밀번호","자기소개", "이미지 주소");
         review = Review.builder()
                 .score(4)
                 .content("리뷰내용")
