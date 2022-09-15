@@ -27,7 +27,8 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
-    public static String AUTHORIZATION_HEADER = "Access_Token";
+    public static String AUTHORIZATION_HEADER = "Authorization";
+
     public static String BEARER_PREFIX = "Bearer ";
 
 
