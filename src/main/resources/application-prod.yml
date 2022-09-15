@@ -1,7 +1,5 @@
 
 spring:
-  config:
-    import: secrets.yml
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://cloneproject.coi5bl8jchez.ap-northeast-2.rds.amazonaws.com:3306/cloneproject?serverTimezone=Asia/Seoul
