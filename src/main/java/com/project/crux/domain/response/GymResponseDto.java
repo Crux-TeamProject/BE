@@ -18,6 +18,8 @@ public class GymResponseDto {
     private String location;
     private String imgUrl;
     private String phone;
+    private String lon;
+    private String lat;
     private double avgScore;
     private double dist;
     private List<ReviewResponseDto> reviews = new ArrayList<>();
@@ -28,6 +30,8 @@ public class GymResponseDto {
         this.location = gym.getLocation();
         this.imgUrl = gym.getImgUrl();
         this.phone = gym.getPhone();
+        this.lon = gym.getLon();
+        this.lat = gym.getLat();
         this.avgScore = gym.getAvgScore();
         this.dist = dist;
     }

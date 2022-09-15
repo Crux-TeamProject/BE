@@ -83,7 +83,8 @@ public class ReviewService {
     public ReviewResponseDto getReview(Long reviewId) {
 
         Review review = reviewRepository.findById(reviewId).orElseThrow(()-> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
-        ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review);
+        Member member = review.getMember();
+        ReviewResponseDto reviewResponseDto = new ReviewResponseDto(member,review);
         List<ReviewPhoto> reviewPhotoList = reviewPhotoRepository.findAllByReview(review);
 
         reviewPhotoList.forEach(reviewPhoto -> reviewResponseDto.getReviewPhotoList().add(new ReviewPhotoResponseDto(reviewPhoto)));
