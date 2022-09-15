@@ -9,6 +9,7 @@ public class CrewMemberResponseDto {
     private String nickname;
     private String content;
     private String status;
+    private String imgUrl;
 
 
     public CrewMemberResponseDto(CrewMember crewMember) {
@@ -16,5 +17,6 @@ public class CrewMemberResponseDto {
         this.nickname = crewMember.getMember().getNickname();
         this.content = crewMember.getMember().getContent();
         this.status = crewMember.getStatus().toString();
+        this.imgUrl = crewMember.getMember().getImgUrl();
     }
 }
