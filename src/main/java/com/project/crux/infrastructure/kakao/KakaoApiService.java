@@ -52,10 +52,10 @@ public class KakaoApiService {
                 Optional<Gym> gym = gymRepository.findByName(document.getPlace_name());
 
                 if (!gym.isPresent()) {
-                    gymRepository.save(new Gym(document.getPlace_name(), document.getAddress_name(), document.getPhone()));
+                    gymRepository.save(new Gym(document.getPlace_name(), document.getAddress_name(), document.getPhone(),document.getX(), document.getY()));
                 } else {
                     Gym updateGym = gym.get();
-                    updateGym.update(document.getPlace_name(), document.getAddress_name(), document.getPhone());
+                    updateGym.update(document.getPlace_name(), document.getAddress_name(), document.getPhone(),document.getX(), document.getY());
                 }
             });
         } else {
