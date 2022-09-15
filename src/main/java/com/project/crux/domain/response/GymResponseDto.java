@@ -42,6 +42,8 @@ public class GymResponseDto {
         this.location = gym.getLocation();
         this.imgUrl = gym.getImgUrl();
         this.phone = gym.getPhone();
+        this.lon = gym.getLon();
+        this.lat = gym.getLat();
         this.avgScore = gym.getAvgScore();
     }
 
