@@ -47,7 +47,7 @@ class ReviewServiceTest {
     @BeforeAll
     static void initData() {
         member = new Member("이메일","닉네임","비밀번호","자기소개");
-        gym = new Gym("이름","주소","전화번호");
+        gym = new Gym("이름","주소","전화번호",5.0);
         review = Review.builder()
                 .id(1L)
                 .score(4)

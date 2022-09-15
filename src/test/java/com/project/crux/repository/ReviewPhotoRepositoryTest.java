@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class ReviewPhotoRepositoryTest {
 
     @Autowired
@@ -35,7 +37,7 @@ class ReviewPhotoRepositoryTest {
 
     @BeforeAll
     static void initData() {
-        gym = new Gym("이름","주소","전화번호");
+        gym = new Gym("이름","주소","전화번호",5.0);
         member = new Member("이메일","닉네임","비밀번호","자기소개");
         review = Review.builder()
                 .score(4)

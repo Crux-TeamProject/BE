@@ -5,6 +5,7 @@ import com.project.crux.domain.Member;
 import com.project.crux.domain.Review;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 
 @DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class ReviewRepositoryTest {
 
     @Autowired
@@ -25,18 +27,13 @@ class ReviewRepositoryTest {
 
 
 
-    @BeforeAll
-    static void initData() {
-
-    }
-
     @Test
     @DisplayName("ID로 리뷰 DB 조회")
     void findById() {
 
         //given
         Long reviewId = 1L;
-        Gym gym = new Gym("이름", "주소", "전화번호");
+        Gym gym = new Gym("이름", "주소", "전화번호",5.0);
         gymRepository.save(gym);
         Member member = new Member("이메일", "닉네임", "비밀번호", "자기소개");
         memberRepository.save(member);
@@ -65,7 +62,7 @@ class ReviewRepositoryTest {
     void findByGym() {
 
         //given
-        Gym gym = new Gym("이름","주소","전화번호");
+        Gym gym = new Gym("이름","주소","전화번호",5.0);
         gymRepository.save(gym);
         Member member = new Member("이메일","닉네임","비밀번호","자기소개");
         memberRepository.save(member);
