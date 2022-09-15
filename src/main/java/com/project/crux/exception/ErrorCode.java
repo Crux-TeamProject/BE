@@ -18,6 +18,8 @@ public enum ErrorCode {
     INVALID_CREW_NAME(HttpStatus.BAD_REQUEST, "크루명을 입력해주세요"),
     ADMIN_REGISTER_SUBMIT(HttpStatus.BAD_REQUEST, "크루 생성자는 가입신청을 할 수 없습니다."),
     REGISTER_SUBMIT_EXIST(HttpStatus.BAD_REQUEST, "이미 가입 신청하셨습니다."),
+    ALREADY_LIKED_CREW_EXCEPTION(HttpStatus.BAD_REQUEST, "이미 좋아요한 크루 입니다"),
+    ALREADY_UNLIKED_CREW_EXCEPTION(HttpStatus.BAD_REQUEST, "이미 삭제된 좋아요 입니다"),
 
 
     /*

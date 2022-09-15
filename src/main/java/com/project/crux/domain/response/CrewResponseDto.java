@@ -12,6 +12,8 @@ public class CrewResponseDto {
     private String content;
     private String imgUrl;
     private int crewNum;
+    private int likeNum;
+    private boolean like;
 
     public static CrewResponseDto from(Crew crew) {
         return CrewResponseDto.builder()
@@ -20,6 +22,7 @@ public class CrewResponseDto {
                 .content(crew.getContent())
                 .imgUrl(crew.getImgUrl())
                 .crewNum(crew.getCountOfCrewMemberList())
+                .likeNum(crew.getCountOfLike())
                 .build();
     }
 }

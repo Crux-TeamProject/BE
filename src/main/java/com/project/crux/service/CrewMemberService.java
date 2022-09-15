@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +34,7 @@ public class CrewMemberService {
     private final CrewPhotoRepository crewPhotoRepository;
     private final CrewService crewService;
     private final NotificationService notificationService;
+    private final LikeCrewRepository likeCrewRepository;
 
 
     public String registerSubmit(Long crewId, UserDetailsImpl userDetails) {
@@ -127,6 +129,27 @@ public class CrewMemberService {
         checkSameMember(author, userDetails.getMember());
         crewPhotoRepository.delete(crewPhoto);
         return "사진 삭제 완료";
+    }
+
+    public String like(Long crewId, UserDetailsImpl userDetails) {
+        Crew crew = getCrew(crewId);
+        Member member = userDetails.getMember();
+        if (likeCrewRepository.findByCrewAndMember(crew, member).isPresent()) {
+            throw new CustomException(ErrorCode.ALREADY_LIKED_CREW_EXCEPTION);
+        }
+        likeCrewRepository.save(new LikeCrew(crew, member));
+        return "좋아요 완료";
+    }
+
+    public String unLike(Long crewId, UserDetailsImpl userDetails) {
+        Crew crew = getCrew(crewId);
+        Member member = userDetails.getMember();
+        Optional<LikeCrew> likeCrew = likeCrewRepository.findByCrewAndMember(crew, member);
+        if (!likeCrew.isPresent()) {
+            throw new CustomException(ErrorCode.ALREADY_UNLIKED_CREW_EXCEPTION);
+        }
+        likeCrewRepository.delete(likeCrew.get());
+        return "좋아요 삭제 완료";
     }
 
     private Crew getCrew(Long crewId) {

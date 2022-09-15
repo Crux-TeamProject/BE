@@ -75,4 +75,16 @@ public class CrewMemberController {
     public ResponseDto<String> deletePhoto(@PathVariable Long photoId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseDto.success(crewMemberService.delete(photoId, userDetails));
     }
+
+    //크루 좋아요 추가
+    @PostMapping("/like-crews/{crewId}")
+    public ResponseDto<String> like(@PathVariable Long crewId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseDto.success(crewMemberService.like(crewId, userDetails));
+    }
+
+    //크루 좋아요 삭제
+    @DeleteMapping("/like-crews/{crewId}")
+    public ResponseDto<String> unlike(@PathVariable Long crewId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseDto.success(crewMemberService.unLike(crewId, userDetails));
+    }
 }
