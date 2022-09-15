@@ -1,0 +1,18 @@
+
+spring:
+  config:
+    import: secrets.yml
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://cloneproject.coi5bl8jchez.ap-northeast-2.rds.amazonaws.com:3306/cloneproject?serverTimezone=Asia/Seoul
+    username: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+  jpa:
+    hibernate:
+      ddl-auto: update #create update none
+      use-new-id-generator-mappings: false
+    database: mysql
+    database-platform: org.hibernate.spatial.dialect.mysql.MySQL56InnoDBSpatialDialect
+
+jwt:
+  secret: ${jwt.secret}
