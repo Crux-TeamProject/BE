@@ -31,6 +31,12 @@ public class Crew {
     private String imgUrl;
 
     @OneToMany(mappedBy = "crew", cascade = CascadeType.REMOVE)
+    private List<LikeCrew> likes;
+
+    @Formula("(select count(*) from like_crew lc where lc.crew_id = id)")
+    private int countOfLike;
+
+    @OneToMany(mappedBy = "crew", cascade = CascadeType.REMOVE)
     private List<CrewMember> crewMemberList = new ArrayList<>();
 
     @Formula("(select count(*) from crew_member cm where cm.crew_id = id)")
