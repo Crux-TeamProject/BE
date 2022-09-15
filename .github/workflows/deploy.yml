@@ -39,7 +39,7 @@ jobs:
 
         # [2]
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew build -Profile=prod
 
         # [3]
       - name: Make zip file

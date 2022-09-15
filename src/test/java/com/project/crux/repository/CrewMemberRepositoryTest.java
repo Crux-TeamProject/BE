@@ -14,7 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 @DataJpaTest
-@ActiveProfiles("prod")
+//@ActiveProfiles("prod")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class CrewMemberRepositoryTest {
     static String CREW_NAME = "문어크루";
