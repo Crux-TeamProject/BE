@@ -35,7 +35,7 @@ class ReviewRepositoryTest {
         Long reviewId = 1L;
         Gym gym = new Gym("이름", "주소", "전화번호",5.0);
         gymRepository.save(gym);
-        Member member = new Member("이메일", "닉네임", "비밀번호", "자기소개");
+        Member member = new Member("이메일", "닉네임", "비밀번호", "자기소개","이미지 주소");
         memberRepository.save(member);
         Review review = Review.builder()
                 .score(4)
@@ -64,7 +64,7 @@ class ReviewRepositoryTest {
         //given
         Gym gym = new Gym("이름","주소","전화번호",5.0);
         gymRepository.save(gym);
-        Member member = new Member("이메일","닉네임","비밀번호","자기소개");
+        Member member = new Member("이메일","닉네임","비밀번호","자기소개","이미지 주소");
         memberRepository.save(member);
         Review review = Review.builder()
                 .score(4)

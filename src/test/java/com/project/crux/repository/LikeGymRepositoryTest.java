@@ -28,7 +28,7 @@ class LikeGymRepositoryTest {
     void findByMemberAndGymId() {
 
         //given
-        Member member = new Member("이메일주소","닉네임","비밀번호","자기소개");
+        Member member = new Member("이메일주소","닉네임","비밀번호","자기소개","이미지 주소");
         memberRepository.save(member);
         Gym gym = new Gym("클라이밍짐", "주소", "전화번호", 3);
         gymRepository.save(gym);

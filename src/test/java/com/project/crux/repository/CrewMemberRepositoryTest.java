@@ -37,7 +37,7 @@ class CrewMemberRepositoryTest {
     @BeforeAll
     static void beforeAll() {
         crew = new Crew(CREW_NAME, CREW_CONTENT, CREW_IMG_URL);
-        member = new Member(USER_EMAIL, USER_NICKNAME, USER_PASSWORD, USER_CONTENT);
+        member = new Member(USER_EMAIL, USER_NICKNAME, USER_PASSWORD, USER_CONTENT, "이미지 주소");
     }
 
     @Transactional
