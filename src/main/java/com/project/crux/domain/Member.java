@@ -40,7 +40,8 @@ public class Member {
     @Column
     private String content;
 
-
+    @Column
+    private String imgUrl;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<CrewMember> crewMemberList = new ArrayList<>();
