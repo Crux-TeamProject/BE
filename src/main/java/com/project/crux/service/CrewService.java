@@ -1,27 +1,24 @@
 package com.project.crux.service;
 
 import com.project.crux.common.Status;
-import com.project.crux.domain.Crew;
-import com.project.crux.domain.Member;
-import com.project.crux.domain.CrewMember;
-import com.project.crux.domain.Notice;
+import com.project.crux.domain.*;
 import com.project.crux.domain.request.CrewRequestDto;
 import com.project.crux.domain.response.CrewFindOneResponseDto;
 import com.project.crux.domain.response.CrewResponseDto;
 import com.project.crux.exception.CustomException;
 import com.project.crux.exception.ErrorCode;
-import com.project.crux.repository.CrewRepository;
-import com.project.crux.repository.CrewMemberRepository;
-import com.project.crux.repository.MemberRepository;
-import com.project.crux.repository.NoticeRepository;
+import com.project.crux.repository.*;
 import com.project.crux.security.jwt.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,6 +32,7 @@ public class CrewService {
     private final CrewMemberRepository crewMemberRepository;
     private final MemberRepository memberRepository;
     private final NoticeRepository noticeRepository;
+    private final LikeCrewRepository likeCrewRepository;
 
     public CrewResponseDto createCrew(CrewRequestDto crewRequestDto, UserDetailsImpl userDetails) {
         Member member = getMember(userDetails.getMember().getId());
@@ -54,18 +52,32 @@ public class CrewService {
 
     @Transactional(readOnly = true)
     public Page<CrewResponseDto> findAllCrew(Pageable pageable) {
-        return crewRepository.findAll(pageable).map(CrewResponseDto::from);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<CrewResponseDto> findAllPopularCrew(Pageable pageable) {
-        return crewRepository.findAll(pageable).map(CrewResponseDto::from);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getCredentials().equals("")) {
+            return crewRepository.findAll(pageable).map(CrewResponseDto::from);
+        }
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        Member member = userDetails.getMember();
+        return crewRepository.findAll(pageable).map(crew -> {
+            Optional<LikeCrew> likeCrew = likeCrewRepository.findByCrewAndMember(crew, member);
+            return CrewResponseDto.of(crew, likeCrew.isPresent());
+        });
     }
 
     @Transactional(readOnly = true)
     public List<CrewResponseDto> searchCrew(String query) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getCredentials().equals("")) {
+            return crewRepository.findAllByNameContainsIgnoreCase(query).stream()
+                    .map(CrewResponseDto::from).collect(Collectors.toList());
+        }
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        Member member = userDetails.getMember();
         return crewRepository.findAllByNameContainsIgnoreCase(query).stream()
-                .map(CrewResponseDto::from).collect(Collectors.toList());
+                .map(crew -> {
+                    Optional<LikeCrew> likeCrew = likeCrewRepository.findByCrewAndMember(crew, member);
+                    return CrewResponseDto.of(crew, likeCrew.isPresent());})
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

@@ -25,4 +25,16 @@ public class CrewResponseDto {
                 .likeNum(crew.getCountOfLike())
                 .build();
     }
+
+    public static CrewResponseDto of(Crew crew, boolean like) {
+        return CrewResponseDto.builder()
+                .id(crew.getId())
+                .name(crew.getName())
+                .content(crew.getContent())
+                .imgUrl(crew.getImgUrl())
+                .crewNum(crew.getCountOfCrewMemberList())
+                .likeNum(crew.getCountOfLike())
+                .like(like)
+                .build();
+    }
 }
