@@ -21,7 +21,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class MemberService {
-
+    private static final String DEFAULT_IMAGE_URL = "";
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
@@ -40,6 +40,7 @@ public class MemberService {
                 .nickname(signupRequestDto.getNickname())
                 .password(passwordEncoder.encode(signupRequestDto.getPassword()))
                 .content(signupRequestDto.getContent())
+                .imgUrl(DEFAULT_IMAGE_URL)
                 .build();
         memberRepository.save(member);
         return ResponseDto.success("회원가입 축하합니다.");
