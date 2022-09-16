@@ -1,5 +1,7 @@
 package com.project.crux.infrastructure.kakao;
 
+import com.project.crux.repository.GymRepository;
+import com.project.crux.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -9,8 +11,10 @@ import org.springframework.stereotype.Component;
 public class KakaoScheduler {
 
     private final KakaoApiService kakaoApiService;
+    private final ReviewRepository reviewRepository;
+    private final GymRepository gymRepository;
 
-    @Scheduled(cron = "0 0 1 * * *")  // 매일 1시 마다 실행
+    @Scheduled(cron = "0 0 5 * * *")  // 매일 5시 마다 실행
     public void updateGymsPerDay() {
         double start_x = 126;
         double end_x = 131;
@@ -18,7 +22,12 @@ public class KakaoScheduler {
         double end_y = 39;
 
         kakaoApiService.updateGymByKakaoApi(start_x,start_y,end_x,end_y);
-        kakaoApiService.updateGymImgByKakaoApi();
+//        kakaoApiService.updateGymImgByKakaoApi();
+
+        gymRepository.findAll().forEach(gym -> {
+            gym.updateImg(reviewRepository.findByGymOrderByIdDesc(gym).get(0).getReviewPhotoList().get(0).getImgUrl());
+        });
+
     }
 
 }
