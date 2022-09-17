@@ -67,7 +67,7 @@ public class KakaoMemberService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", "6a2435f02f897dc1c87f7cca3eb2bfbb");              // rest api 키
-        body.add("redirect_uri", "http://localhost:3000/kakaologin");  // 플랫폼
+        body.add("redirect_uri", "https://youmadeit.shop/oauth/kakao/callback");  // 플랫폼
         body.add("code", code);
 
         // HTTP 요청 보내기

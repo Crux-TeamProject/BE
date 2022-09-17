@@ -8,9 +8,7 @@ import com.project.crux.domain.response.MypageResponseDto;
 import com.project.crux.domain.response.ResponseDto;
 import com.project.crux.exception.CustomException;
 import com.project.crux.exception.ErrorCode;
-import com.project.crux.repository.LikeGymRepository;
-import com.project.crux.repository.CrewMemberRepository;
-import com.project.crux.repository.MemberRepository;
+import com.project.crux.repository.*;
 import com.project.crux.security.jwt.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,11 +26,20 @@ public class MypageService {
     private final LikeGymRepository likeGymRepository;
     private final CrewMemberRepository crewMemberRepository;
 
+    private final LikeCrewRepository likeCrewRepository;
+
     public ResponseDto<?> viewMypage(Long memberId) {
         Member member = memberRepository.findById(memberId).orElse(null);
         if (null == member) {
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
+        List<CrewResponseDto> likeCrewList = new ArrayList<>();
+        List<LikeCrew> likes = likeCrewRepository.findAllByMember(member);
+        for (LikeCrew like : likes) {
+            Crew crew = like.getCrew();
+            likeCrewList.add(CrewResponseDto.from(crew));
+        }
+
         List<LikeGym> likeGymList = likeGymRepository.findAllByMember(member);
         List<LikeGymResponseDto> likeGymResponseDtos = new ArrayList<>();
         for (LikeGym likeGym : likeGymList) {
@@ -45,7 +52,7 @@ public class MypageService {
             Crew crew = crewMember.getCrew();
             crewResponseDtos.add(CrewResponseDto.from(crew));
         }
-        return ResponseDto.success(new MypageResponseDto(member, crewResponseDtos, likeGymResponseDtos));
+        return ResponseDto.success(new MypageResponseDto(member, crewResponseDtos, likeGymResponseDtos, likeCrewList));
     }
     @Transactional
     public ResponseDto<?> editMypage(UserDetailsImpl userDetails, MypageRequestDto mypageRequestDto) {
