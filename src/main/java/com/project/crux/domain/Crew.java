@@ -39,9 +39,6 @@ public class Crew {
     @OneToMany(mappedBy = "crew", cascade = CascadeType.REMOVE)
     private List<CrewMember> crewMemberList = new ArrayList<>();
 
-    @Formula("(select count(*) from crew_member cm where cm.crew_id = id)")
-    private int countOfCrewMemberList;
-
     @Builder
     public Crew(String name, String content, String imgUrl) {
         Assert.hasText(name, ErrorCode.INVALID_CREW_NAME.getErrorMessage());
