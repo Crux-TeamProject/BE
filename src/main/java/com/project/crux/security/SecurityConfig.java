@@ -100,7 +100,6 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET, "/crews/**").permitAll()
                 .antMatchers("/oauth/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/crew-posts/**").permitAll()
-                .antMatchers( "/subscribe").permitAll()
 
                 .anyRequest().authenticated()
 
