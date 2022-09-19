@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Entity
-public class CrewPost {
+public class CrewPost extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
