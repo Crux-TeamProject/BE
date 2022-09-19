@@ -19,6 +19,7 @@ public enum ErrorCode {
     REGISTER_SUBMIT_EXIST(HttpStatus.BAD_REQUEST, "이미 가입 신청하셨습니다."),
     ALREADY_LIKED_CREW_EXCEPTION(HttpStatus.BAD_REQUEST, "이미 좋아요한 크루 입니다"),
     ALREADY_UNLIKED_CREW_EXCEPTION(HttpStatus.BAD_REQUEST, "이미 삭제된 좋아요 입니다"),
+    IMAGE_REQUIRED(HttpStatus.BAD_REQUEST, "하나 이상의 이미지를 포함해야 합니다"),
 
 
 

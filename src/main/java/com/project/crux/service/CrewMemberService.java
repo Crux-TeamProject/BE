@@ -111,6 +111,9 @@ public class CrewMemberService {
         Crew crew = crewService.getCrew(crewId);
         CrewMember crewMember = crewService.getCrewMember(crew, userDetails.getMember());
         CrewPost crewPost = crewPostRepository.save(new CrewPost(crewMember));
+        if (crewPhotoRequestDto.getImgList() == null) {
+            throw new CustomException(ErrorCode.IMAGE_REQUIRED);
+        }
         crewPhotoRequestDto.getImgList().forEach(imgUrl -> crewPhotoRepository.save(new CrewPhoto(crewPost, imgUrl)));
         return new CrewPostResponseDto(crewPost);
     }
