@@ -7,6 +7,9 @@ import com.project.crux.domain.response.ResponseDto;
 import com.project.crux.security.jwt.UserDetailsImpl;
 import com.project.crux.service.CrewMemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -65,9 +68,8 @@ public class CrewMemberController {
     //크루 사진 조회
     @GetMapping("/crew-posts/{crewId}")
     public ResponseDto<List<CrewPostResponseDto>> findAllCrewPosts(@PathVariable Long crewId,
-                                                                   @RequestParam Long lastPostId,
-                                                                   @RequestParam int size) {
-        return ResponseDto.success(crewMemberService.findAllCrewPosts(crewId, lastPostId, size));
+                                                                   @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        return ResponseDto.success(crewMemberService.findAllCrewPosts(crewId, pageable));
     }
 
     //크루 사진 삭제
