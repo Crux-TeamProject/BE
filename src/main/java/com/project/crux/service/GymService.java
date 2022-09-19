@@ -14,11 +14,14 @@ import com.project.crux.security.jwt.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -82,15 +85,20 @@ public class GymService {
     public GymResponseDto getGym(Long gymId) {
 
         Gym gym = getGymById(gymId);
+        GymResponseDto gymResponseDto = GymResponseDto.from(gym);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        GymResponseDto gymResponseDto = new GymResponseDto(gym);
+        if (!authentication.getCredentials().equals("")) {
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            Member member = userDetails.getMember();
+
+            Optional<LikeGym> likeGym = likeGymRepository.findByMemberAndGym(member, gym);
+            gymResponseDto.setLikeGym(likeGym.isPresent());;
+        }
 
         List<Review> reviewList = reviewRepository.findByGym(gym);
-
         List<ReviewResponseDto> reviews = gymResponseDto.getReviews();
-
         getReviewResponseList(reviewList, reviews);
-
         return gymResponseDto;
     }
 
@@ -100,22 +108,22 @@ public class GymService {
         Member member = userDetails.getMember();
         Gym gym = getGymById(gymId);
 
-        LikeGym existLike = likeGymRepository.findByMemberAndGymId(member, gymId);
+        Optional<LikeGym> existLike = likeGymRepository.findByMemberAndGym(member, gym);
 
-        if (existLike == null) {
+        if (!existLike.isPresent()) {
             LikeGym likeGym = new LikeGym(member,gym);
             likeGymRepository.save(likeGym);
 
             return "즐겨 찾기 추가 완료";
         }
-        likeGymRepository.delete(existLike);
+        likeGymRepository.delete(existLike.get());
 
         return "즐겨 찾기 삭제 완료";
     }
 
    private void getReviewResponseList(List<Review> reviewList, List<ReviewResponseDto> reviews) {
         reviewList.forEach(review -> {
-            ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review);
+            ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review.getMember(),review);
             List<ReviewPhoto> reviewPhotoList = reviewPhotoRepository.findAllByReview(review);
             reviewPhotoList.forEach(reviewPhoto -> reviewResponseDto.getReviewPhotoList().add(new ReviewPhotoResponseDto(reviewPhoto)));
             reviews.add(reviewResponseDto);
@@ -126,21 +134,23 @@ public class GymService {
 
         List<GymResponseDto> gymResponseDtos = new ArrayList<>();
 
-        gyms.getContent().forEach(gym -> gymResponseDtos.add(new GymResponseDto(gym)));
+        gyms.getContent().forEach(gym -> gymResponseDtos.add(GymResponseDto.from(gym)));
 
         return gymResponseDtos;
     }
 
+
     private Gym getGymById(Long gymId) {
         return gymRepository.findById(gymId).orElseThrow(() -> new CustomException(ErrorCode.GYM_NOT_FOUND));
     }
+
 
     private List<GymResponseDto> pageToDtoListWithDist(Page<Gym> gyms, String lon, String lat){
 
         List<GymResponseDto> gymResponseDtos = new ArrayList<>();
 
         gyms.getContent().forEach(gym ->
-            gymResponseDtos.add(new GymResponseDto(gym,distance(Double.parseDouble(lat),Double.parseDouble(lon),
+            gymResponseDtos.add(GymResponseDto.of(gym, distance(Double.parseDouble(lat),Double.parseDouble(lon),
                     Double.parseDouble(gym.getLat()),Double.parseDouble(gym.getLon()))))
         );
 

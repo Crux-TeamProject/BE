@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class ReviewResponseDto {
     private Long id;
     private int score;
     private String content;
+    private LocalDateTime createdAt;
     private List<ReviewPhotoResponseDto> reviewPhotoList = new ArrayList<>();
 
     public ReviewResponseDto(Member member, Review review) {
@@ -28,11 +30,13 @@ public class ReviewResponseDto {
         this.id = review.getId();
         this.score = review.getScore();
         this.content = review.getContent();
+        this.createdAt = review.getCreatedAt();
     }
 
-    public ReviewResponseDto( Review review) {
+    public ReviewResponseDto(Review review) {
         this.id = review.getId();
         this.score = review.getScore();
         this.content = review.getContent();
+        this.createdAt = review.getCreatedAt();
     }
 }

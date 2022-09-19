@@ -14,6 +14,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -103,7 +107,10 @@ class GymServiceTest {
             Gym gym = new Gym("클라이밍짐", "주소", "전화번호",3);
             List<Review> reviewList = new ArrayList<>();
             List<ReviewPhoto> reviewPhotoList = new ArrayList<>();
-            reviewList.add(new Review());
+            Review review = new Review(5,"content",new Member());
+            reviewList.add(review);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(null,"",null);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
             when(gymRepository.findById(gymId)).thenReturn(Optional.of(gym));
             when(reviewRepository.findByGym(gym)).thenReturn(reviewList);
@@ -152,7 +159,7 @@ class GymServiceTest {
             gymRepository.save(gym);
 
             when(gymRepository.findById(gym.getId())).thenReturn(Optional.of(gym));
-            when(likeGymRepository.findByMemberAndGymId(member, gym.getId())).thenReturn(null);
+            when(likeGymRepository.findByMemberAndGym(member, gym)).thenReturn(Optional.empty());
 
             //when
             String success = gymService.likeGym(userDetails,gym.getId());
@@ -176,7 +183,7 @@ class GymServiceTest {
             LikeGym likGym = new LikeGym(member, gym);
 
             when(gymRepository.findById(gym.getId())).thenReturn(Optional.of(gym));
-            when(likeGymRepository.findByMemberAndGymId(member, gym.getId())).thenReturn(likGym);
+            when(likeGymRepository.findByMemberAndGym(member, gym)).thenReturn(Optional.of(likGym));
 
             //when
             String success = gymService.likeGym(userDetails,gym.getId());

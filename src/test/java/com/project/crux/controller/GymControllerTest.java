@@ -57,7 +57,7 @@ class GymControllerTest {
         gymResponseDtoList = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             Gym gym = new Gym("클라이밍짐", "주소", "전화번호", i);
-            GymResponseDto gymResponseDto = new GymResponseDto(gym);
+            GymResponseDto gymResponseDto = GymResponseDto.from(gym);
             gymResponseDtoList.add(gymResponseDto);
         }
     }
@@ -141,12 +141,13 @@ class GymControllerTest {
     void getGym() throws Exception {
 
         //given
+
         Long gymId = 3L;
         when(gymService.getGym(gymId)).thenReturn(gymResponseDtoList.get((int) (gymId-1)));
 
         //when
         ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.get("/gyms/"+gymId)
+                MockMvcRequestBuilders.get("/gym/"+gymId)
         );
         //then
         MvcResult mvcResult = resultActions.andExpect(status().isOk()).andReturn();
