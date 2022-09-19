@@ -12,8 +12,7 @@ import com.project.crux.security.jwt.UserDetailsImpl;
 import com.project.crux.sse.NotificationService;
 import com.project.crux.sse.NotificationType;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -117,9 +116,8 @@ public class CrewMemberService {
     }
 
     @Transactional(readOnly = true)
-    public List<CrewPostResponseDto> findAllCrewPosts(Long crewId, Long lastCrewPostId, int size) {
-        PageRequest pageRequest = PageRequest.of(0, size).withSort(Sort.Direction.DESC, "id");
-        return crewPostRepository.findAllByIdLessThanAndCrewMember_CrewId(lastCrewPostId, crewId, pageRequest)
+    public List<CrewPostResponseDto> findAllCrewPosts(Long crewId, Pageable pageable) {
+        return crewPostRepository.findAllByCrewMember_CrewId(crewId, pageable)
                 .stream().map(CrewPostResponseDto::new).collect(Collectors.toList());
     }
 
