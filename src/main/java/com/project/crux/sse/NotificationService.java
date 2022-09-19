@@ -64,6 +64,7 @@ public class NotificationService {
         try {
             emitter.send(SseEmitter.event()
                     .id(id)
+                    .name("sse")
                     .data(data));
             log.info(" 알림 전송 완료 {}",id);
         } catch (IOException exception) {
