@@ -1,5 +1,6 @@
 package com.project.crux.domain.response;
 
+import com.project.crux.common.Status;
 import com.project.crux.domain.Crew;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,7 +22,7 @@ public class CrewResponseDto {
                 .name(crew.getName())
                 .content(crew.getContent())
                 .imgUrl(crew.getImgUrl())
-                .crewNum(crew.getCountOfCrewMemberList())
+                .crewNum((int) crew.getCrewMemberList().stream().filter(cm -> !cm.getStatus().equals(Status.SUBMIT)).count())
                 .likeNum(crew.getCountOfLike())
                 .build();
     }
@@ -32,7 +33,7 @@ public class CrewResponseDto {
                 .name(crew.getName())
                 .content(crew.getContent())
                 .imgUrl(crew.getImgUrl())
-                .crewNum(crew.getCountOfCrewMemberList())
+                .crewNum((int) crew.getCrewMemberList().stream().filter(cm -> !cm.getStatus().equals(Status.SUBMIT)).count())
                 .likeNum(crew.getCountOfLike())
                 .like(like)
                 .build();
