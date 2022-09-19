@@ -1,16 +1,14 @@
 package com.project.crux.domain.response;
 
 import com.project.crux.domain.Gym;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
+@Setter
+@Builder
 public class GymResponseDto {
 
     private Long id;
@@ -22,29 +20,38 @@ public class GymResponseDto {
     private String lat;
     private double avgScore;
     private double dist;
+    private boolean likeGym;
     private List<ReviewResponseDto> reviews = new ArrayList<>();
 
-    public GymResponseDto(Gym gym, double dist) {
-        this.id = gym.getId();
-        this.name = gym.getName();
-        this.location = gym.getLocation();
-        this.imgUrl = gym.getImgUrl();
-        this.phone = gym.getPhone();
-        this.lon = gym.getLon();
-        this.lat = gym.getLat();
-        this.avgScore = gym.getAvgScore();
-        this.dist = dist;
+
+    public static GymResponseDto of(Gym gym, double dist) {
+        return GymResponseDto.builder()
+                .id(gym.getId())
+                .name(gym.getName())
+                .location(gym.getLocation())
+                .imgUrl(gym.getImgUrl())
+                .phone(gym.getPhone())
+                .lon(gym.getLon())
+                .lat(gym.getLat())
+                .avgScore(gym.getAvgScore())
+                .dist(dist)
+                .reviews(new ArrayList<>())
+                .build();
     }
 
-    public GymResponseDto(Gym gym) {
-        this.id = gym.getId();
-        this.name = gym.getName();
-        this.location = gym.getLocation();
-        this.imgUrl = gym.getImgUrl();
-        this.phone = gym.getPhone();
-        this.lon = gym.getLon();
-        this.lat = gym.getLat();
-        this.avgScore = gym.getAvgScore();
+    public static GymResponseDto from(Gym gym) {
+        return GymResponseDto.builder()
+                .id(gym.getId())
+                .name(gym.getName())
+                .location(gym.getLocation())
+                .imgUrl(gym.getImgUrl())
+                .phone(gym.getPhone())
+                .lon(gym.getLon())
+                .lat(gym.getLat())
+                .likeGym(false)
+                .avgScore(gym.getAvgScore())
+                .reviews(new ArrayList<>())
+                .build();
     }
 
 }

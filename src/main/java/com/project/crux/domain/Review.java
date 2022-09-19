@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Review {
+public class Review extends Timestamped{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

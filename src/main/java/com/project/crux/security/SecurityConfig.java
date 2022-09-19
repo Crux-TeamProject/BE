@@ -95,10 +95,13 @@ public class SecurityConfig {
                 .antMatchers("/members/nickname-check").permitAll()
                 .antMatchers("/members/signup").permitAll()
                 .antMatchers("/gyms/**").permitAll()
+                .antMatchers("/gym/**").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/crews/**").permitAll()
                 .antMatchers("/oauth/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/crew-posts/**").permitAll()
+                .antMatchers( "/subscribe").permitAll()
+
                 .anyRequest().authenticated()
 
                 .and()

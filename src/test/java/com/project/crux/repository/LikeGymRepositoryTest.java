@@ -10,6 +10,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 
@@ -37,13 +39,13 @@ class LikeGymRepositoryTest {
         likeGymRepository.save(new LikeGym(member, gym));
 
         //when
-         LikeGym likeGym = likeGymRepository.findByMemberAndGymId(member,gym.getId());
+         Optional<LikeGym> likeGym = likeGymRepository.findByMemberAndGym(member,gym);
 
         //then
-        assertThat(likeGym.getMember().getEmail()).isEqualTo("이메일주소");
-        assertThat(likeGym.getMember().getNickname()).isEqualTo("닉네임");
-        assertThat(likeGym.getMember().getPassword()).isEqualTo("비밀번호");
-        assertThat(likeGym.getMember().getContent()).isEqualTo("자기소개");
-        assertThat(likeGym.getGym().getId()).isEqualTo(gym.getId());
+        assertThat(likeGym.get().getMember().getEmail()).isEqualTo("이메일주소");
+        assertThat(likeGym.get().getMember().getNickname()).isEqualTo("닉네임");
+        assertThat(likeGym.get().getMember().getPassword()).isEqualTo("비밀번호");
+        assertThat(likeGym.get().getMember().getContent()).isEqualTo("자기소개");
+        assertThat(likeGym.get().getGym().getId()).isEqualTo(gym.getId());
     }
 }
