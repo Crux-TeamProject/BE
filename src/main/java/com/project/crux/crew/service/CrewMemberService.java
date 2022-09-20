@@ -46,17 +46,26 @@ public class CrewMemberService {
 
         Crew crew = getCrew(crewId);
         Member member = userDetails.getMember();
-        checkDuplicateRegister(crew, member);
-        CrewMember crewMember = new CrewMember(member, crew);
 
-        CrewMember crewLeader = getCrewLeader(crew);
-        checkAdminRegister(crewLeader, member);
-        String content = member.getNickname() + "님이 가입 신청하셨습니다";
-        sendNotice((crewLeader.getMember()), NotificationType.SUBMIT, content);
+        Optional<CrewMember> optionalCrewMember = crewMemberRepository.findByCrewAndMember(crew, member);
+        if(!optionalCrewMember.isPresent()){
+            CrewMember crewMember = new CrewMember(member, crew);
+            CrewMember crewLeader = getCrewLeader(crew);
+            checkAdminRegister(crewLeader, member);
+            String content = member.getNickname() + "님이 가입 신청하셨습니다";
+            sendNotice((crewLeader.getMember()), NotificationType.SUBMIT, content);
 
-        crewMemberRepository.save(crewMember);
-        return "크루 가입 신청 완료";
+            crewMemberRepository.save(crewMember);
+            return "크루 가입 신청 완료";
+        }
+
+        CrewMember findCrewMember = optionalCrewMember.get();
+        checkRegister(findCrewMember);
+        crewMemberRepository.delete(findCrewMember);
+        return "크루 가입 신청 취소 완료";
+
     }
+
 
     public String registerPermit(UserDetailsImpl userDetails, Long crewId, Long memberId, Boolean permit) {
 
@@ -208,9 +217,9 @@ public class CrewMemberService {
         }
     }
 
-    private void checkDuplicateRegister(Crew crew, Member member) {
-        if (crewMemberRepository.findByCrewAndMember(crew, member).isPresent()) {
-            throw new CustomException(ErrorCode.REGISTER_SUBMIT_EXIST);
+    private void checkRegister(CrewMember crewMember) {
+        if (crewMember.getStatus().equals(Status.ADMIN) || crewMember.getStatus().equals(Status.PERMIT)) {
+            throw new CustomException(ErrorCode.REGISTER_EXIST);
         }
     }
 
@@ -221,4 +230,5 @@ public class CrewMemberService {
     private void sendNotice(Member member, NotificationType notificationType, String content) {
         notificationService.send(member,notificationType,content);
     }
+
 }

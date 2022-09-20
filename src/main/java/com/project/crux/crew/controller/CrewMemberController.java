@@ -21,7 +21,7 @@ public class CrewMemberController {
 
     private final CrewMemberService crewMemberService;
 
-    //api 크루가입 신청
+    //api 크루가입 신청 ,취소
     @PostMapping("/crews/{crewId}/members")
     public ResponseDto<String> registerSubmit(@PathVariable Long crewId,
                                               @AuthenticationPrincipal UserDetailsImpl userDetails) {
