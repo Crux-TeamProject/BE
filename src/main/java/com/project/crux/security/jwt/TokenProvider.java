@@ -1,7 +1,6 @@
 package com.project.crux.security.jwt;
 
-import com.nimbusds.jwt.JWT;
-import com.project.crux.domain.Member;
+import com.project.crux.member.domain.Member;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;

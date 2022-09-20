@@ -1,6 +1,5 @@
 package com.project.crux.infrastructure.kakao;
 
-import com.project.crux.domain.Gym;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -8,7 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 
-@Component
+//@Component
 @RequiredArgsConstructor
 public class InitialDataRunner implements ApplicationRunner {
 

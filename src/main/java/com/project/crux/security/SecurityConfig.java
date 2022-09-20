@@ -3,7 +3,6 @@ package com.project.crux.security;
 import com.project.crux.security.jwt.JwtAuthenticationEntryPointException;
 import com.project.crux.security.jwt.JwtFilter;
 import com.project.crux.security.jwt.TokenProvider;
-import com.project.crux.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -25,7 +24,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
