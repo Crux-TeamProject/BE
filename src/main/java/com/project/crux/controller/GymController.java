@@ -49,13 +49,13 @@ public class GymController {
     }
 
     //api 짐 상세 조회
-    @GetMapping("/gym/{gymId}")
+    @GetMapping("/gyms/{gymId}")
     public ResponseDto<?> getGym(@PathVariable Long gymId) {
         return ResponseDto.success(gymService.getGym(gymId));
     }
 
     //api 짐 즐겨찾기 추가,삭제
-    @PostMapping("/likegyms/{gymId}")
+    @PostMapping("/gyms/{gymId}/like")
     public ResponseDto<?> likeGym(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                   @PathVariable Long gymId){
         return ResponseDto.success(gymService.likeGym(userDetails,gymId));
