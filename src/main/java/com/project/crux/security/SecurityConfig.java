@@ -68,11 +68,8 @@ public class SecurityConfig {
 
         http.csrf().disable()
 
-                //h2-console 허용
-                .headers().frameOptions().disable()
 
                 // 시큐리티 예외 처리
-                .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPointException)
 
@@ -92,12 +89,9 @@ public class SecurityConfig {
                 .antMatchers("/members/email-check").permitAll()
                 .antMatchers("/members/nickname-check").permitAll()
                 .antMatchers("/members/signup").permitAll()
-                .antMatchers("/gyms/**").permitAll()
-                .antMatchers("/gym/**").permitAll()
-                .antMatchers("/h2-console/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/crews/**").permitAll()
+                .antMatchers(HttpMethod.GET,"/gyms/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/crews/**/posts").permitAll()
                 .antMatchers("/oauth/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/crew-posts/**").permitAll()
 
                 .anyRequest().authenticated()
 
