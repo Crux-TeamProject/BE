@@ -40,7 +40,7 @@ public class ReviewController {
     }
 
     //api 짐 리뷰 상세 조회
-    @GetMapping("/review/{reviewId}")
+    @GetMapping("/reviews/{reviewId}")
     public ResponseDto<ReviewResponseDto> getReview(@PathVariable Long reviewId) {
         return ResponseDto.success(reviewService.getReview(reviewId));
     }
