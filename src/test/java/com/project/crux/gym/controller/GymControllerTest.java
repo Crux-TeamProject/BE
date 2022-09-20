@@ -148,7 +148,7 @@ class GymControllerTest {
 
         //when
         ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.get("/gym/"+gymId)
+                MockMvcRequestBuilders.get("/gyms/"+gymId)
         );
         //then
         MvcResult mvcResult = resultActions.andExpect(status().isOk()).andReturn();
@@ -174,7 +174,7 @@ class GymControllerTest {
         when(gymService.likeGym(new UserDetailsImpl(), gymId)).thenReturn("즐겨 찾기 추가 완료");
         //when
         ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.post("/likegyms/" + gymId)
+                MockMvcRequestBuilders.post("/gyms/" + gymId + "/like")
         );
         //then
         resultActions.andExpect(status().isOk())
