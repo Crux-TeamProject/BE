@@ -90,7 +90,12 @@ public class SecurityConfig {
                 .antMatchers("/members/nickname-check").permitAll()
                 .antMatchers("/members/signup").permitAll()
                 .antMatchers(HttpMethod.GET,"/gyms/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/crews/**/posts").permitAll()
+                .antMatchers(HttpMethod.GET, "/crews/*/posts").permitAll()
+                .antMatchers(HttpMethod.GET, "/crews/*").permitAll()
+                .antMatchers(HttpMethod.GET, "/crews").permitAll()
+
+                .antMatchers(HttpMethod.GET, "/crews/*/members").authenticated()
+
                 .antMatchers("/oauth/**").permitAll()
 
                 .anyRequest().authenticated()
