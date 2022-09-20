@@ -92,7 +92,17 @@ public class CrewService {
     public CrewFindOneResponseDto findCrew(Long crewId) {
         Crew crew = getCrew(crewId);
         List<Notice> noticeList = noticeRepository.findAllByCrewMember_Crew(crew);
-        return new CrewFindOneResponseDto(crew, noticeList);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getCredentials().equals("")) {
+            return new CrewFindOneResponseDto(crew, noticeList, false);
+        }
+
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        Member member = userDetails.getMember();
+        Optional<CrewMember> likeCrew = crewMemberRepository.findByCrewAndMember(crew, member);
+
+        return new CrewFindOneResponseDto(crew, noticeList, likeCrew.isPresent());
     }
 
     public CrewResponseDto updateCrew(Long crewId, CrewRequestDto crewRequestDto, UserDetailsImpl userDetails) {
