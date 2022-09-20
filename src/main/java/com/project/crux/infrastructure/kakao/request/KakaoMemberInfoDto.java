@@ -1,6 +1,6 @@
 package com.project.crux.infrastructure.kakao.request;
 
-import com.project.crux.domain.Member;
+import com.project.crux.member.domain.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

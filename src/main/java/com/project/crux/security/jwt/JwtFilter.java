@@ -1,6 +1,6 @@
 package com.project.crux.security.jwt;
 
-import com.project.crux.service.UserDetailsServiceImpl;
+import com.project.crux.security.UserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;

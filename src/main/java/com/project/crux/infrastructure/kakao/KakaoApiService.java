@@ -1,8 +1,8 @@
 package com.project.crux.infrastructure.kakao;
 
-import com.project.crux.domain.Gym;
+import com.project.crux.gym.domain.Gym;
 import com.project.crux.infrastructure.kakao.response.KakaoResponse;
-import com.project.crux.repository.GymRepository;
+import com.project.crux.gym.repository.GymRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

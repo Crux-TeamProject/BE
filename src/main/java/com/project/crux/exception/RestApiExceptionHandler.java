@@ -1,6 +1,6 @@
 package com.project.crux.exception;
 
-import com.project.crux.domain.response.ResponseDto;
+import com.project.crux.common.ResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
