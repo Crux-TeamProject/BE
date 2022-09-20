@@ -21,7 +21,7 @@ public class GymResponseDto {
     private double avgScore;
     private double dist;
     private boolean likeGym;
-    private List<ReviewResponseDto> reviews = new ArrayList<>();
+    private List<ReviewResponseDto> reviews;
 
 
     public static GymResponseDto of(Gym gym, double dist) {

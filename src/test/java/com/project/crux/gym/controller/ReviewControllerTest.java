@@ -142,7 +142,7 @@ class ReviewControllerTest {
 
         //when
         ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.get("/review/" + 1L)
+                MockMvcRequestBuilders.get("/reviews/" + 1L)
         );
         //then
         MvcResult mvcResult = resultActions.andExpect(status().isOk()).andReturn();
