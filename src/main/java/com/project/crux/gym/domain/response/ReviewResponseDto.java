@@ -16,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ReviewResponseDto {
 
+    private Long memberId;
     private String nickname;
     private String imgUrl;
     private Long id;
@@ -25,6 +26,7 @@ public class ReviewResponseDto {
     private List<ReviewPhotoResponseDto> reviewPhotoList = new ArrayList<>();
 
     public ReviewResponseDto(Member member, Review review) {
+        this.memberId = member.getId();
         this.nickname = member.getNickname();
         this.imgUrl = member.getImgUrl();
         this.id = review.getId();
