@@ -1,4 +1,4 @@
-package com.project.crux.crew.sse;
+package com.project.crux.sse.repository;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;

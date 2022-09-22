@@ -51,7 +51,8 @@ public enum ErrorCode {
     CREWLEADER_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 크루 리더의 정보를 찾을 수 없습니다" ),
     CREWMEMBER_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 멤버의 크루 가입 정보를 찾을 수 없습니다"),
     SUBSCRIBE_FAIL(HttpStatus.NOT_FOUND,"알림구독을 실패하였습니다"),
-    NOTICE_NOT_FOUND(HttpStatus.NOT_FOUND,"공지사항 정보를 찾을 수 없습니다");
+    NOTICE_NOT_FOUND(HttpStatus.NOT_FOUND,"공지사항 정보를 찾을 수 없습니다"),
+    NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND,"알림 정보를 찾을 수 없습니다");
 
 
 
