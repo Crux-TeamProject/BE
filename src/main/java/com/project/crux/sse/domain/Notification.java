@@ -1,5 +1,6 @@
-package com.project.crux.crew.sse;
+package com.project.crux.sse.domain;
 
+import com.project.crux.sse.NotificationType;
 import com.project.crux.member.domain.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,11 +36,14 @@ public class Notification {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member receiver;
 
-    @Builder
-    public Notification(Member receiver, NotificationType notificationType, String content, Boolean isRead) {
+    public Notification(Member receiver, NotificationType notificationType, String content) {
         this.receiver = receiver;
         this.notificationType = notificationType;
         this.content = content;
-        this.isRead = isRead;
+        this.isRead = false;
+    }
+
+    public void read() {
+        this.isRead = true;
     }
 }
