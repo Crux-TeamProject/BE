@@ -1,5 +1,7 @@
 package com.project.crux.security.jwt;
 
+import com.project.crux.exception.CustomException;
+import com.project.crux.exception.ErrorCode;
 import com.project.crux.member.domain.Member;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -7,6 +9,7 @@ import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.security.Key;
 import java.util.Date;
@@ -36,6 +39,7 @@ public class TokenProvider {
         Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
 
         return Jwts.builder()
+                .setId(member.getNickname())
                 .setSubject(member.getEmail())
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -60,5 +64,24 @@ public class TokenProvider {
         return false;
     }
 
+    /**
+     * Jwt Token을 복호화 하여 이름을 얻는다.
+     */
+    public String getNicknameFrom(String token) {
+        Jws<Claims> claimsJws;
+        try {
+            claimsJws = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.INVALID_TOKEN);
+        }
+        return claimsJws.getBody().getId();
+    }
+
+    public String extractToken(String bearerToken) {
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
+            return bearerToken.substring(7);
+        }
+        return null;
+    }
 
 }
