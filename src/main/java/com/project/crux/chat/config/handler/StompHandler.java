@@ -1,7 +1,7 @@
 package com.project.crux.chat.config.handler;
 
 import com.project.crux.chat.model.ChatMessage;
-import com.project.crux.chat.repo.ChatRoomRepository;
+import com.project.crux.chat.repo.RedisChatRoomRepository;
 import com.project.crux.chat.service.ChatService;
 import com.project.crux.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ public class StompHandler implements ChannelInterceptor {
     private static final String AUTHORIZATION_HEADER = "Authorization";
 
     private final TokenProvider jwtTokenProvider;
-    private final ChatRoomRepository chatRoomRepository;
+    private final RedisChatRoomRepository redisChatRoomRepository;
     private final ChatService chatService;
 
     // websocket을 통해 들어온 요청이 처리 되기전 실행된다.
@@ -38,16 +38,17 @@ public class StompHandler implements ChannelInterceptor {
         } else if (StompCommand.SUBSCRIBE == accessor.getCommand()) {
             String roomId = chatService.getRoomId(message.getHeaders().get(SIMP_DESTINATION, String.class));
             String sessionId = message.getHeaders().get(SIMP_SESSION_ID, String.class);
-            String nickname = Optional.ofNullable((Principal) message.getHeaders().get(SIMP_USER)).map(Principal::getName).orElse("UnknownUser");
-            chatRoomRepository.enterChatRoom(roomId, sessionId, nickname);
+            String nickname = Optional.ofNullable((Principal) message.getHeaders().get(SIMP_USER))
+                    .map(Principal::getName).orElse("UnknownUser");
+            redisChatRoomRepository.enterChatRoom(roomId, sessionId, nickname);
             chatService.sendChatMessage(ChatMessage.builder().type(ChatMessage.MessageType.ENTER).roomId(roomId).sender(nickname).build());
             log.info("SUBSCRIBED {}, {}", nickname, roomId);
         } else if (StompCommand.DISCONNECT == accessor.getCommand()) {
             String sessionId = message.getHeaders().get(SIMP_SESSION_ID, String.class);
-            String roomId = chatRoomRepository.getUserEnterRoomId(sessionId);
+            String roomId = redisChatRoomRepository.getUserEnterRoomId(sessionId);
             String nickname = Optional.ofNullable((Principal) message.getHeaders().get(SIMP_USER)).map(Principal::getName).orElse("UnknownUser");
             chatService.sendChatMessage(ChatMessage.builder().type(ChatMessage.MessageType.QUIT).roomId(roomId).sender(nickname).build());
-            chatRoomRepository.removeUserEnterInfo(sessionId, roomId);
+            redisChatRoomRepository.removeUserEnterInfo(sessionId, roomId);
             log.info("DISCONNECTED {}, {}", nickname, roomId);
         }
         return message;
