@@ -1,28 +1,25 @@
 package com.project.crux.chat.model;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class ChatMessage {
-    private MessageType type; // 메시지 타입
-    private String roomId; // 방번호
-    private String sender; // 메시지 보낸사람
-    private String message; // 메시지
+    private MessageType type;
+    private String roomId;
+    private String sender;
+    private String message;
+    private List<String> userList;
 
-    @Builder
-    public ChatMessage(MessageType type, String roomId, String sender, String message) {
-        this.type = type;
-        this.roomId = roomId;
-        this.sender = sender;
-        this.message = message;
+    public void updateUserList(List<String> users) {
+        this.userList = users;
     }
 
-    // 메시지 타입 : 입장, 퇴장, 채팅
     public enum MessageType {
         ENTER, QUIT, TALK
     }

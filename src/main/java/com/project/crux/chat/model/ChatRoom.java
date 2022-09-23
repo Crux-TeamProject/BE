@@ -1,29 +1,25 @@
 package com.project.crux.chat.model;
 
+import com.project.crux.crew.domain.Crew;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Getter
-@Setter
+@Entity
+@NoArgsConstructor
 public class ChatRoom implements Serializable {
 
-    private static final long serialVersionUID = 6494678977089006639L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long Id;
 
-    private String roomId;
-    private String crewName;
+    @OneToOne
+    private Crew crew;
 
-    public static ChatRoom create(String crewId) {
-        ChatRoom chatRoom = new ChatRoom();
-        chatRoom.roomId = crewId;
-        return chatRoom;
-    }
-
-    public static ChatRoom create(String crewId, String crewName) {
-        ChatRoom chatRoom = new ChatRoom();
-        chatRoom.roomId = crewId;
-        chatRoom.crewName = crewName;
-        return chatRoom;
+    public ChatRoom(Crew crew) {
+        this.crew = crew;
     }
 }
