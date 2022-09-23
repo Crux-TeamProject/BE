@@ -98,6 +98,7 @@ public class SecurityConfig {
 
                 .antMatchers("/oauth/**").permitAll()
 
+                .antMatchers(HttpMethod.GET, "/stomp/chat/**").permitAll()
                 .anyRequest().authenticated()
 
                 .and()
