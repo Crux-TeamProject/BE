@@ -24,9 +24,12 @@ public class Scheduler {
         kakaoApiService.updateGymByKakaoApi(start_x,start_y,end_x,end_y);
         //        kakaoApiService.updateGymImgByKakaoApi();
 
-        gymRepository.findAll().forEach(gym -> {
-            gym.updateImg(reviewRepository.findByGymOrderByIdDesc(gym).get(0).getReviewPhotoList().get(0).getImgUrl());
-        });
+        gymRepository.findAll().stream()
+                .filter(gym -> !reviewRepository.findByGymOrderByIdDesc(gym).isEmpty())
+                .forEach(gym -> {
+                    gym.updateImg(reviewRepository.findByGymOrderByIdDesc(gym)
+                            .get(0).getReviewPhotoList().get(0).getImgUrl());
+                });
     }
 
 }

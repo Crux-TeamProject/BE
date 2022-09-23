@@ -17,7 +17,9 @@ import com.project.crux.member.domain.Member;
 import com.project.crux.security.jwt.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -44,7 +46,7 @@ public class GymService {
         return pageToDtoListWithDist(gyms,lon,lat);
     }
 
-
+    // 커서 기반 페이지네이션
 /*    public List<GymResponseDto> getPopularGyms(double lastAvgScore, int size) {
 
         if (lastAvgScore < 0 || 5 < lastAvgScore) {
@@ -65,6 +67,7 @@ public class GymService {
     }
 
 
+    // 커서 기반 페이지네이션
 /*    public List<GymResponseDto> getSearchGyms(String query, Long lastArticleId, int size) {
 
         if (lastArticleId < 0 || Integer.MAX_VALUE < lastArticleId) {
@@ -77,6 +80,7 @@ public class GymService {
 
         return pageToDtoList(gyms);
     }*/
+
 
     public List<GymResponseDto> getSearchGyms(String query, Pageable pageable) {
 
@@ -176,12 +180,10 @@ public class GymService {
         return (dist);
     }
 
-    // This function converts decimal degrees to radians
     private double deg2rad(double deg) {
         return (deg * Math.PI / 180.0);
     }
 
-    // This function converts radians to decimal degrees
     private double rad2deg(double rad) {
         return (rad * 180 / Math.PI);
     }
