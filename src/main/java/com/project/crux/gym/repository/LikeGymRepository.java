@@ -12,4 +12,5 @@ import java.util.Optional;
 public interface LikeGymRepository extends JpaRepository<LikeGym, Long> {
     Optional<LikeGym> findByMemberAndGym(Member member, Gym gym);
     List<LikeGym> findAllByMember(Member member);
+    Long countLikeGymByGym(Gym gym);
 }
