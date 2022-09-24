@@ -104,6 +104,7 @@ public class GymService {
             gymResponseDto.setLikeGym(likeGym.isPresent());;
         }
 
+        gymResponseDto.setLikeNum(likeGymRepository.countLikeGymByGym(gym));
         List<Review> reviewList = reviewRepository.findByGym(gym);
         List<ReviewResponseDto> reviews = gymResponseDto.getReviews();
         getReviewResponseList(reviewList, reviews);
