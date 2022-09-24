@@ -2,11 +2,9 @@ package com.project.crux.chat.config;
 
 import com.project.crux.chat.pubsub.RedisSubscriber;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
@@ -20,11 +18,12 @@ public class RedisConfig {
     private static final String CHANNEL_TOPIC = "chatroom";
     private static final String REDIS_SUBSCRIBER_DEFAULT_METHOD = "sendMessage";
 
-    @Value("${spring.redis.host}")
-    private String redisHostName;
-
-    @Value("${spring.redis.port}")
-    private int redisPort;
+    // chat server만 사용하기 위해 주석처리
+//    @Value("${spring.redis.host}")
+//    private String redisHostName;
+//
+//    @Value("${spring.redis.port}")
+//    private int redisPort;
 
     /**
      * 단일 Topic 사용을 위한 Bean 설정
@@ -34,10 +33,11 @@ public class RedisConfig {
         return new ChannelTopic(CHANNEL_TOPIC);
     }
 
-    @Bean
-    public RedisConnectionFactory lettuceConnectionFactory() {
-        return new LettuceConnectionFactory(redisHostName, redisPort);
-    }
+    // chat server만 사용하기 위해 주석처리
+//    @Bean
+//    public RedisConnectionFactory lettuceConnectionFactory() {
+//        return new LettuceConnectionFactory(redisHostName, redisPort);
+//    }
 
     @Bean
     public MessageListenerAdapter listenerAdapter(RedisSubscriber redisSubscriber){

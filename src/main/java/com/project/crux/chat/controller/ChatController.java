@@ -2,12 +2,18 @@ package com.project.crux.chat.controller;
 
 import com.project.crux.chat.model.ChatMessage;
 import com.project.crux.chat.service.ChatService;
+import com.project.crux.common.ResponseDto;
 import com.project.crux.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -29,5 +35,12 @@ public class ChatController {
         message.setType(ChatMessage.MessageType.TALK);
         // Websocket에 발행된 메시지를 redis로 발행(publish)
         chatService.sendChatMessage(message);
+    }
+
+    //이전 채팅 기록 조회
+    @GetMapping("/chat/messages/{roomId}")
+    @ResponseBody
+    public ResponseDto<List<ChatMessage>> getMessage(@PathVariable String roomId) {
+        return ResponseDto.success(chatService.getMessages(roomId));
     }
 }

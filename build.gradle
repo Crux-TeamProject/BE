@@ -44,6 +44,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 	implementation 'org.webjars:stomp-websocket:2.3.4'
 	implementation 'org.webjars:sockjs-client:1.5.1'
+
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.4'
 	// Oauth2
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
