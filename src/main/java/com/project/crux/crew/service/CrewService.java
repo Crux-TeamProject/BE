@@ -1,5 +1,7 @@
 package com.project.crux.crew.service;
 
+import com.project.crux.chat.model.ChatRoom;
+import com.project.crux.chat.repo.ChatRoomRepository;
 import com.project.crux.crew.Status;
 import com.project.crux.crew.domain.Crew;
 import com.project.crux.crew.domain.CrewMember;
@@ -41,6 +43,7 @@ public class CrewService {
     private final MemberRepository memberRepository;
     private final NoticeRepository noticeRepository;
     private final LikeCrewRepository likeCrewRepository;
+    private final ChatRoomRepository chatRoomRepository;
 
     public CrewResponseDto createCrew(CrewRequestDto crewRequestDto, UserDetailsImpl userDetails) {
         Member member = getMember(userDetails.getMember().getId());
@@ -50,7 +53,7 @@ public class CrewService {
         CrewMember crewMember = new CrewMember(member, savedCrew);
         crewMember.updateStatus(Status.ADMIN);
         crewMemberRepository.save(crewMember);
-
+        chatRoomRepository.save(new ChatRoom(savedCrew));
         return CrewResponseDto.from(savedCrew);
     }
 
