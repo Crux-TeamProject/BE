@@ -21,6 +21,7 @@ public class GymResponseDto {
     private double avgScore;
     private double dist;
     private boolean likeGym;
+    private Long likeNum;
     private List<ReviewResponseDto> reviews;
 
 
