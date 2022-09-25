@@ -3,7 +3,6 @@ package com.project.crux.sse.domain;
 import com.project.crux.sse.NotificationType;
 import com.project.crux.member.domain.Member;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;

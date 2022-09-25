@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,6 +72,7 @@ public class Gym {
 
 
     public void updateScore(int score) {
-        this.avgScore = (avgScore * reviewList.size() + score) / (reviewList.size() + 1);
+        DecimalFormat df = new DecimalFormat("#.##");
+        this.avgScore = Double.parseDouble(df.format((avgScore * reviewList.size() + score) / (reviewList.size() + 1)));
     }
 }
