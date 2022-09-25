@@ -49,6 +49,10 @@ public class GymService {
     // 커서 기반 페이지네이션
     public List<GymResponseDto> getPopularGyms(Long lastArticleId, int size) {
 
+        if (lastArticleId < 0 || Integer.MAX_VALUE < lastArticleId) {
+            throw new CustomException(ErrorCode.INVALID_ARTICLEID);
+
+        }
         PageRequest pageRequest = PageRequest.of(0, size);
         Gym gym = getGymById(lastArticleId);
         double customCursor = generateCustomCursor(gym.getAvgScore(), gym.getId());
