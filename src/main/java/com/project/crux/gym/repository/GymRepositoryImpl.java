@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -33,5 +34,6 @@ public class GymRepositoryImpl implements GymRepositoryCustom{
 
     private BooleanExpression customCursor(double customCursor) {
         return gym.avgScore.add(gym.id.divide(100000.0)).lt(customCursor);
-    }
+        }
+
 }

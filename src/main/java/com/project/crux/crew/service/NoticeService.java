@@ -13,6 +13,7 @@ import com.project.crux.crew.repository.CrewMemberRepository;
 import com.project.crux.crew.repository.CrewRepository;
 import com.project.crux.crew.repository.NoticeRepository;
 import com.project.crux.security.jwt.UserDetailsImpl;
+import com.project.crux.sse.domain.NotificationContent;
 import com.project.crux.sse.service.NotificationService;
 import com.project.crux.sse.NotificationType;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +42,7 @@ public class NoticeService {
         notice.setCrewMember(crewMember);
 
         String content = member.getNickname() + "님이 공지사항을 올렸습니다.";
-        sendNotice(crew, content, member);
+        sendNotice(crew, new NotificationContent(crew.getId(), content), member);
 
         noticeRepository.save(notice);
         return new NoticeResponseDto(notice);
@@ -88,7 +89,7 @@ public class NoticeService {
         }
     }
 
-    private void sendNotice(Crew crew, String content ,Member member) {
+    private void sendNotice(Crew crew, NotificationContent content ,Member member) {
         crew.getCrewMemberList().stream().filter(cm -> cm.getStatus() == Status.ADMIN || cm.getStatus() == Status.PERMIT &&
                         !cm.getMember().equals(member))
                 .forEach(cm -> {
