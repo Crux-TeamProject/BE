@@ -5,10 +5,6 @@ spring:
     url: jdbc:mysql://cloneproject.coi5bl8jchez.ap-northeast-2.rds.amazonaws.com:3306/cloneproject?serverTimezone=Asia/Seoul
     username: ${spring.datasource.username}
     password: ${spring.datasource.password}
-  redis:
-    host: ${redis.host}
-    port: ${redis.port}
-    password:
   jpa:
     hibernate:
       ddl-auto: update #create update none
