@@ -46,53 +46,30 @@ public class GymService {
         return pageToDtoListWithDist(gyms,lon,lat);
     }
 
-    // 커서 기반 페이지네이션
     public List<GymResponseDto> getPopularGyms(Long lastArticleId, int size) {
 
-        if (lastArticleId < 0 || Integer.MAX_VALUE < lastArticleId) {
-            throw new CustomException(ErrorCode.INVALID_ARTICLEID);
-
+        if (lastArticleId == null) {
+            PageRequest pageRequest = PageRequest.of(0, size, Sort.by("avgScore").descending());
+            Page<Gym> gyms = gymRepository.findAll(pageRequest);
+            return pageToDtoList(gyms);
         }
+
         PageRequest pageRequest = PageRequest.of(0, size);
         Gym gym = getGymById(lastArticleId);
         double customCursor = generateCustomCursor(gym.getAvgScore(), gym.getId());
-
         Page<Gym> gyms = gymRepository.findByCustomCursor(customCursor, pageRequest);
-
         return pageToDtoList(gyms);
     }
 
-    // 오프셋 기반 페이지네이션
-/*    public List<GymResponseDto> getPopularGyms(Pageable pageable) {
 
-        Page<Gym> gyms = gymRepository.findAll(pageable);
-
-        return pageToDtoList(gyms);
-    }*/
-
-
-    // 커서 기반 페이지네이션
     public List<GymResponseDto> getSearchGyms(String query, Long lastArticleId, int size) {
 
-        if (lastArticleId < 0 || Integer.MAX_VALUE < lastArticleId) {
-            throw new CustomException(ErrorCode.INVALID_ARTICLEID);
-
-        }
         PageRequest pageRequest = PageRequest.of(0, size, Sort.by("id").descending());
 
         Page<Gym> gyms = gymRepository.findByIdLessThanAndNameContains(lastArticleId, query, pageRequest);
 
         return pageToDtoList(gyms);
     }
-
-
-    // 오프셋 기반 페이지네이션
- /*   public List<GymResponseDto> getSearchGyms(String query, Pageable pageable) {
-
-        Page<Gym> gyms = gymRepository.findByNameContains(query, pageable);
-
-        return pageToDtoList(gyms);
-    }*/
 
 
     public GymResponseDto getGym(Long gymId) {
