@@ -33,8 +33,6 @@ jobs:
           jwt.secret: ${{ secrets.JWT_SECRET_KEY }}
           spring.datasource.username: ${{ secrets.AWS_RDS_USERNAME }}
           spring.datasource.password: ${{ secrets.AWS_RDS_PASSWORD }}
-          spring.redis.host: ${{ secrets.REDIS_HOST }}
-          spring.redis.port: ${{ secrets.REDIS_PORT }}
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
