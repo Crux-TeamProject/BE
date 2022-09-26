@@ -15,6 +15,7 @@ import com.project.crux.exception.ErrorCode;
 import com.project.crux.member.domain.Member;
 import com.project.crux.member.repository.MemberRepository;
 import com.project.crux.security.jwt.UserDetailsImpl;
+import com.project.crux.sse.domain.NotificationContent;
 import com.project.crux.sse.service.NotificationService;
 import com.project.crux.sse.NotificationType;
 import lombok.RequiredArgsConstructor;
@@ -53,7 +54,7 @@ public class CrewMemberService {
             CrewMember crewLeader = getCrewLeader(crew);
             checkAdminRegister(crewLeader, member);
             String content = member.getNickname() + "님이 가입 신청하셨습니다";
-            sendNotice((crewLeader.getMember()), NotificationType.SUBMIT, content);
+            sendNotice((crewLeader.getMember()), NotificationType.SUBMIT, new NotificationContent(crew.getId(), content));
 
             crewMemberRepository.save(crewMember);
             return "크루 가입 신청 완료";
@@ -80,7 +81,7 @@ public class CrewMemberService {
             crewMember.updateStatus(Status.PERMIT);
 
             String content = registerMember.getNickname() + "님이 가입 되셨습니다";
-            sendNotice(registerMember, NotificationType.PERMIT, content);
+            sendNotice(registerMember, NotificationType.PERMIT, new NotificationContent(crew.getId(), content));
 
             return "크루 가입 승인 완료";
         }
@@ -88,7 +89,7 @@ public class CrewMemberService {
         crewMemberRepository.delete(crewMember);
 
         String content = registerMember.getNickname() + "님이 가입 거절되셨습니다";
-        sendNotice(registerMember, NotificationType.REJECT, content);
+        sendNotice(registerMember, NotificationType.REJECT, new NotificationContent(crew.getId(), content));
 
         return "크루 가입 승인 거절";
     }
@@ -227,7 +228,7 @@ public class CrewMemberService {
         return memberRepository.findById(memberId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 
-    private void sendNotice(Member member, NotificationType notificationType, String content) {
+    private void sendNotice(Member member, NotificationType notificationType, NotificationContent content) {
         notificationService.send(member,notificationType,content);
     }
 
