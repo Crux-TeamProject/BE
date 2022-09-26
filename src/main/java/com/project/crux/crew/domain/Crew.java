@@ -1,5 +1,6 @@
 package com.project.crux.crew.domain;
 
+import com.project.crux.chat.model.ChatRoom;
 import com.project.crux.exception.ErrorCode;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,6 +39,9 @@ public class Crew {
 
     @OneToMany(mappedBy = "crew", cascade = CascadeType.REMOVE)
     private List<CrewMember> crewMemberList = new ArrayList<>();
+
+    @OneToOne(mappedBy = "crew", cascade = CascadeType.REMOVE)
+    private ChatRoom chatRoom;
 
     @Builder
     public Crew(String name, String content, String imgUrl) {

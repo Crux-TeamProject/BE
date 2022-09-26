@@ -2,6 +2,7 @@ package com.project.crux.sse.service;
 
 import com.project.crux.sse.NotificationType;
 import com.project.crux.sse.domain.Notification;
+import com.project.crux.sse.domain.NotificationContent;
 import com.project.crux.sse.domain.dto.NotificationCountDto;
 import com.project.crux.sse.domain.dto.NotificationResponseDto;
 import com.project.crux.sse.repository.EmitterRepository;
@@ -80,7 +81,7 @@ public class NotificationService {
     }
 
     @Async
-    public void send(Member receiver, NotificationType notificationType, String content) {
+    public void send(Member receiver, NotificationType notificationType, NotificationContent content) {
         Notification notification = new Notification(receiver, notificationType, content);
         notificationRepository.save(notification);
 
@@ -91,7 +92,8 @@ public class NotificationService {
                 (key, emitter) -> {
                     emitterRepository.saveEventCache(key, notification);
                     sendToClient(emitter, key, NotificationResponseDto.from(notification));
-                    log.info("알림 전송 내용 : {}",notification.getContent());
+                    log.info("알림 전송 내용 : {}",notification.getNotificationContent().getContent());
+                    log.info("알림 내용 crewId : {}",notification.getNotificationContent().getCrewId());
                 }
         );
     }

@@ -47,28 +47,28 @@ public class GymService {
     }
 
     // 커서 기반 페이지네이션
-/*    public List<GymResponseDto> getPopularGyms(double lastAvgScore, int size) {
+    public List<GymResponseDto> getPopularGyms(Long lastArticleId, int size) {
 
-        if (lastAvgScore < 0 || 5 < lastAvgScore) {
-            throw new CustomException(ErrorCode.INVALID_AVGSCORE);
-        }
-        PageRequest pageRequest = PageRequest.of(0, size, Sort.by("avgScore").descending());
+        PageRequest pageRequest = PageRequest.of(0, size);
+        Gym gym = getGymById(lastArticleId);
+        double customCursor = generateCustomCursor(gym.getAvgScore(), gym.getId());
 
-        Page<Gym> gyms = gymRepository.findByAvgScoreLessThan(lastAvgScore, pageRequest);
-
-        return pageToDtoList(gyms);
-    }*/
-
-    public List<GymResponseDto> getPopularGyms(Pageable pageable) {
-
-        Page<Gym> gyms = gymRepository.findAll(pageable);
+        Page<Gym> gyms = gymRepository.findByCustomCursor(customCursor, pageRequest);
 
         return pageToDtoList(gyms);
     }
 
+    // 오프셋 기반 페이지네이션
+/*    public List<GymResponseDto> getPopularGyms(Pageable pageable) {
+
+        Page<Gym> gyms = gymRepository.findAll(pageable);
+
+        return pageToDtoList(gyms);
+    }*/
+
 
     // 커서 기반 페이지네이션
-/*    public List<GymResponseDto> getSearchGyms(String query, Long lastArticleId, int size) {
+    public List<GymResponseDto> getSearchGyms(String query, Long lastArticleId, int size) {
 
         if (lastArticleId < 0 || Integer.MAX_VALUE < lastArticleId) {
             throw new CustomException(ErrorCode.INVALID_ARTICLEID);
@@ -79,15 +79,16 @@ public class GymService {
         Page<Gym> gyms = gymRepository.findByIdLessThanAndNameContains(lastArticleId, query, pageRequest);
 
         return pageToDtoList(gyms);
-    }*/
+    }
 
 
-    public List<GymResponseDto> getSearchGyms(String query, Pageable pageable) {
+    // 오프셋 기반 페이지네이션
+ /*   public List<GymResponseDto> getSearchGyms(String query, Pageable pageable) {
 
         Page<Gym> gyms = gymRepository.findByNameContains(query, pageable);
 
         return pageToDtoList(gyms);
-    }
+    }*/
 
 
     public GymResponseDto getGym(Long gymId) {
@@ -189,4 +190,7 @@ public class GymService {
         return (rad * 180 / Math.PI);
     }
 
+    private double generateCustomCursor(double avgScore, Long gymId) {
+        return avgScore + gymId / 100000.0;
+    }
 }

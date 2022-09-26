@@ -3,7 +3,6 @@ package com.project.crux.sse.domain;
 import com.project.crux.sse.NotificationType;
 import com.project.crux.member.domain.Member;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
@@ -21,8 +20,8 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String content;
+    @Embedded
+    private NotificationContent notificationContent;
 
     @Column(nullable = false)
     private Boolean isRead;
@@ -36,10 +35,10 @@ public class Notification {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member receiver;
 
-    public Notification(Member receiver, NotificationType notificationType, String content) {
+    public Notification(Member receiver, NotificationType notificationType, NotificationContent content) {
         this.receiver = receiver;
         this.notificationType = notificationType;
-        this.content = content;
+        this.notificationContent = content;
         this.isRead = false;
     }
 
