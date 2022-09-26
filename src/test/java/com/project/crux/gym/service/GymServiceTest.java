@@ -57,7 +57,7 @@ class GymServiceTest {
         gymPage = new PageImpl<>(gyms);
     }
 
-    @Nested
+  /*  @Nested
     @DisplayName("인기클라이밍짐")
     class PopularGymsTest {
 
@@ -97,7 +97,7 @@ class GymServiceTest {
             assertThat(gymResponseDtos.size()).isEqualTo(5);
         }
 
-    }
+    }*/
 
     @Nested
     @DisplayName("클라이밍짐 상세")
