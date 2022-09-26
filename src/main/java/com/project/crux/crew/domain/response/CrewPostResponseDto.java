@@ -11,11 +11,13 @@ import java.util.stream.Collectors;
 public class CrewPostResponseDto {
     private Long postId;
     private List<CrewPhotoResponseDto> imgList;
+    private Long crewId;
     private LocalDateTime createdAt;
 
     public CrewPostResponseDto(CrewPost crewPost) {
         this.postId = crewPost.getId();
         this.imgList = crewPost.getPhotoList().stream().map(CrewPhotoResponseDto::new).collect(Collectors.toList());
+        this.crewId = crewPost.getCrewMember().getCrew().getId();
         this.createdAt = crewPost.getCreatedAt();
     }
 }

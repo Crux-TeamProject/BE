@@ -232,4 +232,7 @@ public class CrewMemberService {
         notificationService.send(member,notificationType,content);
     }
 
+    public List<CrewPostResponseDto> findAllCrewsPosts(Pageable pageable) {
+        return crewPostRepository.findAll(pageable).map(CrewPostResponseDto::new).toList();
+    }
 }
