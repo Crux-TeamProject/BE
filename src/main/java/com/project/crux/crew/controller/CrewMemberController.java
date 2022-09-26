@@ -72,6 +72,12 @@ public class CrewMemberController {
         return ResponseDto.success(crewMemberService.findAllCrewPosts(crewId, pageable));
     }
 
+    //모든 크루 사진 조회
+    @GetMapping("/crews/posts")
+    public ResponseDto<List<CrewPostResponseDto>> findAllCrewsPosts(@PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        return ResponseDto.success(crewMemberService.findAllCrewsPosts(pageable));
+    }
+
     //크루 사진 삭제
     @DeleteMapping("/crews/posts/{photoId}")
     public ResponseDto<String> deletePhoto(@PathVariable Long photoId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
