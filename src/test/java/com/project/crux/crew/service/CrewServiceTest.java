@@ -49,7 +49,7 @@ class CrewServiceTest {
     @Mock
     private CrewMemberRepository crewMemberRepository;
 
-    @Nested
+   /* @Nested
     @DisplayName("크루 생성")
     class createCrew {
         @DisplayName("크루 생성 성공")
@@ -90,7 +90,7 @@ class CrewServiceTest {
                         .hasMessage(ErrorCode.INVALID_CREW_NAME.getErrorMessage());
             }
         }
-    }
+    }*/
 
 
 /*    @Nested
