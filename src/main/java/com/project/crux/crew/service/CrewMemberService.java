@@ -140,11 +140,11 @@ public class CrewMemberService {
                 .stream().map(CrewPostResponseDto::new).collect(Collectors.toList());
     }
 
-    public String delete(Long photoId, UserDetailsImpl userDetails) {
-        CrewPhoto crewPhoto = crewPhotoRepository.findById(photoId).orElseThrow(() -> new CustomException(ErrorCode.PHOTO_NOT_FOUND));
-        Member author = crewPhoto.getCrewPost().getCrewMember().getMember();
+    public String delete(Long postId, UserDetailsImpl userDetails) {
+        CrewPost crewPost = crewPostRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+        Member author = crewPost.getCrewMember().getMember();
         checkSameMember(author, userDetails.getMember());
-        crewPhotoRepository.delete(crewPhoto);
+        crewPostRepository.delete(crewPost);
         return "사진 삭제 완료";
     }
 
