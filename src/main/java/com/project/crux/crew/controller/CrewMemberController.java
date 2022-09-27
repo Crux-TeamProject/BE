@@ -79,9 +79,9 @@ public class CrewMemberController {
     }
 
     //크루 사진 삭제
-    @DeleteMapping("/crews/posts/{photoId}")
-    public ResponseDto<String> deletePhoto(@PathVariable Long photoId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return ResponseDto.success(crewMemberService.delete(photoId, userDetails));
+    @DeleteMapping("/crews/posts/{postId}")
+    public ResponseDto<String> deletePhoto(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseDto.success(crewMemberService.delete(postId, userDetails));
     }
 
     //크루 좋아요 추가

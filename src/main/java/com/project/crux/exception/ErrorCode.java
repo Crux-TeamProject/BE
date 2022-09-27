@@ -48,7 +48,7 @@ public enum ErrorCode {
     GYM_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 클라이밍짐 정보를 찾을 수 없습니다"),
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 리뷰 정보를 찾을 수 없습니다" ),
     CREW_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 크루 정보를 찾을 수 없습니다" ),
-    PHOTO_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 사진을 찾을 수 없습니다"),
+    POST_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 게시글을 찾을 수 없습니다"),
     CREWLEADER_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 크루 리더의 정보를 찾을 수 없습니다" ),
     CREWMEMBER_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 멤버의 크루 가입 정보를 찾을 수 없습니다"),
     SUBSCRIBE_FAIL(HttpStatus.NOT_FOUND,"알림구독을 실패하였습니다"),
