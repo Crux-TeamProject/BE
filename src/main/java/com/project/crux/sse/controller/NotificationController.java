@@ -21,9 +21,10 @@ public class NotificationController {
     // api 알림 구독
     @GetMapping(value = "/subscribe", produces = "text/event-stream")
     public SseEmitter subscribe(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
+                                @RequestParam(required = false, defaultValue = "") String lastEventId) {
 
         Long memberId = userDetails.getMember().getId();
+        System.out.println(lastEventId);
         return notificationService.subscribe(memberId, lastEventId);
     }
 

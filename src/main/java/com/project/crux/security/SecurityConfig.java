@@ -55,6 +55,7 @@ public class SecurityConfig {
         configuration.setAllowCredentials(true);
         configuration.addExposedHeader("Access_Token");
         configuration.addExposedHeader("Authorization");
+        configuration.addExposedHeader("Last-Event-ID");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
