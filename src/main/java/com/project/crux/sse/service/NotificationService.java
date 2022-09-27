@@ -65,6 +65,7 @@ public class NotificationService {
         eventCaches.entrySet().stream()
                 .filter(entry -> lastEventId.compareTo(entry.getKey()) < 0)
                 .forEach(entry -> sendToClient(emitter, entry.getKey(), entry.getValue()));
+        log.info("유실 데이터 전송 완료 ,{}", lastEventId);
     }
 
     private void sendToClient(SseEmitter emitter, String id, Object data) {
@@ -73,14 +74,14 @@ public class NotificationService {
                     .id(id)
                     .name("sse")
                     .data(data));
-            log.info(" 알림 전송 완료 {}",id);
-        } catch (IOException exception) {
+            log.info(" 알림 전송 완료 {}", id);
+        } catch (IOException | IllegalStateException exception) {
             emitterRepository.deleteById(id);
-            throw new RuntimeException("연결 오류!");
+            log.info("{}", exception.getMessage());
         }
     }
 
-    @Async
+        @Async
     public void send(Member receiver, NotificationType notificationType, NotificationContent content) {
         Notification notification = new Notification(receiver, notificationType, content);
         notificationRepository.save(notification);
