@@ -5,6 +5,7 @@ import com.project.crux.crew.domain.Crew;
 import com.project.crux.crew.domain.Notice;
 import lombok.Getter;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,6 +15,9 @@ public class CrewFindOneResponseDto {
     private String name;
     private String content;
     private String imgUrl;
+    private String mainActivityGym;
+    private String mainActivityArea;
+    private List<String> keywords;
     private List<CrewMemberResponseDto> memberList;
     private int crewNum;
     private List<NoticeResponseDto> noticeList;
@@ -24,6 +28,9 @@ public class CrewFindOneResponseDto {
         this.name = crew.getName();
         this.content = crew.getContent();
         this.imgUrl = crew.getImgUrl();
+        this.mainActivityGym = crew.getMainActivityGym();
+        this.mainActivityArea = crew.getMainActivityArea();
+        this.keywords = Arrays.asList(crew.getKeywords() == null ? new String[]{} : crew.getKeywords().split(","));
         this.memberList = crew.getCrewMemberList().stream()
                 .filter(memberCrew -> !memberCrew.getStatus().equals(Status.SUBMIT))
                 .map(CrewMemberResponseDto::new).collect(Collectors.toList());

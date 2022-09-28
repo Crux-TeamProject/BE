@@ -47,8 +47,16 @@ public class CrewService {
 
     public CrewResponseDto createCrew(CrewRequestDto crewRequestDto, UserDetailsImpl userDetails) {
         Member member = getMember(userDetails.getMember().getId());
-        String imgUrl = getImgUrl(crewRequestDto);
-        Crew savedCrew = crewRepository.save(new Crew(crewRequestDto.getName(), crewRequestDto.getContent(), imgUrl));
+        if (crewRequestDto.getKeywords() == null) {
+            throw new CustomException(ErrorCode.REQUIRED_KEYWORDS);
+        }
+        Crew savedCrew = crewRepository.save(
+                Crew.builder().name(crewRequestDto.getName())
+                        .content(crewRequestDto.getContent())
+                        .imgUrl(getImgUrl(crewRequestDto))
+                        .mainActivityGym(crewRequestDto.getMainActivityGym())
+                        .mainActivityArea(crewRequestDto.getMainActivityArea())
+                        .keywords(String.join(",", crewRequestDto.getKeywords())).build());
 
         CrewMember crewMember = new CrewMember(member, savedCrew);
         crewMember.updateStatus(Status.ADMIN);
@@ -112,7 +120,11 @@ public class CrewService {
         Crew crew = getCrew(crewId);
         CrewMember crewMember = getCrewMember(crew, userDetails.getMember());
         checkAdmin(crewMember);
-        crew.update(crewRequestDto.getName(), crewRequestDto.getContent(), crewRequestDto.getImgUrl());
+        if (crewRequestDto.getKeywords() == null) {
+            throw new CustomException(ErrorCode.REQUIRED_KEYWORDS);
+        }
+        crew.update(crewRequestDto.getName(), crewRequestDto.getContent(), crewRequestDto.getImgUrl(),
+                crewRequestDto.getMainActivityGym(), crewRequestDto.getMainActivityArea(), String.join(",", crewRequestDto.getKeywords()));
         return CrewResponseDto.from(crew);
     }
 
