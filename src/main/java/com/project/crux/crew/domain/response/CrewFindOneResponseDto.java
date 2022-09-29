@@ -20,7 +20,7 @@ public class CrewFindOneResponseDto {
     private List<String> keywords;
     private List<CrewMemberResponseDto> memberList;
     private int crewNum;
-    private List<NoticeResponseDto> noticeList;
+    private List<CrewNoticeResponseDto> noticeList;
     private boolean like;
 
     public CrewFindOneResponseDto(Crew crew, List<Notice> noticeList, boolean like) {
@@ -35,7 +35,7 @@ public class CrewFindOneResponseDto {
                 .filter(memberCrew -> !memberCrew.getStatus().equals(Status.SUBMIT))
                 .map(CrewMemberResponseDto::new).collect(Collectors.toList());
         this.crewNum = (int) crew.getCrewMemberList().stream().filter(cm -> !cm.getStatus().equals(Status.SUBMIT)).count();
-        this.noticeList = noticeList.stream().map(NoticeResponseDto::new).collect(Collectors.toList());
+        this.noticeList = noticeList.stream().map(CrewNoticeResponseDto::new).collect(Collectors.toList());
         this.like = like;
     }
 }
