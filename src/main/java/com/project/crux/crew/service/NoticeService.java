@@ -3,10 +3,10 @@ package com.project.crux.crew.service;
 import com.project.crux.crew.Status;
 import com.project.crux.crew.domain.Crew;
 import com.project.crux.crew.domain.CrewMember;
+import com.project.crux.crew.domain.response.CrewNoticeResponseDto;
 import com.project.crux.member.domain.Member;
 import com.project.crux.crew.domain.Notice;
 import com.project.crux.crew.domain.request.NoticeRequestDto;
-import com.project.crux.crew.domain.response.NoticeResponseDto;
 import com.project.crux.exception.CustomException;
 import com.project.crux.exception.ErrorCode;
 import com.project.crux.crew.repository.CrewMemberRepository;
@@ -30,9 +30,9 @@ public class NoticeService {
     private final NotificationService notificationService;
 
     @Transactional
-    public NoticeResponseDto createNotice(Long crewId, NoticeRequestDto requestDto, UserDetailsImpl userDetails) {
+    public CrewNoticeResponseDto createNotice(Long crewId, NoticeRequestDto requestDto, UserDetailsImpl userDetails) {
 
-        Notice notice = new Notice(requestDto.getContent());
+        Notice notice = new Notice(requestDto.getDate(), requestDto.getPlace(), requestDto.getContent());
         Crew crew = getCrew(crewId);
         Member member = userDetails.getMember();
         CrewMember crewMember = getCrewMember(crew, member);
@@ -45,11 +45,11 @@ public class NoticeService {
         sendNotice(crew, new NotificationContent(crew.getId(), content), member);
 
         noticeRepository.save(notice);
-        return new NoticeResponseDto(notice);
+        return new CrewNoticeResponseDto(notice);
     }
 
     @Transactional
-    public NoticeResponseDto updateNotice(Long noticeId, NoticeRequestDto requestDto, UserDetailsImpl userDetails) {
+    public CrewNoticeResponseDto updateNotice(Long noticeId, NoticeRequestDto requestDto, UserDetailsImpl userDetails) {
 
         Notice notice = getNotice(noticeId);
 
@@ -57,9 +57,9 @@ public class NoticeService {
 
         noticeWriterCheck(notice,member,"update");
 
-        notice.update(requestDto.getContent());
+        notice.update(requestDto.getDate(),requestDto.getPlace(), requestDto.getContent());
 
-        return new NoticeResponseDto(notice);
+        return new CrewNoticeResponseDto(notice);
     }
 
     public String deleteNotice(Long noticeId, UserDetailsImpl userDetails) {

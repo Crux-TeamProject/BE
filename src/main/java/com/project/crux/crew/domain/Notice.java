@@ -19,16 +19,26 @@ public class Notice extends Timestamped {
     private Long id;
 
     @Column(nullable = false)
+    private String date;
+
+    @Column(nullable = false)
+    private String place;
+
+    @Column(nullable = false)
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private CrewMember crewMember;
 
-    public Notice(String content) {
+    public Notice(String date, String place, String content) {
+        this.date = date;
+        this.place = place;
         this.content = content;
     }
 
-    public void update(String content) {
+    public void update(String date, String place, String content) {
+        this.date = date;
+        this.place = place;
         this.content = content;
     }
 }
