@@ -1,7 +1,7 @@
 package com.project.crux.crew.service;
 
-import com.project.crux.chat.model.ChatRoom;
-import com.project.crux.chat.repo.ChatRoomRepository;
+import com.project.crux.crew.domain.ChatRoom;
+import com.project.crux.crew.repository.ChatRoomRepository;
 import com.project.crux.crew.Status;
 import com.project.crux.crew.domain.Crew;
 import com.project.crux.crew.domain.CrewMember;
