@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 @Getter
 public class CrewNoticeResponseDto {
     private Long noticeId;
+    private String date;
+    private String place;
     private String content;
     private Long authorId;
     private String authorNickname;
@@ -17,6 +19,8 @@ public class CrewNoticeResponseDto {
 
     public CrewNoticeResponseDto(Notice notice) {
         this.noticeId = notice.getId();
+        this.date = notice.getDate();
+        this.place = notice.getPlace();
         this.content = notice.getContent();
         this.authorId = notice.getCrewMember().getMember().getId();
         this.authorNickname = notice.getCrewMember().getMember().getNickname();

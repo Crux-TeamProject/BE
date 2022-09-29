@@ -2,6 +2,7 @@ package com.project.crux.crew.controller;
 
 import com.project.crux.crew.domain.request.NoticeRequestDto;
 import com.project.crux.common.ResponseDto;
+import com.project.crux.crew.domain.response.CrewNoticeResponseDto;
 import com.project.crux.security.jwt.UserDetailsImpl;
 import com.project.crux.crew.service.NoticeService;
 import lombok.RequiredArgsConstructor;
@@ -16,14 +17,14 @@ public class NoticeController {
 
     //api 크루 공지사항 등록
     @PostMapping("/notices/{crewId}")
-    public ResponseDto<?> createNotice(@PathVariable Long crewId, @RequestBody NoticeRequestDto requestDto,
-                                       @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseDto<CrewNoticeResponseDto> createNotice(@PathVariable Long crewId, @RequestBody NoticeRequestDto requestDto,
+                                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseDto.success(noticeService.createNotice(crewId, requestDto, userDetails));
     }
 
     //api 크루 공지사항 수정
     @PutMapping("/notices/{noticeId}")
-    public ResponseDto<?> updateNotice(@PathVariable Long noticeId, @RequestBody NoticeRequestDto requestDto,
+    public ResponseDto<CrewNoticeResponseDto> updateNotice(@PathVariable Long noticeId, @RequestBody NoticeRequestDto requestDto,
                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseDto.success(noticeService.updateNotice(noticeId, requestDto, userDetails));
     }
