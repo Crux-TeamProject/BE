@@ -1,15 +1,12 @@
 package com.project.crux.crew.domain;
 
 import com.project.crux.chat.model.ChatRoom;
-import com.project.crux.exception.ErrorCode;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Formula;
-import org.springframework.util.Assert;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +18,6 @@ public class Crew {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
     @Column(nullable = false)
     private String name;
 
@@ -30,6 +26,15 @@ public class Crew {
 
     @Column
     private String imgUrl;
+
+    @Column
+    private String mainActivityGym;
+
+    @Column
+    private String mainActivityArea;
+
+    @Column
+    private String keywords;
 
     @OneToMany(mappedBy = "crew", cascade = CascadeType.REMOVE)
     private List<LikeCrew> likes;
@@ -44,16 +49,21 @@ public class Crew {
     private ChatRoom chatRoom;
 
     @Builder
-    public Crew(String name, String content, String imgUrl) {
-        Assert.hasText(name, ErrorCode.INVALID_CREW_NAME.getErrorMessage());
+    public Crew(String name, String content, String imgUrl, String mainActivityGym, String mainActivityArea, String keywords) {
         this.name = name;
         this.content = content;
         this.imgUrl = imgUrl;
+        this.mainActivityGym = mainActivityGym;
+        this.mainActivityArea = mainActivityArea;
+        this.keywords = keywords;
     }
 
-    public void update(String name, String content, String imgUrl) {
+    public void update(String name, String content, String imgUrl, String mainActivityGym, String mainActivityArea, String keywords) {
         this.name = name;
         this.content = content;
         this.imgUrl = imgUrl;
+        this.mainActivityGym = mainActivityGym;
+        this.mainActivityArea = mainActivityArea;
+        this.keywords = keywords;
     }
 }

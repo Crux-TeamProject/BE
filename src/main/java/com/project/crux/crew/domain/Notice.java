@@ -1,6 +1,7 @@
 package com.project.crux.crew.domain;
 
 
+import com.project.crux.common.Timestamped;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,7 +12,7 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @Entity
-public class Notice {
+public class Notice extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
