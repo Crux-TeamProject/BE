@@ -81,7 +81,7 @@ public class NotificationService {
         }
     }
 
-    @Async("executor")
+    @Async("Executor")
     public void send(Member receiver, NotificationType notificationType, NotificationContent content) {
         Notification notification = new Notification(receiver, notificationType, content);
         notificationRepository.save(notification);
