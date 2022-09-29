@@ -1,4 +1,4 @@
-package com.project.crux.chat.model;
+package com.project.crux.crew.domain;
 
 import com.project.crux.crew.domain.Crew;
 import lombok.Getter;
