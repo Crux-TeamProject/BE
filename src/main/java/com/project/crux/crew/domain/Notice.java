@@ -18,10 +18,10 @@ public class Notice extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column
     private String date;
 
-    @Column(nullable = false)
+    @Column
     private String place;
 
     @Column(nullable = false)
