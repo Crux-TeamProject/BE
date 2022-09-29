@@ -1,6 +1,5 @@
 package com.project.crux.crew.domain;
 
-import com.project.crux.chat.model.ChatRoom;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
