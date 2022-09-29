@@ -6,5 +6,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class NoticeRequestDto {
+    private String date;
+    private String place;
     private String content;
 }

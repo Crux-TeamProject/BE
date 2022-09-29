@@ -1,6 +1,7 @@
 package com.project.crux.crew.domain;
 
 
+import com.project.crux.common.Timestamped;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,11 +12,17 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @Entity
-public class Notice {
+public class Notice extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
+    private String date;
+
+    @Column(nullable = false)
+    private String place;
 
     @Column(nullable = false)
     private String content;
@@ -23,11 +30,15 @@ public class Notice {
     @ManyToOne(fetch = FetchType.LAZY)
     private CrewMember crewMember;
 
-    public Notice(String content) {
+    public Notice(String date, String place, String content) {
+        this.date = date;
+        this.place = place;
         this.content = content;
     }
 
-    public void update(String content) {
+    public void update(String date, String place, String content) {
+        this.date = date;
+        this.place = place;
         this.content = content;
     }
 }
