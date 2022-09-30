@@ -33,7 +33,7 @@ public class CrewFindOneResponseDto {
         this.mainActivityArea = crew.getMainActivityArea();
         this.keywords = Arrays.asList(crew.getKeywords() == null ? new String[]{} : crew.getKeywords().split(","));
         this.hostId = crew.getCrewMemberList().stream()
-                .filter(mc -> mc.getStatus().equals(Status.ADMIN)).findAny().get().getId();
+                .filter(mc -> mc.getStatus().equals(Status.ADMIN)).findAny().get().getMember().getId();
         this.memberList = crew.getCrewMemberList().stream()
                 .filter(memberCrew -> !memberCrew.getStatus().equals(Status.SUBMIT))
                 .map(CrewMemberResponseDto::new).collect(Collectors.toList());
