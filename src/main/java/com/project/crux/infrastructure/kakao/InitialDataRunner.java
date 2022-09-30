@@ -1,12 +1,16 @@
 package com.project.crux.infrastructure.kakao;
 
+import com.project.crux.gym.domain.ReviewPhoto;
 import com.project.crux.gym.repository.GymRepository;
+import com.project.crux.gym.repository.ReviewPhotoRepository;
 import com.project.crux.gym.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 
 @Component
@@ -17,6 +21,7 @@ public class InitialDataRunner implements ApplicationRunner {
     private final KakaoApiService kakaoApiService;
     private final GymRepository gymRepository;
     private final ReviewRepository reviewRepository;
+    private final ReviewPhotoRepository reviewPhotoRepository;
 
     @Override
     @Transactional
@@ -29,11 +34,14 @@ public class InitialDataRunner implements ApplicationRunner {
 
         kakaoApiService.updateGymByKakaoApi(start_x, start_y, end_x, end_y);
 //        kakaoApiService.updateGymImgByKakaoApi();
+
         gymRepository.findAll().stream()
                 .filter(gym -> !reviewRepository.findByGymOrderByIdDesc(gym).isEmpty())
                 .forEach(gym -> {
-                    gym.updateImg(reviewRepository.findByGymOrderByIdDesc(gym)
-                            .get(0).getReviewPhotoList().get(0).getImgUrl());
+                    List<ReviewPhoto> reviewPhotoList = reviewPhotoRepository.findAllByReview(
+                            reviewRepository.findByGymOrderByIdDesc(gym).get(0));
+                    if (!reviewPhotoList.isEmpty()) {
+                        gym.updateImg(reviewPhotoList.get(0).getImgUrl());}
                 });
 
     }
