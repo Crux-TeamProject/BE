@@ -18,6 +18,7 @@ public class CrewFindOneResponseDto {
     private String mainActivityGym;
     private String mainActivityArea;
     private List<String> keywords;
+    private Long hostId;
     private List<CrewMemberResponseDto> memberList;
     private int crewNum;
     private List<CrewNoticeResponseDto> noticeList;
@@ -31,6 +32,8 @@ public class CrewFindOneResponseDto {
         this.mainActivityGym = crew.getMainActivityGym();
         this.mainActivityArea = crew.getMainActivityArea();
         this.keywords = Arrays.asList(crew.getKeywords() == null ? new String[]{} : crew.getKeywords().split(","));
+        this.hostId = crew.getCrewMemberList().stream()
+                .filter(mc -> mc.getStatus().equals(Status.ADMIN)).findAny().get().getId();
         this.memberList = crew.getCrewMemberList().stream()
                 .filter(memberCrew -> !memberCrew.getStatus().equals(Status.SUBMIT))
                 .map(CrewMemberResponseDto::new).collect(Collectors.toList());
