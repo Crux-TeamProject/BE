@@ -2,6 +2,7 @@ package com.project.crux.member.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.crux.crew.domain.CrewMember;
+import com.project.crux.crew.domain.LikeCrew;
 import com.project.crux.gym.domain.LikeGym;
 import com.project.crux.member.domain.request.MypageRequestDto;
 import lombok.AllArgsConstructor;
@@ -49,6 +50,9 @@ public class Member {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<LikeGym> likeGymList;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private List<LikeCrew> likeCrewList;
 
     @Builder
     public Member(String email, String nickname, String password, String content,String imgUrl) {
