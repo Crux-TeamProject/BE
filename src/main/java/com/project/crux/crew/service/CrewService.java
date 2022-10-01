@@ -111,7 +111,7 @@ public class CrewService {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         Member member = userDetails.getMember();
-        Optional<CrewMember> likeCrew = crewMemberRepository.findByCrewAndMember(crew, member);
+        Optional<LikeCrew> likeCrew = likeCrewRepository.findByCrewAndMember(crew, member);
 
         return new CrewFindOneResponseDto(crew, noticeList, likeCrew.isPresent());
     }
