@@ -29,6 +29,9 @@ public class CrewMember {
     @OneToMany(mappedBy = "crewMember", cascade = CascadeType.REMOVE)
     private List<CrewPost> crewPostList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "crewMember", cascade = CascadeType.REMOVE)
+    private List<Notice> noticeList = new ArrayList<>();
+
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private Status status = Status.SUBMIT;
