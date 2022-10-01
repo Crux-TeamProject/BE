@@ -1,5 +1,9 @@
 package com.project.crux.member.service;
 
+import com.project.crux.crew.Status;
+import com.project.crux.crew.domain.CrewMember;
+import com.project.crux.crew.repository.CrewMemberRepository;
+import com.project.crux.crew.repository.CrewRepository;
 import com.project.crux.member.domain.Member;
 import com.project.crux.member.domain.request.LoginRequestDto;
 import com.project.crux.member.domain.request.SignupRequestDto;
@@ -16,7 +20,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +31,9 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
+
+    private final CrewMemberRepository crewMemberRepository;
+    private final CrewRepository crewRepository;
 
     //일반회원가입
     @Transactional
@@ -99,6 +108,10 @@ public class MemberService {
     @Transactional
     public ResponseDto<?> withdraw(UserDetailsImpl userDetails) {
         Member member = userDetails.getMember();
+        List<CrewMember> crewMembers = crewMemberRepository.findAllByMember(member).stream().filter(crewMember -> crewMember.getStatus().equals(Status.ADMIN)).collect(Collectors.toList());
+        for (CrewMember crewMember : crewMembers) {
+            crewRepository.delete(crewMember.getCrew());
+        }
         memberRepository.delete(member);
         return ResponseDto.success("회원 탈퇴 완료");
     }
