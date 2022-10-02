@@ -23,8 +23,9 @@ public class CrewFindOneResponseDto {
     private int crewNum;
     private List<CrewNoticeResponseDto> noticeList;
     private boolean like;
+    private boolean submit;
 
-    public CrewFindOneResponseDto(Crew crew, List<Notice> noticeList, boolean like) {
+    public CrewFindOneResponseDto(Crew crew, List<Notice> noticeList, boolean like, boolean submit) {
         this.id = crew.getId();
         this.name = crew.getName();
         this.content = crew.getContent();
@@ -35,10 +36,11 @@ public class CrewFindOneResponseDto {
         this.hostId = crew.getCrewMemberList().stream()
                 .filter(mc -> mc.getStatus().equals(Status.ADMIN)).findAny().get().getMember().getId();
         this.memberList = crew.getCrewMemberList().stream()
-                .filter(memberCrew -> !memberCrew.getStatus().equals(Status.SUBMIT))
+                .filter(cm -> !cm.getStatus().equals(Status.SUBMIT))
                 .map(CrewMemberResponseDto::new).collect(Collectors.toList());
         this.crewNum = (int) crew.getCrewMemberList().stream().filter(cm -> !cm.getStatus().equals(Status.SUBMIT)).count();
         this.noticeList = noticeList.stream().map(CrewNoticeResponseDto::new).collect(Collectors.toList());
         this.like = like;
+        this.submit = submit;
     }
 }
