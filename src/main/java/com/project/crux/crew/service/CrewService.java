@@ -106,14 +106,16 @@ public class CrewService {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getCredentials().equals("")) {
-            return new CrewFindOneResponseDto(crew, noticeList, false);
+            return new CrewFindOneResponseDto(crew, noticeList, false, false);
         }
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         Member member = userDetails.getMember();
         Optional<LikeCrew> likeCrew = likeCrewRepository.findByCrewAndMember(crew, member);
-
-        return new CrewFindOneResponseDto(crew, noticeList, likeCrew.isPresent());
+        boolean submit = crew.getCrewMemberList().stream()
+                .filter(cm -> cm.getMember().getId().equals(member.getId()))
+                .anyMatch(cm -> cm.getStatus().equals(Status.SUBMIT));
+        return new CrewFindOneResponseDto(crew, noticeList, likeCrew.isPresent(), submit);
     }
 
     public CrewResponseDto updateCrew(Long crewId, CrewRequestDto crewRequestDto, UserDetailsImpl userDetails) {
