@@ -34,6 +34,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class KakaoMemberService {
+    private static final String DEFAULT_IMAGE_URL = "https://firebasestorage.googleapis.com/v0/b/test-12a64.appspot.com/o/images%2Fuser.png?alt=media&token=3df47e9a-51a9-4512-9000-d169aabf7ca3";
 
 
     private final PasswordEncoder passwordEncoder;
@@ -138,8 +139,7 @@ public class KakaoMemberService {
             // email: kakao email
             String email = kakaoMemberInfo.getEmail();
 
-
-            kakaoMember = new Member(nickname,encodedPassword,email,kakaoId);
+            kakaoMember = new Member(nickname,encodedPassword,email,kakaoId, DEFAULT_IMAGE_URL);
             memberRepository.save(kakaoMember);
         }
         return kakaoMember;

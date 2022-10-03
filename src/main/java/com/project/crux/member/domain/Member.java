@@ -64,11 +64,12 @@ public class Member {
     }
     //카카오 서비스 생성자
     @Builder
-    public Member(String nickname, String password, String email, Long kakaoId) {
+    public Member(String nickname, String password, String email, Long kakaoId, String imgUrl) {
         this.nickname = nickname;
         this.password = password;
         this.email = email;
         this.kakaoId = kakaoId;
+        this.imgUrl = imgUrl;
     }
 
 
