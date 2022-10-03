@@ -1,5 +1,6 @@
 package com.project.crux.member.service;
 
+import com.project.crux.crew.Status;
 import com.project.crux.crew.domain.Crew;
 import com.project.crux.crew.domain.CrewMember;
 import com.project.crux.crew.domain.LikeCrew;
@@ -57,8 +58,10 @@ public class MypageService {
         List<CrewResponseDto> crewResponseDtos = new ArrayList<>();
         List<CrewMember> crewList = crewMemberRepository.findAllByMember(member);
         for (CrewMember crewMember : crewList) {
-            Crew crew = crewMember.getCrew();
-            crewResponseDtos.add(CrewResponseDto.from(crew));
+            if (!crewMember.getStatus().equals(Status.SUBMIT)) {
+                Crew crew = crewMember.getCrew();
+                crewResponseDtos.add(CrewResponseDto.from(crew));
+            }
         }
         return ResponseDto.success(new MypageResponseDto(member, crewResponseDtos, likeGymResponseDtos, likeCrewList));
     }
