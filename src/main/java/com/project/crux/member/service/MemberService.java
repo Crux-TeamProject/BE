@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class MemberService {
-    private static final String DEFAULT_IMAGE_URL = "";
+    private static final String DEFAULT_IMAGE_URL = "https://firebasestorage.googleapis.com/v0/b/test-12a64.appspot.com/o/images%2Fuser.png?alt=media&token=3df47e9a-51a9-4512-9000-d169aabf7ca3";
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
