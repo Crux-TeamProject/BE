@@ -47,11 +47,11 @@ public class CrewMemberService {
 
         Crew crew = getCrew(crewId);
         Member member = userDetails.getMember();
+        CrewMember crewMember = new CrewMember(member, crew);
+        CrewMember crewLeader = getCrewLeader(crew);
 
         Optional<CrewMember> optionalCrewMember = crewMemberRepository.findByCrewAndMember(crew, member);
         if(!optionalCrewMember.isPresent()){
-            CrewMember crewMember = new CrewMember(member, crew);
-            CrewMember crewLeader = getCrewLeader(crew);
             checkAdminRegister(crewLeader, member);
             String content = member.getNickname() + "님이 가입 신청하셨습니다";
             sendNotice((crewLeader.getMember()), NotificationType.SUBMIT, new NotificationContent(crew.getId(), content));
@@ -62,6 +62,8 @@ public class CrewMemberService {
 
         CrewMember findCrewMember = optionalCrewMember.get();
         checkRegister(findCrewMember);
+        String content = member.getNickname() + "님이 가입 취소하셨습니다";
+        sendNotice((crewLeader.getMember()), NotificationType.CANCEL, new NotificationContent(crew.getId(), content));
         crewMemberRepository.delete(findCrewMember);
         return "크루 가입 신청 취소 완료";
 
