@@ -78,12 +78,14 @@ class ReviewServiceTest {
             List<ReviewPhoto> reviewPhotoList = new ArrayList<>();
             reviewPhotoList.add(reviewphoto);
             ReviewRequestDto requestDto = new ReviewRequestDto(4, "리뷰내용", reviewPhotoList);
-
+            gym.getReviewList().add(review);
             when(gymRepository.findById(1L)).thenReturn(Optional.of(gym));
             when(reviewPhotoRepository.save(reviewphoto)).thenReturn(reviewphoto);
 
             //when
+            System.out.println(gym.getReviewList().size());
             ReviewResponseDto reviewResponseDto = reviewService.createReview(requestDto, 1L, new UserDetailsImpl());
+
 
             //then
             assertThat(reviewResponseDto.getScore()).isEqualTo(4);
@@ -125,6 +127,7 @@ class ReviewServiceTest {
             reviewPhotoList.add(reviewphoto);
             UserDetailsImpl userDetails = new UserDetailsImpl();
             userDetails.setMember(member);
+            gym.getReviewList().add(review);
             ReviewRequestDto requestDto = new ReviewRequestDto(5, "리뷰수정", reviewPhotoList);
 
             when(reviewRepository.findById(1L)).thenReturn(Optional.ofNullable(review));
