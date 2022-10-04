@@ -161,7 +161,7 @@ public class KakaoMemberService {
 
         response.setContentType("application/json; charset=utf-8");
         Member member = userDetails1.getMember();
-        LoginResponseDto loginResponseDto = new LoginResponseDto(member.getId(), member.getEmail(), member.getNickname());
+        LoginResponseDto loginResponseDto = new LoginResponseDto(member.getId(), member.getEmail(), member.getNickname(), member.getImgUrl());
         String result = mapper.writeValueAsString(loginResponseDto);
         response.getWriter().write(result);
 
