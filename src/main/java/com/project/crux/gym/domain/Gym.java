@@ -71,8 +71,23 @@ public class Gym {
     }
 
 
-    public void updateScore(int score) {
+    public void insertScore(int score) {
         DecimalFormat df = new DecimalFormat("#.##");
-        this.avgScore = Double.parseDouble(df.format((avgScore * reviewList.size() + score) / (reviewList.size() + 1)));
+        this.avgScore = Double.parseDouble(df.format((avgScore * (reviewList.size()-1) + score) / reviewList.size()));
     }
+
+    public void updateScore(int before, int after) {
+        DecimalFormat df = new DecimalFormat("#.##");
+        this.avgScore = Double.parseDouble(df.format((avgScore * reviewList.size()- before + after) / reviewList.size()));
+    }
+
+    public void deleteScore(int score) {
+        if (reviewList.size() == 1) this.avgScore = 0;
+        else {
+            DecimalFormat df = new DecimalFormat("#.##");
+            this.avgScore = Double.parseDouble(df.format(((avgScore * (reviewList.size())) - score) / (reviewList.size() - 1)));
+        }
+    }
+
+
 }

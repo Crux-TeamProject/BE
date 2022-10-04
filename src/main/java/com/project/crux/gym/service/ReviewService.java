@@ -40,13 +40,10 @@ public class ReviewService {
                 .gym(gym)
                 .build();
 
-       gym.updateScore(requestDto.getScore());
-
         reviewRepository.save(review);
         ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review);
-
         imgSave(requestDto, reviewResponseDto, review);
-
+        gym.insertScore(requestDto.getScore());
         return reviewResponseDto;
     }
 
@@ -59,16 +56,17 @@ public class ReviewService {
         if (!review.getMember().equals(member)) {
             throw new CustomException(ErrorCode.INVALID_REVIEW_UPDATE);
         }
-
+        int beforeScore = review.getScore();
         review.update(requestDto.getScore(), requestDto.getContent());
+        review.getGym().updateScore(beforeScore,requestDto.getScore());
+
         reviewPhotoRepository.deleteAll(reviewPhotoRepository.findAllByReview(review));
         ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review);
-
         imgSave(requestDto, reviewResponseDto, review);
-
         return reviewResponseDto;
     }
 
+    @Transactional
     public String deleteReview(UserDetailsImpl userDetails, Long reviewId) {
         Member member = userDetails.getMember();
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
@@ -77,6 +75,7 @@ public class ReviewService {
             throw new CustomException(ErrorCode.INVALID_REVIEW_DELETE);
         }
         reviewRepository.delete(review);
+        review.getGym().deleteScore(review.getScore());
         return "후기 삭제 완료";
     }
 
