@@ -89,6 +89,7 @@ public class MemberService {
                         .id(member.getId())
                         .email(member.getEmail())
                         .nickname(member.getNickname())
+                        .imgUrl(member.getImgUrl())
                         .build()
         );
 
