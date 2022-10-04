@@ -43,7 +43,7 @@ public class GymService {
 
         Page<Gym> gyms = gymRepository.findByLatAndLon(lat, lon, pageable);
 
-        return pageToDtoListWithDist(gyms,lon,lat);
+        return pageToDtoList(gyms);
     }
 
     public List<GymResponseDto> getPopularGyms(Long lastArticleId, int size) {
@@ -122,53 +122,13 @@ public class GymService {
     }
 
     private List<GymResponseDto> pageToDtoList(Page<Gym> gyms) {
-
         List<GymResponseDto> gymResponseDtos = new ArrayList<>();
-
         gyms.getContent().forEach(gym -> gymResponseDtos.add(GymResponseDto.from(gym)));
-
         return gymResponseDtos;
     }
-
 
     private Gym getGymById(Long gymId) {
         return gymRepository.findById(gymId).orElseThrow(() -> new CustomException(ErrorCode.GYM_NOT_FOUND));
-    }
-
-
-    private List<GymResponseDto> pageToDtoListWithDist(Page<Gym> gyms, String lon, String lat){
-
-        List<GymResponseDto> gymResponseDtos = new ArrayList<>();
-
-        gyms.getContent().forEach(gym ->
-            gymResponseDtos.add(GymResponseDto.of(gym, distance(Double.parseDouble(lat),Double.parseDouble(lon),
-                    Double.parseDouble(gym.getLat()),Double.parseDouble(gym.getLon()))))
-        );
-
-        return gymResponseDtos;
-
-    }
-
-    private double distance(double lat1, double lon1, double lat2, double lon2) {
-
-        double theta = lon1 - lon2;
-        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
-
-        dist = Math.acos(dist);
-        dist = rad2deg(dist);
-        dist = dist * 60 * 1.1515;
-        dist = dist * 1.609344;
-        dist = Math.round(dist * 100) / (double) 100 ;
-
-        return (dist);
-    }
-
-    private double deg2rad(double deg) {
-        return (deg * Math.PI / 180.0);
-    }
-
-    private double rad2deg(double rad) {
-        return (rad * 180 / Math.PI);
     }
 
     private double generateCustomCursor(double avgScore, Long gymId) {
