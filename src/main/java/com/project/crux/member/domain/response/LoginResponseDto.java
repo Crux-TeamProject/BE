@@ -12,10 +12,12 @@ public class LoginResponseDto {
     private Long id;
     private String email;
     private String nickname;
+    private String imgUrl;
 
     public LoginResponseDto(Member member) {
         this.id = member.getId();
         this.email = member.getEmail();
         this.nickname = member.getNickname();
+        this.imgUrl = member.getImgUrl();
     }
 }
