@@ -89,7 +89,7 @@ public class NoticeService {
         }
     }
 
-    private void sendNotice(Crew crew, NotificationContent content ,Member member) {
+    public void sendNotice(Crew crew, NotificationContent content ,Member member) {
         crew.getCrewMemberList().stream().filter(cm -> cm.getStatus() == Status.ADMIN || cm.getStatus() == Status.PERMIT &&
                         !cm.getMember().equals(member))
                 .forEach(cm -> {
