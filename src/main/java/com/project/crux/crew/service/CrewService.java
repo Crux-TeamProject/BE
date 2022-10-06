@@ -87,12 +87,12 @@ public class CrewService {
     public List<CrewResponseDto> searchCrew(String query) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getCredentials().equals("")) {
-            return crewRepository.findAllByNameContainsIgnoreCase(query).stream()
+            return crewRepository.findAllBySearchQuery(query).stream()
                     .map(CrewResponseDto::from).collect(Collectors.toList());
         }
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         Member member = userDetails.getMember();
-        return crewRepository.findAllByNameContainsIgnoreCase(query).stream()
+        return crewRepository.findAllBySearchQuery(query).stream()
                 .map(crew -> {
                     Optional<LikeCrew> likeCrew = likeCrewRepository.findByCrewAndMember(crew, member);
                     return CrewResponseDto.of(crew, likeCrew.isPresent());})

@@ -1,16 +1,14 @@
 package com.project.crux.crew.repository;
 
 import com.project.crux.crew.domain.Crew;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface CrewRepository extends JpaRepository<Crew, Long> {
 
-    Optional<Crew> findAllById(Long id);
-    Page<Crew> findByIdLessThanOrderByIdDesc(Long lastId, Pageable pageable);
-    List<Crew> findAllByNameContainsIgnoreCase(String query);
+    @Query(value = "select c from Crew c where c.name like %:query% or c.keywords like %:query%")
+    List<Crew> findAllBySearchQuery(@Param("query") String query);
 }
