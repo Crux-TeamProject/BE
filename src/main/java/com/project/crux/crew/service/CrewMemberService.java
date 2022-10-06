@@ -41,6 +41,7 @@ public class CrewMemberService {
     private final CrewService crewService;
     private final NotificationService notificationService;
     private final LikeCrewRepository likeCrewRepository;
+    private final NoticeService noticeService;
 
 
     public String registerSubmit(Long crewId, UserDetailsImpl userDetails) {
@@ -133,6 +134,8 @@ public class CrewMemberService {
             throw new CustomException(ErrorCode.IMAGE_REQUIRED);
         }
         crewPhotoRequestDto.getImgList().forEach(imgUrl -> crewPhotoRepository.save(new CrewPhoto(crewPost, imgUrl)));
+        String content = userDetails.getMember().getNickname() + "님이 사진 업로드했습니다";
+        noticeService.sendNotice(crew, new NotificationContent(crew.getId(), content), userDetails.getMember());
         return new CrewPostResponseDto(crewPost);
     }
 
