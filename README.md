@@ -29,7 +29,7 @@
 
 > Language, Framework, Build Tool, IDE
 - [Spring Boot](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle)
-스프링 부트 사용시 제공되는 내장 웹서버를 사용을 위해서 선택했습니다, 추후 사용하게될 Redis의 설정을 자동으로 되게끔 제공한다 하여 선택했습니다.
+스프링 부트 사용시 제공되는 내장 웹서버를 사용을 위해서 선택했습니다. 스프링 부트와 호환되는 버전을 자동으로 관리해주기 때문에 인프라 설정에 많은 시간을 들이지 않을 수 있었습니다.
 - [Java 8](https://docs.oracle.com/javase/8/docs/api/)
  LTS 버전 중 자바 8에 도입된 람다, 스트림 문법을 사용하기 위해서 선택했습니다.
 - [Gradle](https://docs.gradle.org/current/userguide/userguide.html)
@@ -62,9 +62,9 @@ Spring Data JPA를 사용하면 JPA 기반 저장소를 쉽게 구현할 수 있
 
 > 채팅 / 알림
 - [Stomp](https://docs.spring.io/spring-integration/reference/html/stomp.html)
-웹 소켓 서브 프로토콜로서 메시지 포맷이 자유롭고, 여러 브로커 사용 가능, Controller 처럼 사용하여 관리가 용이하여 사용, 게임이 실시간으로 진행 되며 상대의 코드를 확인하고, 양방향 통신의 이점을 이용해 메시지에 대한 내용을 처리 하기 위해 사용하였습니다.
+양방향 통신이 가능한 특징을 이용해 클라이언트의 요청이 없어도 서버측에서 채팅 메세지를 전달하기 위해 사용했습니다.
 - [Redis](https://redis.io/docs/stack/get-started/tutorials/stack-spring/)
-인메모리 데이터베이스여서 데이터가 유실될 가능성이 있지만 속도가 매우 빠르기 때문에 민감하지 않은 데이터를 저장하기에 적합하다고 생각되어 사용했습니다.
+실시간성이 중요한 채팅 기능을 구현하기 위해 속도가 매우 빠른 인메모리 데이터베이스인 레디스를 사용했습니다.
 - [SSE](https://www.baeldung.com/spring-server-sent-events)
 알림 기능 구현을 위해 단방향 통신이 가능하며 구현이 간편한 SSE를 선택하였습니다.
 <br>
