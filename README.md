@@ -61,7 +61,7 @@ Spring Data JPA를 사용하면 JPA 기반 저장소를 쉽게 구현할 수 있
 <br>
 
 > 채팅 / 알림
-- [Stomp](https://docs.spring.io/spring-integration/reference/html/stomp.html)
+- [Web Socket](https://docs.spring.io/spring-integration/reference/html/stomp.html)
 양방향 통신이 가능한 특징을 이용해 클라이언트의 요청이 없어도 서버측에서 채팅 메세지를 전달하기 위해 사용했습니다.
 - [Redis](https://redis.io/docs/stack/get-started/tutorials/stack-spring/)
 실시간성이 중요한 채팅 기능을 구현하기 위해 속도가 매우 빠른 인메모리 데이터베이스인 레디스를 사용했습니다.
